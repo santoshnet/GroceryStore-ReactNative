@@ -21,7 +21,7 @@ import {getUserDetails, getCart, setCart} from '../utils/LocalStorage';
 import ProductRow from '../components/ProductItem/ProductRow';
 import Cart from '../utils/Cart';
 import Loading from '../components/Loading';
-import { BASE_URL } from '../axios/API';
+import {BASE_URL} from '../axios/API';
 
 class NewProductScreen extends Component {
   constructor(props) {

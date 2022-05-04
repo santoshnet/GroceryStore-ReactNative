@@ -28,7 +28,7 @@ import {
   getPopularProducts,
   searchProduct,
   getAllBanner,
-  getAllAdvOffer
+  getAllAdvOffer,
 } from '../axios/ServerRequest';
 import {
   getUserDetails,
@@ -171,6 +171,7 @@ class HomeScreen extends Component {
     searchProduct(text)
       .then(response => {
         this.setState({searchData: response.data.products});
+        console.log(response);
       })
       .catch(error => {
         //console.log(error);
@@ -244,12 +245,10 @@ class HomeScreen extends Component {
 
           <ScrollView style={styles.scrollView}>
             <View>
-            {this.state.bannerData !== null && this.state.bannerData.length > 0
-                                ?
-                                (<BannerSlider slider={this.state.bannerData} />)
-                                :
-                                null
-                            }
+              {this.state.bannerData !== null &&
+              this.state.bannerData.length > 0 ? (
+                <BannerSlider slider={this.state.bannerData} />
+              ) : null}
               <View style={styles.categoryMainContainer}>
                 <View style={styles.categoryHeaderContainer}>
                   <Text style={styles.title}>All Categories</Text>

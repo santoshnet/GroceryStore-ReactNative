@@ -15,8 +15,7 @@ import {
   setCart,
   setProductItem,
 } from '../utils/LocalStorage';
-import { BASE_URL } from '../axios/API';
-
+import {BASE_URL} from '../axios/API';
 
 class ProductView extends Component {
   constructor(props) {
@@ -206,10 +205,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.backgroundColor,
     flexDirection: 'column',
   },
-  title: {
-    fontFamily: Fonts.primarySemiBold,
-    fontSize: 16,
-  },
+
   imageContainer: {
     display: 'flex',
     height: 250,
