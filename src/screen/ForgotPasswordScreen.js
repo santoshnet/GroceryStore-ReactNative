@@ -93,7 +93,7 @@ class ForgotPasswordScreen extends Component {
     forgotPassword(mobile)
       .then(response => {
         let data = response.data;
-        console.log(response.data);
+        //console.log(response.data);
         if (data.code === 200) {
           this.setState({showPassword: true});
         } else {
@@ -102,7 +102,7 @@ class ForgotPasswordScreen extends Component {
         this.setState({loading: false});
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
       });
   };
 
@@ -183,7 +183,7 @@ class ForgotPasswordScreen extends Component {
     resetPassword(this.state.otp, this.state.password)
       .then(response => {
         let data = response.data;
-        console.log(response.data);
+        //console.log(response.data);
         if (data.code === 200) {
           this.props.navigation.replace('Login');
         } else {
@@ -192,7 +192,7 @@ class ForgotPasswordScreen extends Component {
         this.setState({loading: false});
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
       });
   };
   resetState = () => {

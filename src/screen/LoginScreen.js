@@ -98,7 +98,7 @@ class LoginScreen extends Component {
     userLogin(mobile, password)
       .then(response => {
         let data = response.data;
-        console.log(response.data);
+        //console.log(response.data);
         if (data.code === 200) {
           this.showToast(data.status);
           setUserDetails(response.data.userData);
@@ -109,7 +109,7 @@ class LoginScreen extends Component {
         this.setState({loading: false});
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
       });
   };
 

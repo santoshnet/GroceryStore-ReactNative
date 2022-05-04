@@ -126,18 +126,18 @@ class App extends Component {
     getToken = async () => {
         let fcmToken = await AsyncStorage.getItem('fcmToken');
         // let fcmToken = await getFcmKey;
-        console.log('1', fcmToken);
+        //console.log('1', fcmToken);
         if (!fcmToken) {
             fcmToken = await firebase.messaging().getToken();
 
             if (fcmToken) {
                 // user has a device token
-                console.log('fcmToken:', fcmToken);
+                //console.log('fcmToken:', fcmToken);
                 await AsyncStorage.setItem('fcmToken', fcmToken);
                 //setFcmKey('fcmToken');
             }
         }
-        console.log('fcmToken:', fcmToken);
+        //console.log('fcmToken:', fcmToken);
     };
 
     async requestPermission() {
@@ -145,7 +145,7 @@ class App extends Component {
             await firebase.messaging().requestPermission();
             this.getToken();
         } catch (error) {
-            console.log('permission rejected');
+            //console.log('permission rejected');
         }
     }
 
@@ -157,7 +157,7 @@ class App extends Component {
             .notifications()
             .onNotification(notification => {
                 const {title, body} = notification;
-                console.log('onNotification:');
+                //console.log('onNotification:');
 
                 const localNotification = new firebase.notifications.Notification({
                     // sound: 'sampleaudio',
@@ -193,7 +193,7 @@ class App extends Component {
             .notifications()
             .onNotificationOpened(notificationOpen => {
                 const {title, body} = notificationOpen.notification;
-                console.log('onNotificationOpened:');
+                //console.log('onNotificationOpened:');
                 // Alert.alert(title, body);
             });
 
@@ -205,7 +205,7 @@ class App extends Component {
             .getInitialNotification();
         if (notificationOpen) {
             const {title, body} = notificationOpen.notification;
-            console.log('getInitialNotification:');
+            //console.log('getInitialNotification:');
             // Alert.alert(title, body);
         }
         /*
@@ -213,7 +213,7 @@ class App extends Component {
          * */
         this.messageListener = firebase.messaging().onMessage(message => {
             //process data message
-            console.log('JSON.stringify:', JSON.stringify(message));
+            //console.log('JSON.stringify:', JSON.stringify(message));
         });
     }
   render() {

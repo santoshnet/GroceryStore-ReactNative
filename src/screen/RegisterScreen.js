@@ -138,7 +138,7 @@ class RegisterScreen extends Component {
         this.setState({loading: false});
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
       });
   };
   showToast = message => {

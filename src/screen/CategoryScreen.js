@@ -15,6 +15,7 @@ import {
   CategoryImage,
   ProductImage,
 } from '../axios/ServerRequest';
+import { BASE_URL } from '../axios/API';
 class CategoryScreen extends Component {
   constructor(props) {
     super(props);
@@ -43,12 +44,12 @@ class CategoryScreen extends Component {
 
     getAllCategory()
       .then(response => {
-        console.log(response.data.categories);
+        //console.log(response.data.categories);
         this.setState({category: response.data.categories});
         this.refs.loading.close();
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         this.refs.loading.close();
       });
   };
@@ -66,11 +67,11 @@ class CategoryScreen extends Component {
         <View style={styles.categoryItem}>
           <Image
             source={{
-              uri: `${CategoryImage + item.cateimg}`,
+              uri: `${BASE_URL + item.cateimg}`,
             }}
             style={{height: 45, width: 45}}
           />
-          <Text style={styles.title}>{item.categry}</Text>
+          <Text style={styles.title}>{item.category}</Text>
         </View>
       </TouchableOpacity>
     );

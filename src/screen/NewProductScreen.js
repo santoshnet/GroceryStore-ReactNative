@@ -21,6 +21,7 @@ import {getUserDetails, getCart, setCart} from '../utils/LocalStorage';
 import ProductRow from '../components/ProductItem/ProductRow';
 import Cart from '../utils/Cart';
 import Loading from '../components/Loading';
+import { BASE_URL } from '../axios/API';
 
 class NewProductScreen extends Component {
   constructor(props) {
@@ -56,12 +57,12 @@ class NewProductScreen extends Component {
 
     getNewProducts()
       .then(response => {
-        console.log(response.data.products);
+        //console.log(response.data.products);
         this.setState({newProduct: response.data.products});
         this.refs.loading.close();
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         this.refs.loading.close();
       });
   };
@@ -80,7 +81,7 @@ class NewProductScreen extends Component {
         cartListData = filterData;
       }
     }
-    console.log(cartListData);
+    //console.log(cartListData);
     let totalCount = Cart.getTotalCartCount(cartListData);
     this.setState({
       cartCount: totalCount,

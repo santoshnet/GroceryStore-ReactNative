@@ -44,13 +44,13 @@ class ProductsScreen extends Component {
   }
 
   init = async () => {
-    this.fetchProductsList(this.props.route.params.item.categry);
+    this.fetchProductsList(this.props.route.params.item.id);
     let cart = await getCart();
 
     this.setState({
       cartList: await getCart(),
       cartCount: Cart.getTotalCartCount(cart),
-      category: this.props.route.params.item.categry,
+      category: this.props.route.params.item.category,
     });
   };
 
@@ -59,12 +59,12 @@ class ProductsScreen extends Component {
 
     getProductList(category)
       .then(response => {
-        console.log(response.data.products);
+        //console.log(response.data.products);
         this.setState({products: response.data.products});
         this.refs.loading.close();
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         this.refs.loading.close();
       });
   };
@@ -83,7 +83,7 @@ class ProductsScreen extends Component {
         cartListData = filterData;
       }
     }
-    console.log(cartListData);
+    //console.log(cartListData);
     let totalCount = Cart.getTotalCartCount(cartListData);
     this.setState({
       cartCount: totalCount,

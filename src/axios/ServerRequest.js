@@ -98,7 +98,7 @@ export const getProductList = async categoryName => {
   return await API({
     method: 'POST',
     url: 'api/v1/getlist',
-    data: {token: await getToken(), categry: categoryName},
+    data: {token: await getToken(), id: categoryName},
   }).then(res => {
     return res;
   });

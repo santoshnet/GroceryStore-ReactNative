@@ -10,7 +10,7 @@ export const getApiKey = async () => {
     let apiKey = await AsyncStorage.getItem(API_KEY);
     return apiKey;
   } catch (error) {
-    console.log('Error fetching High Scores', error);
+    //console.log('Error fetching High Scores', error);
     return null;
   }
 };
@@ -25,7 +25,7 @@ export const getToken = async () => {
     userDetails = JSON.parse(userDetails);
     return userDetails.token;
   } catch (error) {
-    console.log('Error fetching High Scores', error);
+    //console.log('Error fetching High Scores', error);
     return null;
   }
 };
@@ -36,7 +36,7 @@ export const getUserDetails = async () => {
     userDetails = JSON.parse(userDetails);
     return userDetails;
   } catch (error) {
-    console.log('Error fetching High Scores', error);
+    //console.log('Error fetching High Scores', error);
     return null;
   }
 };
@@ -51,7 +51,7 @@ export const getCart = async () => {
     cartDetails = JSON.parse(cartDetails);
     return cartDetails;
   } catch (error) {
-    console.log('Error fetching High Scores', error);
+    //console.log('Error fetching High Scores', error);
     return null;
   }
 };
@@ -66,7 +66,7 @@ export const getProductItem = async () => {
     productDetails = JSON.parse(productDetails);
     return productDetails;
   } catch (error) {
-    console.log('Error fetching High Scores', error);
+    //console.log('Error fetching High Scores', error);
     return null;
   }
 };
@@ -82,5 +82,5 @@ export const logout = async () => {
     // clear error
   }
 
-  console.log('Done.');
+  //console.log('Done.');
 };

@@ -5,6 +5,9 @@ import {ProductImage} from '../../axios/ServerRequest';
 import Icon from 'react-native-feather1s';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import PropTypes from 'prop-types';
+import { BASE_URL } from '../../axios/API';
+
+
 class ProductItem extends Component {
   constructor(props) {
     super(props);
@@ -45,7 +48,7 @@ class ProductItem extends Component {
               <Image
                 style={styles.productImage}
                 source={{
-                  uri: `${ProductImage + item.image}`,
+                  uri: `${BASE_URL + item.image}`,
                 }}
               />
             </TouchableOpacity>

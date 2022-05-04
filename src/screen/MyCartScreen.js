@@ -19,6 +19,8 @@ import BadgeIcon from '../components/BadgeIcon';
 import Cart from '../utils/Cart';
 import CartItem from '../components/CartItem';
 import EmptyCart from '../assets/images/emptycart.png';
+import { BASE_URL } from '../axios/API';
+
 class MyCartScreen extends Component {
   constructor(props) {
     super(props);
@@ -63,7 +65,7 @@ class MyCartScreen extends Component {
         cartListData = filterData;
       }
     }
-    console.log(cartListData);
+    //console.log(cartListData);
     let totalCount = Cart.getTotalCartCount(cartListData);
     let totalPrice = cartListData.reduce(
       (accum, item) => accum + item.subTotal,

@@ -39,7 +39,7 @@ import {
 import ProductItem from '../components/ProductItem';
 import Cart from '../utils/Cart';
 import SearchBar from '../components/SearchBar';
-
+import {BASE_URL} from '../axios/API';
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
@@ -65,7 +65,7 @@ class HomeScreen extends Component {
   }
 
   init = async () => {
-    console.log(await getUserDetails());
+    //console.log(await getUserDetails());
     this.fetchCategory();
     this.fetchBanners();
     this.fetchNewProducts();
@@ -82,12 +82,12 @@ class HomeScreen extends Component {
     this.refs.loading.show();
     getAllBanner()
       .then(response => {
-        console.log(response.data.banners);
+        //console.log(response.data.banners);
         this.setState({bannerData: response.data.banners});
         this.refs.loading.close();
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         this.refs.loading.close();
       });
   };
@@ -95,12 +95,12 @@ class HomeScreen extends Component {
     this.refs.loading.show();
     getAllCategory()
       .then(response => {
-        console.log(response.data.categories);
+        //console.log(response.data.categories);
         this.setState({categoryData: response.data.categories});
         this.refs.loading.close();
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         this.refs.loading.close();
       });
   };
@@ -108,12 +108,12 @@ class HomeScreen extends Component {
     this.refs.loading.show();
     getNewProducts()
       .then(response => {
-        console.log(response.data.products);
+        //console.log(response.data.products);
         this.setState({newProduct: response.data.products});
         this.refs.loading.close();
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         this.refs.loading.close();
       });
   };
@@ -121,12 +121,12 @@ class HomeScreen extends Component {
     this.refs.loading.show();
     getPopularProducts()
       .then(response => {
-        console.log(response.data.products);
+        //console.log(response.data.products);
         this.setState({popularProduct: response.data.products});
         this.refs.loading.close();
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         this.refs.loading.close();
       });
   };
@@ -145,7 +145,7 @@ class HomeScreen extends Component {
         cartListData = filterData;
       }
     }
-    console.log(cartListData);
+    //console.log(cartListData);
     let totalCount = Cart.getTotalCartCount(cartListData);
     this.setState({
       cartCount: totalCount,
@@ -173,7 +173,7 @@ class HomeScreen extends Component {
         this.setState({searchData: response.data.products});
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
       });
   }
 
@@ -204,7 +204,7 @@ class HomeScreen extends Component {
           <View style={{width: 50, height: 50}}>
             <Image
               source={{
-                uri: `${ProductImage + item.image}`,
+                uri: `${BASE_URL + item.image}`,
               }}
               style={{height: 35, width: 35}}
             />
@@ -264,7 +264,7 @@ class HomeScreen extends Component {
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}>
                   {this.state.categoryData &&
-                    this.state.categoryData.slice(0, 7).map((item, index) => {
+                    this.state.categoryData.slice(0, 10).map((item, index) => {
                       return (
                         <View
                           style={styles.categoryDetailsContainer}
@@ -280,12 +280,12 @@ class HomeScreen extends Component {
                             <View style={styles.categoryContainer}>
                               <Image
                                 source={{
-                                  uri: `${CategoryImage + item.cateimg}`,
+                                  uri: `${BASE_URL + item.cateimg}`,
                                 }}
                                 style={{height: 35, width: 35}}
                               />
                             </View>
-                            <Text style={styles.catTitle}>{item.categry}</Text>
+                            <Text style={styles.catTitle}>{item.category}</Text>
                           </TouchableOpacity>
                         </View>
                       );

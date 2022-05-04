@@ -49,7 +49,7 @@ class MyOrderScreen extends Component {
 
     getOrderDetails(user.token, user.id)
       .then(response => {
-        console.log(response);
+        //console.log(response);
         let data = response.data;
         if (data.code === 200) {
           this.setState({orderList: data.orders});
@@ -57,7 +57,7 @@ class MyOrderScreen extends Component {
         this.refs.loading.close();
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         this.refs.loading.close();
       });
   };

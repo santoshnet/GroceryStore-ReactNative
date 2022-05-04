@@ -1,10 +1,10 @@
 import axios from 'axios';
-const URL = 'https://megagrocerystore.000webhostapp.com/';
+const URL = 'http://192.168.0.103/grocerystore/';
 export const BASE_URL = URL;
 
 const API = async config => {
   //   const token = await getApiKey();
-  //   console.log(token);
+  //   //console.log(token);
   //   if (token) {
   //     config.headers = {
   //       authorization: token,
@@ -23,7 +23,7 @@ const API = async config => {
         };
       }
       if (error.response.status === 401) {
-        console.log('Unauthorised');
+        //console.log('Unauthorised');
       }
       return Promise.reject(error);
     },

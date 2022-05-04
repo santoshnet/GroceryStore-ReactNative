@@ -115,7 +115,7 @@ class AddressScreen extends Component {
     updateUser(user)
       .then(response => {
         let data = response.data;
-        console.log(response);
+        //console.log(response);
         if (data.code === 200) {
           this.props.navigation.navigate('PlaceOrder');
           setUserDetails(user);
@@ -124,7 +124,7 @@ class AddressScreen extends Component {
         this.setState({loading: false});
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         this.setState({loading: false});
       });
   };

@@ -7,6 +7,8 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import PropTypes from 'prop-types';
 import AppStatusBar from '../../components/AppStatusBar';
 import ToolBar from '../../components/ToolBar';
+import { BASE_URL } from '../../axios/API';
+
 class ProductItem extends Component {
   constructor(props) {
     super(props);
@@ -45,7 +47,7 @@ class ProductItem extends Component {
               <Image
                 style={styles.productImage}
                 source={{
-                  uri: `${ProductImage + item.image}`,
+                  uri: `${BASE_URL + item.image}`,
                 }}
               />
             </View>

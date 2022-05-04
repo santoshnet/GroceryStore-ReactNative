@@ -56,12 +56,12 @@ class PopularProductScreen extends Component {
 
     getPopularProducts()
       .then(response => {
-        console.log(response.data.products);
+        //console.log(response.data.products);
         this.setState({popularProduct: response.data.products});
         this.refs.loading.close();
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         this.refs.loading.close();
       });
   };
@@ -80,7 +80,7 @@ class PopularProductScreen extends Component {
         cartListData = filterData;
       }
     }
-    console.log(cartListData);
+    //console.log(cartListData);
     let totalCount = Cart.getTotalCartCount(cartListData);
     this.setState({
       cartCount: totalCount,

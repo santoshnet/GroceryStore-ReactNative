@@ -20,6 +20,7 @@ import OrderItem from '../components/ProductItem/OrderItem';
 import {Picker} from '@react-native-community/picker';
 import {orderPlace} from '../axios/ServerRequest';
 import Loading from '../components/Loading';
+import { BASE_URL } from '../axios/API';
 
 class PlaceOrder extends Component {
   constructor(props) {
@@ -79,12 +80,12 @@ class PlaceOrder extends Component {
       user_id: user.id,
       orderitems: orderitems,
     };
-    console.log(orderDetails);
+    //console.log(orderDetails);
 
     orderPlace(orderDetails)
       .then(response => {
         let data = response.data;
-        console.log(response);
+        //console.log(response);
         if (data.code === 200) {
           setCart(null);
           this.props.navigation.navigate('ThankYou');
@@ -92,7 +93,7 @@ class PlaceOrder extends Component {
         }
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         this.refs.loading.close();
       });
   };

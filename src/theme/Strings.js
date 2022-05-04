@@ -79,6 +79,7 @@ export default {
   searchHint: 'Search here...',
   addressHint: 'Enter Address',
   cityHint: 'Enter City',
+  zipHint: 'Enter Zip Code',
   stateHint: 'Enter State',
   save: 'Save',
 };

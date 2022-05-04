@@ -15,6 +15,9 @@ import {
   setCart,
   setProductItem,
 } from '../utils/LocalStorage';
+import { BASE_URL } from '../axios/API';
+
+
 class ProductView extends Component {
   constructor(props) {
     super(props);
@@ -69,7 +72,7 @@ class ProductView extends Component {
         cartListData = filterData;
       }
     }
-    console.log(cartListData);
+    //console.log(cartListData);
     let totalCount = Cart.getTotalCartCount(cartListData);
     this.setState({
       cartCount: totalCount,
@@ -82,7 +85,7 @@ class ProductView extends Component {
   render() {
     const {navigation} = this.props;
     const {productItem, isProductExist, count} = this.state;
-    console.log(this.state.cart);
+    //console.log(this.state.cart);
     return (
       <View style={styles.mainContainer}>
         <AppStatusBar
@@ -108,7 +111,7 @@ class ProductView extends Component {
                 <Image
                   style={styles.productImage}
                   source={{
-                    uri: `${ProductImage + productItem.image}`,
+                    uri: `${BASE_URL + productItem.image}`,
                   }}
                 />
               </View>
