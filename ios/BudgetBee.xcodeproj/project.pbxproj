@@ -498,7 +498,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.grocerystore";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.frontendsource.grocerystore";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GroceryStore.app/GroceryStore";
 			};
@@ -522,7 +522,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.grocerystore";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.frontendsource.grocerystore";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GroceryStore.app/GroceryStore";
 			};
@@ -547,7 +547,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.grocerystore";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.frontendsource.grocerystore";
 				PRODUCT_NAME = "GroceryStore";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -573,7 +573,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.grocerystore";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.frontendsource.grocerystore";
 				PRODUCT_NAME = "GroceryStore";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

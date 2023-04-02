@@ -1,4 +1,4 @@
-package com.grocerystore;
+package com.frontendsource.grocerystore;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

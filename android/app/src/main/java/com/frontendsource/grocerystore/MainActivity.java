@@ -1,4 +1,4 @@
-package com.grocerystore;
+package com.frontendsource.grocerystore;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
