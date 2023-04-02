@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "BudgetBee.app"
-               BlueprintName = "BudgetBee"
-               ReferencedContainer = "container:BudgetBee.xcodeproj">
+               BuildableName = "GroceryStore.app"
+               BlueprintName = "GroceryStore"
+               ReferencedContainer = "container:GroceryStore.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "BudgetBeeTests.xctest"
-               BlueprintName = "BudgetBeeTests"
-               ReferencedContainer = "container:BudgetBee.xcodeproj">
+               BuildableName = "GroceryStoreTests.xctest"
+               BlueprintName = "GroceryStoreTests"
+               ReferencedContainer = "container:GroceryStore.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "BudgetBee.app"
-            BlueprintName = "BudgetBee"
-            ReferencedContainer = "container:BudgetBee.xcodeproj">
+            BuildableName = "GroceryStore.app"
+            BlueprintName = "GroceryStore"
+            ReferencedContainer = "container:GroceryStore.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "BudgetBee.app"
-            BlueprintName = "BudgetBee"
-            ReferencedContainer = "container:BudgetBee.xcodeproj">
+            BuildableName = "GroceryStore.app"
+            BlueprintName = "GroceryStore"
+            ReferencedContainer = "container:GroceryStore.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
