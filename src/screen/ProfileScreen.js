@@ -66,7 +66,7 @@ class ProfileScreen extends Component {
           </View>
           <View style={styles.userRow}>
             <Text>Name : </Text>
-            <Text>{user ? user.fname : null}</Text>
+            <Text>{user ? user.name : null}</Text>
           </View>
           <View style={styles.border} />
           <View style={styles.userRow}>

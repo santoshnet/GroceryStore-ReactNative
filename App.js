@@ -23,6 +23,7 @@ import ThankYou from './src/screen/ThankYou';
 import MyCartScreen from './src/screen/MyCartScreen';
 import MyOrder from './src/screen/MyOrderScreen';
 import CustomSidebarMenu from './src/navigation/CustomSidebarMenu';
+import { LogBox } from 'react-native';
 
 
 const MainStack = createNativeStackNavigator();
@@ -42,6 +43,10 @@ class App extends Component {
     <Drawer.Navigator
       initialRouteName="Home"
       contentOptions={(activeTintColor = 'red')}
+      screenOptions={{
+        headerShown: false,
+        animationEnabled: false,
+      }}
       drawerContent={props => <CustomSidebarMenu {...props} />}>
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
@@ -214,6 +219,11 @@ class App extends Component {
     //         console.log('JSON.stringify:', JSON.stringify(message));
     //     });
     // }
+
+    componentDidMount(){
+      LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+      LogBox.ignoreAllLogs();//Ignore all log notifications
+    }
 
   render() {
     return <NavigationContainer>{this.RootStackScreen()}</NavigationContainer>;

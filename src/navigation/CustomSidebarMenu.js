@@ -29,11 +29,7 @@ export default class CustomSidebarMenu extends Component {
                 navOptionName: 'My Profile',
                 screenToNavigate: 'Profile',
             },
-            {
-                navOptionThumb: 'grid',
-                navOptionName: 'Category',
-                screenToNavigate: 'Category',
-            },
+            
             {
                 navOptionThumb: 'gift',
                 navOptionName: 'My Offers',
@@ -102,7 +98,7 @@ export default class CustomSidebarMenu extends Component {
                             style={styles.sideMenuProfileIcon}
                         />
                         {this.state.user !== null ? (
-                            <Text style={styles.title}>{this.state.user.fname}</Text>
+                            <Text style={styles.title}>{this.state.user.name}</Text>
                         ) : null}
                     </View>
 

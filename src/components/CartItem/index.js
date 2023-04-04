@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import {TouchableOpacity} from 'react-native';import PropTypes from 'prop-types';
 import AppStatusBar from '../../components/AppStatusBar';
 import ToolBar from '../../components/ToolBar';
+import { BASE_URL } from '../../axios/API';
 class ProductItem extends Component {
   constructor(props) {
     super(props);
@@ -44,12 +45,12 @@ class ProductItem extends Component {
               <Image
                 style={styles.productImage}
                 source={{
-                  uri: `${ProductImage + item.image}`,
+                  uri: `${BASE_URL + item.images[0].image}`,
                 }}
               />
             </View>
             <View style={{flex: 1, display: 'flex', flexDirection: 'column'}}>
-              <Text style={styles.title}>{item.name}</Text>
+              <Text style={styles.title} ellipsizeMode="tail" numberOfLines={2}>{item.name}</Text>
               <Text style={styles.attribute}>
                 {' '}
                 {item.attribute + ' - ' + item.currency + ' ' + item.price}
@@ -176,6 +177,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 10,
     marginBottom: 10,
+    marginTop:10
   },
   counter: {
     fontFamily: Fonts.primarySemiBold,

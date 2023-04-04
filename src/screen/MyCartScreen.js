@@ -111,7 +111,7 @@ class MyCartScreen extends Component {
           <View style={styles.box2}>
             <View style={{width: '50%'}}>
               <Text style={styles.total_price}>
-                Total: {this.state.totalPrice}
+                Total: RS. {this.state.totalPrice}
               </Text>
             </View>
             <View style={{width: '50%'}}>

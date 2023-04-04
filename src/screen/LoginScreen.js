@@ -94,12 +94,12 @@ class LoginScreen extends Component {
       .then(response => {
         let data = response.data;
         console.log(response.data);
-        if (data.code === 200) {
-          this.showToast(data.status);
-          setUserDetails(response.data.userData);
+        if (data.status === 200) {
+          this.showToast(data.message);
+          setUserDetails(data.data);
           this.props.navigation.replace('HomeScreen');
         } else {
-          this.showToast(data.status);
+          this.showToast(data.message);
         }
         this.setState({loading: false});
       })

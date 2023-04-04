@@ -4,6 +4,7 @@ import {Color, Fonts, Strings, Dimension} from '../../theme';
 import {ProductImage} from '../../axios/ServerRequest';
 import Icon from 'react-native-vector-icons/Feather';
 import {TouchableOpacity} from 'react-native';import PropTypes from 'prop-types';
+import { BASE_URL } from '../../axios/API';
 class ProductItem extends Component {
   constructor(props) {
     super(props);
@@ -45,7 +46,7 @@ class ProductItem extends Component {
               <Image
                 style={styles.productImage}
                 source={{
-                  uri: `${ProductImage + item.image}`,
+                  uri: `${BASE_URL + item.images[0].image}`,
                 }}
               />
               <Text style={styles.title}>{item.name}</Text>
@@ -175,7 +176,8 @@ const styles = StyleSheet.create({
   productImage: {
     height: 100,
     width: 100,
-    resizeMode:'cover'
+    resizeMode:'cover',
+    alignSelf:'center'
   },
   addToCart: {
     backgroundColor: Color.colorPrimary,
