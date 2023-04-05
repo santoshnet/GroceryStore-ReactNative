@@ -13,8 +13,8 @@ function LoadingButton(props) {
             {
               paddingLeft: 30,
               paddingRight: 30,
-              paddingTop: 7,
-              paddingBottom: 7,
+              paddingTop: 10,
+              paddingBottom: 10,
             },
             props.style,
           ]}>
@@ -36,8 +36,8 @@ const styles = StyleSheet.create({
     color: Color.white,
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 5,
-    paddingBottom: 5,
+    paddingTop: 10,
+    paddingBottom: 10,
     borderRadius: 5,
     backgroundColor: Color.colorPrimary,
   },

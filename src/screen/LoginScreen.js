@@ -18,12 +18,17 @@ import Logo from '../components/Logo';
 import Card from '../components/Card';
 import UserInput from '../components/UserInput';
 import LoadingButton from '../components/LoadingButton';
-import {checkInternetConnection, userLogin} from '../axios/ServerRequest';
+import {
+  checkInternetConnection,
+  resendOTP,
+  userLogin,
+} from '../axios/ServerRequest';
 import Validator from '../utils/Validator/Validator';
 import {DEFAULT_RULE, PHONE_RULE, PASSWORD_RULE} from '../utils/Validator/rule';
 import Toast from 'react-native-simple-toast';
 import {setUserDetails} from '../utils/LocalStorage';
-const defaultHandler = global.ErrorUtils.getGlobalHandler()
+const defaultHandler = global.ErrorUtils.getGlobalHandler();
+import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -36,6 +41,8 @@ class LoginScreen extends Component {
       mobileErrorMessage: '',
       passwordError: false,
       passwordErrorMessage: '',
+      showOTP: false,
+      otp: '',
     };
   }
 
@@ -51,14 +58,7 @@ class LoginScreen extends Component {
   }
 
   login = () => {
-    const {
-      mobile,
-      password,
-      mobileError,
-      passwordError,
-      mobileErrorMessage,
-      passwordErrorMessage,
-    } = this.state;
+    const {mobile} = this.state;
 
     if (!Validator(mobile, DEFAULT_RULE)) {
       this.setState({
@@ -75,25 +75,43 @@ class LoginScreen extends Component {
       return;
     }
 
-    if (!Validator(password, DEFAULT_RULE)) {
-      this.setState({
-        passwordErrorMessage: Strings.passwordErrorMessage,
-        passwordError: true,
-      });
+    this.resendUserOtp();
+  };
+
+  resendUserOtp = async () => {
+    if (this.state.mobile.length < 10) {
+      this.showToast('Please Enter Valid Mobile Number');
       return;
+    } else {
+      resendOTP(this.state.mobile)
+        .then(res => {
+          let data = res.data;
+          if (data.status === 200) {
+            this.showToast(data.message);
+            this.setState({showOTP: true});
+          } else {
+            this.showToast(data.message);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
-    if (!Validator(password, PASSWORD_RULE)) {
-      this.setState({
-        passwordErrorMessage: Strings.passwordErrorMessage,
-        passwordError: true,
-      });
+  };
+
+  verifyOTP = () => {
+    if (this.state.mobile.length < 10) {
+      this.showToast('Please Enter Valid Mobile Number');
+      return;
+    } else if (this.state.otp.length < 4) {
+      this.showToast('Please Enter Valid OTP');
       return;
     }
     this.setState({loading: true});
-    userLogin(mobile, password)
-      .then(response => {
-        let data = response.data;
-        console.log(response.data);
+    userLogin(this.state.mobile, this.state.otp)
+      .then(res => {
+        let data = res.data;
+        console.log(res.data);
         if (data.status === 200) {
           this.showToast(data.message);
           setUserDetails(data.data);
@@ -165,41 +183,73 @@ class LoginScreen extends Component {
                     maxLength={10}
                     onChangeText={mobile => this.onChangeMobile(mobile)}
                   />
-                  <UserInput
-                    placeholder={Strings.passwordHint}
-                    secureTextEntry={true}
-                    error={this.state.passwordError}
-                    value={this.state.password}
-                    errorMessage={this.state.passwordErrorMessage}
-                    maxLength={20}
-                    onChangeText={password => {
-                      this.setState({
-                        password,
-                      }),
-                        this.resetState();
-                    }}
-                  />
+                 
+
+                  {this.state.showOTP ? (
+                    <View
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <SmoothPinCodeInput
+                        ref={this.pinInput}
+                        cellSpacing={20}
+                        cellStyle={{
+                          borderWidth: 2,
+                          borderRadius: 5,
+                          borderColor: Color.lightgray,
+                          backgroundColor: Color.white,
+                        }}
+                        cellStyleFocused={{
+                          borderColor: Color.colorPrimary,
+                        }}
+                        value={this.state.otp}
+                        onTextChange={otp => this.setState({otp})}
+                        onBackspace={() => console.log('No more back.')}
+                      />
+                    </View>
+                  ) : null}
                   <View
                     style={[
                       styles.loginLinkContainer,
                       {marginTop: 20, justifyContent: 'space-between'},
                     ]}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.props.navigation.replace('ForgetPassword');
-                      }}>
-                      <Text style={[styles.linkText, {fontSize: 12}]}>
-                        {Strings.forgetPassword}
-                      </Text>
-                    </TouchableOpacity>
-                    <View style={styles.buttonContainer}>
-                      <LoadingButton
-                        title={Strings.signin}
-                        loading={this.state.loading}
+                    {this.state.showOTP ? (
+                      <TouchableOpacity
                         onPress={() => {
-                          this.login();
-                        }}
-                      />
+                          this.resendUserOtp();
+                        }}>
+                        <Text
+                          style={[
+                            styles.subTitle,
+                            {color: Color.colorPrimary, marginBottom: 10},
+                          ]}>
+                          {Strings.resendOTP}
+                        </Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <View></View>
+                    )}
+
+                    <View style={styles.buttonContainer}>
+                      {this.state.showOTP ? (
+                        <LoadingButton
+                          title={Strings.signin}
+                          loading={this.state.loading}
+                          onPress={() => {
+                            this.verifyOTP();
+                          }}
+                        />
+                      ) : (
+                        <LoadingButton
+                          title={Strings.sendOTP}
+                          loading={this.state.loading}
+                          onPress={() => {
+                            this.login();
+                          }}
+                        />
+                      )}
                     </View>
                   </View>
                 </Card>
@@ -253,7 +303,15 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.primarySemiBold,
     color: Color.headingColor,
   },
-
+  subTitle: {
+    fontSize: 14,
+    fontFamily: Fonts.primarySemiBold,
+    marginTop: 10,
+    color: Color.graylight,
+    textAlign: 'center',
+    marginLeft: '10%',
+    marginRight: '10%',
+  },
   tagline: {
     fontSize: 12,
     fontFamily: Fonts.primaryRegular,

@@ -18,10 +18,10 @@ export const checkInternetConnection = () => {
   });
 };
 
-export const userLogin = async (mobile, password) => {
+export const userLogin = async (mobile, otp) => {
   const body = {
     mobile: mobile,
-    password: password,
+    otp: otp,
   };
   return await API({
     method: 'POST',
@@ -46,6 +46,32 @@ export const userRegister = async (name, mobile, password) => {
     return res;
   });
 };
+export const userVerification = async ( mobile, otp) => {
+  const body = {
+    mobile: mobile,
+    otp: otp
+  };
+  return await API({
+    method: 'POST',
+    url: 'api/v1/verify_otp',
+    data: body,
+  }).then(res => {
+    return res;
+  });
+};
+export const resendOTP = async ( mobile) => {
+  const body = {
+    mobile: mobile
+  };
+  return await API({
+    method: 'POST',
+    url: 'api/v1/resend_otp',
+    data: body,
+  }).then(res => {
+    return res;
+  });
+};
+
 export const getAllCategory = async () => {
   return await API({
     method: 'POST',

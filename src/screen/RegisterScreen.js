@@ -19,8 +19,14 @@ import UserInput from '../components/UserInput';
 import LoadingButton from '../components/LoadingButton';
 import {StackActions, CommonActions} from '@react-navigation/native';
 import {setUserDetails} from '../utils/LocalStorage';
+import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 
-import {checkInternetConnection, userRegister} from '../axios/ServerRequest';
+import {
+  checkInternetConnection,
+  resendOTP,
+  userRegister,
+  userVerification,
+} from '../axios/ServerRequest';
 import Validator from '../utils/Validator/Validator';
 import {
   DEFAULT_RULE,
@@ -43,6 +49,8 @@ class RegisterScreen extends Component {
       nameErrorMessage: '',
       mobileErrorMessage: '',
       passwordErrorMessage: '',
+      showOTP: false,
+      otp: '',
     };
   }
 
@@ -109,28 +117,28 @@ class RegisterScreen extends Component {
       return;
     }
 
-    if (!Validator(password, DEFAULT_RULE)) {
-      this.setState({
-        passwordErrorMessage: Strings.passwordErrorMessage,
-        passwordError: true,
-      });
-      return;
-    }
-    if (!Validator(password, PASSWORD_RULE)) {
-      this.setState({
-        passwordErrorMessage: Strings.passwordErrorMessage,
-        passwordError: true,
-      });
-      return;
-    }
+    // if (!Validator(password, DEFAULT_RULE)) {
+    //   this.setState({
+    //     passwordErrorMessage: Strings.passwordErrorMessage,
+    //     passwordError: true,
+    //   });
+    //   return;
+    // }
+    // if (!Validator(password, PASSWORD_RULE)) {
+    //   this.setState({
+    //     passwordErrorMessage: Strings.passwordErrorMessage,
+    //     passwordError: true,
+    //   });
+    //   return;
+    // }
     this.setState({loading: true});
     userRegister(name, mobile, password)
       .then(response => {
         let data = response.data;
         if (data.status === 201) {
           this.showToast(data.message);
-          setUserDetails(data.data);
-          this.props.navigation.replace('OTP');
+          this.setState({showOTP: true});
+          // setUserDetails(data.data);
         } else {
           this.showToast(data.message);
         }
@@ -141,6 +149,44 @@ class RegisterScreen extends Component {
         console.log(error);
       });
   };
+
+  verifyOTP =  () => {
+    if (this.state.mobile.length < 10) {
+      this.showToast('Please Enter Valid Mobile Number');
+      return;
+    }else if (this.state.otp.length < 4) {
+      this.showToast('Please Enter Valid OTP');
+      return;
+    } else {
+       userVerification(this.state.mobile, this.state.otp).then(res => {
+        let data = res.data;
+        if (data.status === 200) {
+          this.showToast(data.message);
+          setUserDetails(data.data);
+          this.props.navigation.replace('HomeScreen');
+        } else {
+          this.showToast(data.message);
+        }
+      });
+    }
+  };
+
+  resendUserOtp = async () => {
+    if (this.state.mobile.length < 10) {
+      this.showToast('Please Enter Valid Mobile Number');
+      return;
+    } else {
+      await resendOTP(this.state.mobile).then(res => {
+        let data = res.data;
+        if (data.status === 200) {
+          this.showToast(data.message);
+        } else {
+          this.showToast(data.message);
+        }
+      });
+    }
+  };
+
   showToast = message => {
     Toast.showWithGravity(message, Toast.SHORT, Toast.BOTTOM);
   };
@@ -201,7 +247,8 @@ class RegisterScreen extends Component {
                     maxLength={10}
                     onChangeText={mobile => this.onChangeMobile(mobile)}
                   />
-                  <UserInput
+
+                  {/* <UserInput
                     placeholder={Strings.passwordHint}
                     secureTextEntry={true}
                     error={this.state.passwordError}
@@ -214,21 +261,66 @@ class RegisterScreen extends Component {
                       }),
                         this.resetState();
                     }}
-                  />
+                  /> */}
+                  {this.state.showOTP ? (
+                    <View style={{ display:'flex',justifyContent:'center', alignItems:'center' }}>
+                      <SmoothPinCodeInput
+                        ref={this.pinInput}
+                        cellSpacing={20}
+                        cellStyle={{
+                          borderWidth: 2,
+                          borderRadius: 5,
+                          borderColor: Color.lightgray,
+                          backgroundColor: Color.white,
+                        }}
+                        cellStyleFocused={{
+                          borderColor: Color.colorPrimary,
+                        }}
+                        value={this.state.otp}
+                        onTextChange={otp => this.setState({otp})}
+                        onBackspace={() => console.log('No more back.')}
+                      />
+                    </View>
+                  ) : null}
                   <View
                     style={[
                       styles.loginLinkContainer,
                       {marginTop: 20, justifyContent: 'space-between'},
                     ]}>
-                    <TouchableOpacity />
-                    <View style={styles.buttonContainer}>
-                      <LoadingButton
-                        title={Strings.signup}
-                        loading={this.state.loading}
+                    {this.state.showOTP ? (
+                      <TouchableOpacity
                         onPress={() => {
-                          this.register();
-                        }}
-                      />
+                          this.resendUserOtp();
+                        }}>
+                        <Text
+                          style={[
+                            styles.subTitle,
+                            {color: Color.colorPrimary, marginBottom: 10},
+                          ]}>
+                          {Strings.resendOTP}
+                        </Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <View></View>
+                    )}
+                    <View style={styles.buttonContainer}>
+                      {this.state.showOTP ? (
+                        <LoadingButton
+                          title={Strings.verifyOTP}
+                          loading={this.state.loading}
+                          onPress={() => {
+                            this.verifyOTP();
+                          }}
+                        />
+                      ) : (
+                        <LoadingButton
+                          title={Strings.sendOTP}
+                          loading={this.state.loading}
+                          onPress={() => {
+                            this.register();
+                          }}
+                        />
+                      )}
                     </View>
                   </View>
                 </Card>
@@ -279,7 +371,15 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.primarySemiBold,
     color: Color.headingColor,
   },
-
+  subTitle: {
+    fontSize: 14,
+    fontFamily: Fonts.primarySemiBold,
+    marginTop: 10,
+    color: Color.graylight,
+    textAlign: 'center',
+    marginLeft: '10%',
+    marginRight: '10%',
+  },
   tagline: {
     fontSize: 12,
     fontFamily: Fonts.primaryRegular,
