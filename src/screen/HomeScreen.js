@@ -262,12 +262,12 @@ class HomeScreen extends Component {
               <View style={styles.categoryMainContainer}>
                 <View style={styles.categoryHeaderContainer}>
                   <Text style={styles.title}>All Categories</Text>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     onPress={() => {
                       navigation.navigate('Category');
                     }}>
                     <Text style={styles.subtitle}>View All</Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
                 <ScrollView
                   horizontal={true}

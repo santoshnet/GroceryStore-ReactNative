@@ -116,9 +116,9 @@ class ProductView extends Component {
               </View>
 
               <View style={styles.box2}>
-                <TouchableOpacity style={styles.favoriteContainer}>
+                {/* <TouchableOpacity style={styles.favoriteContainer}>
                   <Icon name="heart" size={20} color={Color.colorPrimary} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
             <View style={styles.contentContainer}>

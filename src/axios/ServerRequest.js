@@ -101,6 +101,26 @@ export const getProductList = async categoryName => {
   });
 };
 
+export const getProductByCategory = async id => {
+  return await API({
+    method: 'POST',
+    url: 'api/v1/category/products',
+    data: {token: await getToken(), category_id: id},
+  }).then(res => {
+    return res;
+  });
+};
+
+export const getProductBySubCategory = async id => {
+  return await API({
+    method: 'POST',
+    url: 'api/v1/sub-category/products',
+    data: {token: await getToken(), category_id: id},
+  }).then(res => {
+    return res;
+  });
+};
+
 export const updateUser = async user => {
   return await API({
     method: 'POST',
