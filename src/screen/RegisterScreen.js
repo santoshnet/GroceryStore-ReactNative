@@ -1,3 +1,6 @@
+/* eslint-disable no-sequences */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-undef */
 import React, {Component} from 'react';
 import {
   View,
@@ -33,8 +36,10 @@ import {
   NAME_RULE,
   PHONE_RULE,
   PASSWORD_RULE,
+  PINCODE_RULE,
 } from '../utils/Validator/rule';
 import Toast from 'react-native-simple-toast';
+import alertmessages from '../utils/helpers';
 
 class RegisterScreen extends Component {
   constructor(props) {
@@ -43,14 +48,18 @@ class RegisterScreen extends Component {
       name: '',
       mobile: '',
       password: '',
+      pincode: '',
       mobileError: false,
       nameError: false,
       passwordError: false,
       nameErrorMessage: '',
       mobileErrorMessage: '',
+      pincodeErrorMessage: '',
       passwordErrorMessage: '',
       showOTP: false,
       otp: '',
+
+      pincodeError: false,
     };
   }
 
@@ -62,6 +71,8 @@ class RegisterScreen extends Component {
       mobileError: false,
       passwordErrorMessage: '',
       passwordError: false,
+      pincodeErrorMessage: '',
+      pincodeError: false,
     });
   };
   componentDidMount = () => {
@@ -75,17 +86,28 @@ class RegisterScreen extends Component {
     });
   }
 
+  onChangePincode(code) {
+    console.log(code);
+    this.resetState();
+    this.setState({
+      pincode: code.replace(/[^0-6]/g, ''),
+    });
+  }
+
   register = () => {
     const {
       name,
       mobile,
       password,
+      pincode,
       nameError,
       mobileError,
       passwordError,
       nameErrorMessage,
       mobileErrorMessage,
       passwordErrorMessage,
+      pincodeErrorMessage,
+      pincodeError,
     } = this.state;
 
     if (!Validator(name, DEFAULT_RULE)) {
@@ -116,6 +138,13 @@ class RegisterScreen extends Component {
       });
       return;
     }
+    if (!Validator(pincode, PINCODE_RULE)) {
+      this.setState({
+        pincodeErrorMessage: Strings.pincodeErrorMessage,
+        pincodeError: true,
+      });
+      return;
+    }
 
     // if (!Validator(password, DEFAULT_RULE)) {
     //   this.setState({
@@ -132,11 +161,13 @@ class RegisterScreen extends Component {
     //   return;
     // }
     this.setState({loading: true});
-    userRegister(name, mobile, password)
+    userRegister(name, mobile, pincode, password)
       .then(response => {
         let data = response.data;
+      
         if (data.status === 201) {
-          this.showToast(data.message);
+          alertmessages.showSuccess(data.message);
+          // this.showToast(data.message);
           this.setState({showOTP: true});
           // setUserDetails(data.data);
         } else {
@@ -150,15 +181,15 @@ class RegisterScreen extends Component {
       });
   };
 
-  verifyOTP =  () => {
+  verifyOTP = () => {
     if (this.state.mobile.length < 10) {
       this.showToast('Please Enter Valid Mobile Number');
       return;
-    }else if (this.state.otp.length < 4) {
+    } else if (this.state.otp.length < 4) {
       this.showToast('Please Enter Valid OTP');
       return;
     } else {
-       userVerification(this.state.mobile, this.state.otp).then(res => {
+      userVerification(this.state.mobile, this.state.otp).then(res => {
         let data = res.data;
         if (data.status === 200) {
           this.showToast(data.message);
@@ -248,22 +279,22 @@ class RegisterScreen extends Component {
                     onChangeText={mobile => this.onChangeMobile(mobile)}
                   />
 
-                  {/* <UserInput
-                    placeholder={Strings.passwordHint}
-                    secureTextEntry={true}
-                    error={this.state.passwordError}
-                    value={this.state.password}
-                    errorMessage={this.state.passwordErrorMessage}
-                    maxLength={20}
-                    onChangeText={password => {
-                      this.setState({
-                        password,
-                      }),
-                        this.resetState();
-                    }}
-                  /> */}
+                  <UserInput
+                    keyboardType="numeric"
+                    placeholder={Strings.pincodeHint}
+                    error={this.state.pincodeError}
+                    // value={this.state.pincode}
+                    errorMessage={this.state.pincodeErrorMessage}
+                    maxLength={6}
+                    onChangeText={code => this.onChangePincode(code)}
+                  />
                   {this.state.showOTP ? (
-                    <View style={{ display:'flex',justifyContent:'center', alignItems:'center' }}>
+                    <View
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
                       <SmoothPinCodeInput
                         ref={this.pinInput}
                         cellSpacing={20}
@@ -301,7 +332,7 @@ class RegisterScreen extends Component {
                         </Text>
                       </TouchableOpacity>
                     ) : (
-                      <View></View>
+                      <View />
                     )}
                     <View style={styles.buttonContainer}>
                       {this.state.showOTP ? (

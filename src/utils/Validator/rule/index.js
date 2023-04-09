@@ -29,3 +29,10 @@ export const EMAIL_RULE = {
   isRequired: true,
   isEmail: true,
 };
+
+export const PINCODE_RULE = {
+  isRequired: true,
+  maxLength: 6,
+  minLength: 6,
+  isPincode: true, 
+};

@@ -46,7 +46,7 @@ class ProductItem extends Component {
               <Image
                 style={styles.productImage}
                 source={{
-                  uri: `${BASE_URL + item.images[0].image}`,
+                  uri: `${BASE_URL + item?.images[0]?.image}`,
                 }}
               />
               <Text style={styles.title}>{item.name}</Text>
@@ -56,7 +56,7 @@ class ProductItem extends Component {
               </Text>
             </TouchableOpacity>
           </View>
-          {count > 0 ? (
+          {/* {count > 0 ? (
             <View style={styles.quantity}>
               <TouchableOpacity
                 activeOpacity={1}
@@ -93,7 +93,7 @@ class ProductItem extends Component {
                 <Text style={styles.addToCartText}>Add To Cart</Text>
               </TouchableOpacity>
             </View>
-          )}
+          )} */}
         </View>
         <View style={styles.box2}>
           {/* <TouchableOpacity activeOpacity={1} style={styles.favoriteContainer}>

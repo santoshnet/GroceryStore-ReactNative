@@ -29,6 +29,14 @@ import Toast from 'react-native-simple-toast';
 import {setUserDetails} from '../utils/LocalStorage';
 const defaultHandler = global.ErrorUtils.getGlobalHandler();
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
+import alertmessages from '../utils/helpers';
+import {
+  addSelectedAddress,
+  setSelectedAddress,
+  deleteSelectedAddress,
+  checkItemDeliveryAddress,
+} from '../redux/userAddress/actions';
+import {connect} from 'react-redux';
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -86,15 +94,16 @@ class LoginScreen extends Component {
       resendOTP(this.state.mobile)
         .then(res => {
           let data = res.data;
+          console.log(data, 'logindata');
           if (data.status === 200) {
             this.showToast(data.message);
             this.setState({showOTP: true});
           } else {
-            this.showToast(data.message);
+            alertmessages.showError('Invalid User');
           }
         })
         .catch(err => {
-          console.log(err);
+          alertmessages.showError('Something  getting wrong');
         });
     }
   };
@@ -115,6 +124,8 @@ class LoginScreen extends Component {
         if (data.status === 200) {
           this.showToast(data.message);
           setUserDetails(data.data);
+          this.props.addSelectedAddress(data.data);
+          this.props.setSelectedAddress(data.data);
           this.props.navigation.replace('HomeScreen');
         } else {
           this.showToast(data.message);
@@ -183,7 +194,6 @@ class LoginScreen extends Component {
                     maxLength={10}
                     onChangeText={mobile => this.onChangeMobile(mobile)}
                   />
-                 
 
                   {this.state.showOTP ? (
                     <View
@@ -229,7 +239,7 @@ class LoginScreen extends Component {
                         </Text>
                       </TouchableOpacity>
                     ) : (
-                      <View></View>
+                      <View />
                     )}
 
                     <View style={styles.buttonContainer}>
@@ -359,4 +369,31 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {},
 });
-export default LoginScreen;
+
+function mapStateToProps(state) {
+  console.log(state, 'state');
+  return {
+    userAddress: state?.userAddressReducer.userAddress,
+    selectedUserAddress: state?.userAddressReducer.selectedUserAddress,
+    isDeliveryToLocation: state?.userAddressReducer.isDeliveryToLocation,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    addSelectedAddress: selectedAddress => {
+      return dispatch(addSelectedAddress(selectedAddress));
+    },
+    setSelectedAddress: selectedAddress => {
+      return dispatch(setSelectedAddress(selectedAddress));
+    },
+    deleteSelectedAddress: selectedAddressId => {
+      return dispatch(deleteSelectedAddress(selectedAddressId));
+    },
+    checkItemDeliveryAddress: selectedAddressPin => {
+      return dispatch(checkItemDeliveryAddress(selectedAddressPin));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

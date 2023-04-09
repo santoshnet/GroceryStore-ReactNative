@@ -32,10 +32,11 @@ export const userLogin = async (mobile, otp) => {
   });
 };
 
-export const userRegister = async (name, mobile, password) => {
+export const userRegister = async (name, mobile, pincode, password) => {
   const body = {
     name: name,
     mobile: mobile,
+    zip: pincode,
     password: password,
   };
   return await API({
@@ -46,10 +47,10 @@ export const userRegister = async (name, mobile, password) => {
     return res;
   });
 };
-export const userVerification = async ( mobile, otp) => {
+export const userVerification = async (mobile, otp) => {
   const body = {
     mobile: mobile,
-    otp: otp
+    otp: otp,
   };
   return await API({
     method: 'POST',
@@ -59,9 +60,9 @@ export const userVerification = async ( mobile, otp) => {
     return res;
   });
 };
-export const resendOTP = async ( mobile) => {
+export const resendOTP = async mobile => {
   const body = {
-    mobile: mobile
+    mobile: mobile,
   };
   return await API({
     method: 'POST',
@@ -209,6 +210,16 @@ export const resetPassword = async (otp, password) => {
     method: 'POST',
     url: 'api/v1/reset_password',
     data: body,
+  }).then(res => {
+    return res;
+  });
+};
+
+export const getAllPincode = async () => {
+  return await API({
+    method: 'POST',
+    url: 'api/v1/getPincode',
+    data: {token: await getToken()},
   }).then(res => {
     return res;
   });

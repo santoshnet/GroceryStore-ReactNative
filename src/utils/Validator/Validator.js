@@ -1,3 +1,4 @@
+/* eslint-disable no-fallthrough */
 const validate = (value, rules) => {
   let isValid = true;
 
@@ -23,6 +24,9 @@ const validate = (value, rules) => {
         break;
       case 'isName':
         isValid = isValid && nameValidator(value);
+        break;
+      case 'isPincode':
+        isValid = isValid && pincodeValidator(value);
         break;
 
       default:
@@ -70,7 +74,8 @@ const requiredValidator = value => {
  * @return
  */
 const emailValidator = value => {
-  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  var re =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(value).toLowerCase());
 };
 
@@ -101,7 +106,8 @@ const phoneValidator = value => {
  * @return
  */
 const ipValidator = value => {
-  var re = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
+  var re =
+    /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
   return re.test(String(value));
 };
 /**
@@ -111,8 +117,14 @@ const ipValidator = value => {
  * @return
  */
 const dateValidator = value => {
-  var re = /^((0?[13578]|10|12)(-|\/)(([1-9])|(0[1-9])|([12])([0-9]?)|(3[01]?))(-|\/)((19)([2-9])(\d{1})|(20)([01])(\d{1})|([8901])(\d{1}))|(0?[2469]|11)(-|\/)(([1-9])|(0[1-9])|([12])([0-9]?)|(3[0]?))(-|\/)((19)([2-9])(\d{1})|(20)([01])(\d{1})|([8901])(\d{1})))$/;
+  var re =
+    /^((0?[13578]|10|12)(-|\/)(([1-9])|(0[1-9])|([12])([0-9]?)|(3[01]?))(-|\/)((19)([2-9])(\d{1})|(20)([01])(\d{1})|([8901])(\d{1}))|(0?[2469]|11)(-|\/)(([1-9])|(0[1-9])|([12])([0-9]?)|(3[0]?))(-|\/)((19)([2-9])(\d{1})|(20)([01])(\d{1})|([8901])(\d{1})))$/;
   return re.test(String(value));
+};
+
+const pincodeValidator = value => {
+  var re = /^[0-6]*$/;
+  return re.test(String(value).toLowerCase());
 };
 
 export default validate;

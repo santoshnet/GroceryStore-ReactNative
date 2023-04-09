@@ -13,22 +13,22 @@ import Color from '../theme/Color';
 const slides = [
   {
     key: 1,
-    title: 'Title 1',
-    text: 'Description.\nSay something cool',
+    title: 'WelCome Scan Vegitable Cart',
+    text: 'Diversified Items Of Products In Life Genuine Products And Safe',
     image: require('../assets/images/slide1.png'),
   },
   {
     key: 2,
-    title: 'Title 2',
-    text: 'Other cool stuff',
+    title: 'Convient Ordering',
+    text: 'Order Multiple Order For Multiple Category at The Same Time',
     image: require('../assets/images/slide2.png'),
   },
-  {
-    key: 3,
-    title: 'Rocket guy',
-    text: "I'm already out of descriptions\n\nLorem ipsum bla bla bla",
-    image: require('../assets/images/slide3.png'),
-  },
+  // {
+  //   key: 3,
+  //   title: 'Rocket guy',
+  //   text: "I'm already out of descriptions\n\nLorem ipsum bla bla bla",
+  //   image: require('../assets/images/slide3.png'),
+  // },
 ];
 
 class WelcomeScreen extends Component {

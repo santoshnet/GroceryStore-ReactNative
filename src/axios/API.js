@@ -1,5 +1,5 @@
 import axios from 'axios';
-const URL = 'http://192.168.210.150/grocerystore/';
+const URL = 'https://primeefresh.com/';
 //  const URL = 'https://freshmart.frontendsourcecode.com/';
 export const BASE_URL = URL;
 

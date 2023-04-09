@@ -46,7 +46,7 @@ class ProductItem extends Component {
               <Image
                 style={styles.productImage}
                 source={{
-                  uri: `${BASE_URL + item.images[0].image}`,
+                  uri: `${BASE_URL + item?.images[0]?.image}`,
                 }}
               />
             </TouchableOpacity>

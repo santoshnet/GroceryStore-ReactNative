@@ -119,7 +119,7 @@ class MyCartScreen extends Component {
                 style={styles.checkout_container}
                 onPress={() => {
                   this.props.navigation.navigate('ProductView', {
-                    screen: 'Address',
+                    screen: 'AllAddress',
                   });
                 }}>
                 <Text style={styles.checkout}>Checkout</Text>

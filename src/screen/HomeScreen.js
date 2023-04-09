@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, {Component} from 'react';
 import {
   FlatList,
@@ -27,6 +28,7 @@ import {
   getPopularProducts,
   ProductImage,
   searchProduct,
+  getAllPincode,
 } from '../axios/ServerRequest';
 import {getCart, getUserDetails, setCart} from '../utils/LocalStorage';
 import ProductItem from '../components/ProductItem';
@@ -35,7 +37,12 @@ import SearchBar from '../components/SearchBar';
 import Offer1 from '../assets/images/offer1.jpg';
 import Offer2 from '../assets/images/offer2.jpg';
 import {BASE_URL} from '../axios/API';
-
+import {
+  addSelectedAddress,
+  setSelectedAddress,
+  fetchDeliveryPinCodeAddress,
+} from '../redux/userAddress/actions';
+import {connect} from 'react-redux';
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
@@ -67,6 +74,7 @@ class HomeScreen extends Component {
     this.fetchBanners();
     this.fetchOffers();
     this.fetchNewProducts();
+    this.fetchPincode();
     this.fetchPopularProducts();
     let cart = await getCart();
     this.setState({searchProduct: [], showSearch: false});
@@ -74,6 +82,23 @@ class HomeScreen extends Component {
       cartList: await getCart(),
       cartCount: Cart.getTotalCartCount(cart),
     });
+  };
+
+  fetchPincode = () => {
+    this.refs.loading.show();
+    getAllPincode()
+      .then(response => {
+        console.log('pin====>', response.data.delivery_available_location);
+        this.props.fetchDeliveryPinCodeAddress(
+          response.data.delivery_available_location,
+        );
+        // this.setState({categoryData: response.data.categories});
+        // this.refs.loading.close();
+      })
+      .catch(error => {
+        console.log(error);
+        this.refs.loading.close();
+      });
   };
 
   fetchCategory = () => {
@@ -216,7 +241,7 @@ class HomeScreen extends Component {
           <View style={{width: 50, height: 50}}>
             <Image
               source={{
-                uri: `${BASE_URL + item.images[0].image}`,
+                uri: `${BASE_URL + item?.images[0]?.image}`,
               }}
               style={{height: 35, width: 35}}
             />
@@ -262,12 +287,6 @@ class HomeScreen extends Component {
               <View style={styles.categoryMainContainer}>
                 <View style={styles.categoryHeaderContainer}>
                   <Text style={styles.title}>All Categories</Text>
-                  {/* <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate('Category');
-                    }}>
-                    <Text style={styles.subtitle}>View All</Text>
-                  </TouchableOpacity> */}
                 </View>
                 <ScrollView
                   horizontal={true}
@@ -289,7 +308,7 @@ class HomeScreen extends Component {
                             <View style={styles.categoryContainer}>
                               <Image
                                 source={{
-                                  uri: `${BASE_URL + item.cateimg}`,
+                                  uri: `${BASE_URL + item?.cateimg}`,
                                 }}
                                 style={{
                                   height: 65,
@@ -334,8 +353,8 @@ class HomeScreen extends Component {
                           width: Dimension.window.width - 70,
                           resizeMode: 'contain',
                           borderRadius: 10,
-                          height:150,
-                          marginRight:20
+                          height: 150,
+                          marginRight: 20,
                         }}
                       />
                     );
@@ -491,4 +510,23 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+function mapStateToProps(state) {
+  console.log(state, 'state');
+  return null
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    addSelectedAddress: selectedAddress => {
+      return dispatch(addSelectedAddress(selectedAddress));
+    },
+    setSelectedAddress: selectedAddress => {
+      return dispatch(setSelectedAddress(selectedAddress));
+    },
+    fetchDeliveryPinCodeAddress: deliveryAvailablePin => {
+      return dispatch(fetchDeliveryPinCodeAddress(deliveryAvailablePin));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
