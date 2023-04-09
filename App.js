@@ -61,7 +61,6 @@ class App extends Component {
       <Drawer.Screen name="Offers" component={OffersScreen} />
       <Drawer.Screen name="NewProducts" component={NewProductScreen} />
       <Drawer.Screen name="PopularProducts" component={PopularProductScreen} />
-      <Drawer.Screen name="UpdateAddress" component={UpdateAddress} />
       <Drawer.Screen name="MyCart" component={MyCartScreen} />
       <Drawer.Screen name="MyOrder" component={MyOrder} />
     </Drawer.Navigator>
@@ -87,6 +86,7 @@ class App extends Component {
       <ProductStack.Screen name="ProductView" component={ProductView} />
       <ProductStack.Screen name="Products" component={ProductsScreen} />
       <ProductStack.Screen name="AllAddress" component={AllAddress} />
+      <ProductStack.Screen name="UpdateAddress" component={UpdateAddress} />
       <ProductStack.Screen
         name="AddressDetailsScreen"
         component={AddressDetailsScreen}

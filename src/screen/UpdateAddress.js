@@ -80,7 +80,7 @@ class UpdateAddress extends Component {
 
     const newAddress = {
       id: selectedUserAddress.id,
-      phone: phone,
+      mobile: this.props?.selectedUserAddress?.mobile,
       name: name,
       address: address,
       city: city,
@@ -88,28 +88,15 @@ class UpdateAddress extends Component {
       zip: zip,
     };
     updateSelectedAddress(newAddress);
-    // let userAddesss = JSON.parse(
-    //   await AsyncStorage.getItem('MULTIPLE_USER_ADDRESS'),
-    // );
-    // let add = userAddesss.map(ele => {
-    //   console.log(ele, 'eke');
-    //   if (ele.id === useraddress.address.id) {
-    //     return {
-    //       ...ele,
-    //       name: name,
-    //       phone: phone,
-    //       email: email,
-    //       //   address: address,
-    //       city: city,
-    //       state: state,
-    //       zip: zip,
-    //     };
-    //   }
-    //   return ele;
-    // });
-    // console.log(add, ':add');
-    // AsyncStorage.setItem('MULTIPLE_USER_ADDRESS', JSON.stringify(add));
+    let updateuseraddress = selectedUserAddress;
+    updateuseraddress.address = newAddress.address;
+    updateuseraddress.city = newAddress.city;
+    updateuseraddress.state = newAddress.state;
+    updateuseraddress.zip = newAddress.zip;
+    // console.log(updateuseraddress, 'updateuseraddress in pin');
+    setSelectedAddress(updateuseraddress);
 
+   
     this.props.navigation.goBack();
   };
 
@@ -125,7 +112,7 @@ class UpdateAddress extends Component {
           keyboardShouldPersistTaps={'always'}>
           <UserInput
             placeholder={Strings.mobileHint}
-            value={this.state.phone}
+            value={this.props?.selectedUserAddress?.mobile}
             maxLength={50}
             editable={false}
           />

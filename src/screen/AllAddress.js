@@ -68,11 +68,12 @@ export class AllAddress extends Component {
         zip: this.props?.selectedUserAddress?.zip,
         token: this.state.token,
       };
+      // console.log(checkoutlocation,"checkoutlocation")
       updateUser(checkoutlocation)
         .then(response => {
           let data = response.data;
           console.log(response);
-          if (data.code === 200) {
+          if (data.status === 200) {
             this.props.navigation.navigate('PlaceOrder');
             setUserDetails(checkoutlocation);
           }

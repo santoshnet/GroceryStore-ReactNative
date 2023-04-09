@@ -72,7 +72,7 @@ class ProductView extends Component {
       cart: cart,
       count: count,
     });
-console.log(this.checkPin(),"this.checkPin()")
+
     if (this.checkPin() == true) {
       this.setState({
         pinErrorMesg: true,
