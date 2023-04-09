@@ -51,6 +51,12 @@ class AddressDetailsScreen extends Component {
     };
   }
 
+  async componentDidMount() {
+    let user = await getUserDetails();
+    this.setState({
+      token: user.token,
+    });
+  }
 
   updateAddress = addSelectedAddress => {
     const {
@@ -69,7 +75,6 @@ class AddressDetailsScreen extends Component {
       cityError,
       zipError,
     } = this.state;
-
 
     if (!Validator(address, DEFAULT_RULE)) {
       this.setState({
@@ -97,7 +102,7 @@ class AddressDetailsScreen extends Component {
     }
 
     this.setState({loading: true});
-  
+
     const newAddress = {
       id: Math.random().toString(36).slice(2),
       mobile: this.props?.selectedUserAddress?.mobile,
@@ -222,7 +227,6 @@ class AddressDetailsScreen extends Component {
   render() {
     const {navigation, addSelectedAddress} = this.props;
 
-
     return (
       <View style={styles.container}>
         <View style={styles.box1}>
@@ -241,7 +245,7 @@ class AddressDetailsScreen extends Component {
             onContentSizeChange={this.onContentSizeChange}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps={'always'}>
-            {this.AddAddress( navigation, addSelectedAddress)}
+            {this.AddAddress(navigation, addSelectedAddress)}
           </ScrollView>
         </View>
       </View>

@@ -20,7 +20,10 @@ import ToolBar from '../components/ToolBar';
 import Icon from 'react-native-vector-icons/Entypo';
 import EditIcon from 'react-native-vector-icons/FontAwesome';
 import LoadingButton from '../components/LoadingButton';
-
+import {getUserDetails} from '../utils/LocalStorage';
+import {updateUser} from '../axios/ServerRequest';
+import {getToken, setUserDetails} from '../utils/LocalStorage';
+import alertmessages from '../utils/helpers';
 export class AllAddress extends Component {
   constructor(props) {
     super(props);
@@ -44,6 +47,46 @@ export class AllAddress extends Component {
     };
   }
 
+  async componentDidMount() {
+    let user = await getUserDetails();
+    this.setState({
+      token: user.token,
+    });
+  }
+
+  handleCheckOut() {
+    if (this.props.userAddress.length > 0) {
+      this.setState({loading: true});
+      const checkoutlocation = {
+        id: Math.random().toString(36).slice(2),
+        mobile: this.props?.selectedUserAddress?.mobile,
+        name: this.props?.selectedUserAddress?.name,
+        email: this.props?.selectedUserAddress?.email,
+        address: this.props?.selectedUserAddress?.address,
+        city: this.props?.selectedUserAddress?.city,
+        state: this.props?.selectedUserAddress?.state,
+        zip: this.props?.selectedUserAddress?.zip,
+        token: this.state.token,
+      };
+      updateUser(checkoutlocation)
+        .then(response => {
+          let data = response.data;
+          console.log(response);
+          if (data.code === 200) {
+            this.props.navigation.navigate('PlaceOrder');
+            setUserDetails(checkoutlocation);
+          }
+
+          this.setState({loading: false});
+        })
+        .catch(error => {
+          console.log(error);
+          this.setState({loading: false});
+        });
+    } else {
+      alertmessages.showError('please add your address');
+    }
+  }
   footerPart() {
     return (
       <View style={styles.box2}>
@@ -60,7 +103,7 @@ export class AllAddress extends Component {
           <TouchableOpacity
             style={styles.checkout_container}
             onPress={() => {
-              this.props.navigation.navigate('AddressDetails');
+              this.handleCheckOut();
             }}>
             <Text style={styles.checkout}>CHECKOUT</Text>
           </TouchableOpacity>
@@ -96,14 +139,14 @@ export class AllAddress extends Component {
               <EditIcon name="edit" size={20} color={Color.gray} />
             </TouchableOpacity>
           </View>
-          <View style={styles.square}>
+          {/* <View style={styles.square}>
             <Icon
               name="circle-with-cross"
               size={20}
               color={Color.gray}
               onPress={() => deleteSelectedAddress(item.id)}
             />
-          </View>
+          </View> */}
         </View>
       </View>
     );
@@ -302,7 +345,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 24,
     height: 24,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.green,
     opacity: 0.4,
     borderRadius: 5,
     marginRight: 15,
