@@ -63,7 +63,7 @@ class ProductItem extends Component {
                 {item.attribute + ' - ' + item.currency + ' ' + item.price}
               </Text>
             </TouchableOpacity>
-            {count > 0 ? (
+            {/* {count > 0 ? (
               <View style={styles.quantity}>
                 <TouchableOpacity
                   activeOpacity={1}
@@ -115,7 +115,7 @@ class ProductItem extends Component {
                   <Text style={styles.addToCartText}>Add To Cart</Text>
                 </TouchableOpacity>
               </View>
-            )}
+            )} */}
           </View>
         </View>
         <View style={styles.box2}>

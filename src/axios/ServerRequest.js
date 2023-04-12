@@ -32,11 +32,12 @@ export const userLogin = async (mobile, otp) => {
   });
 };
 
-export const userRegister = async (name, mobile, pincode, password) => {
+export const userRegister = async (name, mobile, email, zip, password) => {
   const body = {
     name: name,
     mobile: mobile,
-    zip: pincode,
+    email: email,
+    zip: zip,
     password: password,
   };
   return await API({

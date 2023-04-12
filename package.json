@@ -25,6 +25,7 @@
     "react-native-bottom-drawer-view": "^1.0.3",
     "react-native-country-codes-picker": "^2.2.2",
     "react-native-dropdownalert": "^4.5.1",
+    "react-native-fast-image": "^8.6.3",
     "react-native-flash-message": "^0.4.1",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-linear-gradient": "^2.6.2",

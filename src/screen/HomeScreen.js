@@ -37,6 +37,8 @@ import SearchBar from '../components/SearchBar';
 import Offer1 from '../assets/images/offer1.jpg';
 import Offer2 from '../assets/images/offer2.jpg';
 import {BASE_URL} from '../axios/API';
+import FastImage from 'react-native-fast-image'
+
 import {
   addSelectedAddress,
   setSelectedAddress,
@@ -511,8 +513,12 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-  console.log(state, 'state');
-  return null
+  // console.log(state, 'state');
+  return {
+    userAddress: state?.userAddressReducer.userAddress,
+    selectedUserAddress: state?.userAddressReducer.selectedUserAddress,
+    isDeliveryToLocation: state?.userAddressReducer.isDeliveryToLocation,
+  };
 }
 
 function mapDispatchToProps(dispatch) {

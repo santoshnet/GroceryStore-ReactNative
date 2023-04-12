@@ -26,13 +26,14 @@ import {
   deleteSelectedAddress,
   checkItemDeliveryAddress,
   updateSelectedAddress,
-
 } from '../redux/userAddress/actions';
 import {connect} from 'react-redux';
 
 const CheckPinCode = ({
   isVisible,
   onClose,
+  pinsuccess,
+  pinfailure,
   userAddress,
   setSelectedAddress,
   selectedUserAddress,
@@ -49,10 +50,19 @@ const CheckPinCode = ({
     let checkpinCode = deliveryItemPinCode.some(ele => ele.pin === pinCode);
     if (checkpinCode === true) {
       setPincodemesg(true);
+      let newAddress = {
+        id: selectedUserAddress.id,
+        zip: pinCode,
+      };
+      updateSelectedAddress(newAddress);
+      let updateuseraddress = selectedUserAddress;
+      updateuseraddress.zip = newAddress.zip;
+      // console.log(updateuseraddress, 'updateuseraddress in pin');
+      setSelectedAddress(updateuseraddress);
     } else {
       setPincodemesg(false);
     }
-  }, [pinCode, deliveryItemPinCode]);
+  }, [pinCode, deliveryItemPinCode, selectedUserAddress]);
 
   const handleCheckPincode = () => {
     console.log(pinCode.length, 'pinCode', isDeliveryToLocation);
@@ -69,10 +79,11 @@ const CheckPinCode = ({
         updateuseraddress.zip = newAddress.zip;
         console.log(updateuseraddress, 'updateuseraddress in pin');
         setSelectedAddress(updateuseraddress);
-        setPincodemesg(false);
         onClose(false);
+       pinsuccess()
       } else {
         setPincodemesg(false);
+       pinfailure(false);
       }
     } else if (pinCode.length !== 6) {
       setPincodemesg('Invalid zipcode');
@@ -272,7 +283,11 @@ const CheckPinCode = ({
     <Modal animationType="fade" transparent={true} visible={isVisible}>
       <View style={styles.container}>
         {/* Transparent Background */}
-        <TouchableNativeFeedback onPress={() => onClose(false)}>
+        <TouchableNativeFeedback
+          onPress={() => {
+            onClose(false);
+           
+          }}>
           <View style={styles.shadowTransparentBackground} />
         </TouchableNativeFeedback>
         <Animated.View
@@ -329,7 +344,6 @@ function mapDispatchToProps(dispatch) {
     checkItemDeliveryAddress: selectedPin => {
       return dispatch(checkItemDeliveryAddress(selectedPin));
     },
-
   };
 }
 

@@ -1,9 +1,10 @@
 export const DEFAULT_RULE = {
   isRequired: true,
+  minLength: 6,
 };
 export const USER_NAME_RULE = {
   isRequired: true,
-  minLength: 10,
+  minLength: 3,
 };
 export const PASSWORD_RULE = {
   isRequired: true,
@@ -34,5 +35,4 @@ export const PINCODE_RULE = {
   isRequired: true,
   maxLength: 6,
   minLength: 6,
-  isPincode: true, 
 };

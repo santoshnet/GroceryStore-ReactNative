@@ -124,9 +124,11 @@ class LoginScreen extends Component {
         if (data.status === 200) {
           this.showToast(data.message);
           setUserDetails(data.data);
-          this.props.addSelectedAddress(data.data);
-          this.props.setSelectedAddress(data.data);
-          this.props.navigation.replace('HomeScreen');
+          if (this.props.userAddress.length === 0) {
+            this.props.addSelectedAddress(data.data);
+            this.props.setSelectedAddress(data.data);
+            this.props.navigation.replace('HomeScreen');
+          }
         } else {
           this.showToast(data.message);
         }

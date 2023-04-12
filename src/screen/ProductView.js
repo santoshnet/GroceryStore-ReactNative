@@ -52,7 +52,7 @@ class ProductView extends Component {
       itemIndex: -1,
       showFilterModal: false,
       pinErrorMesg: '',
-      zip: this.props.selectedUserAddress.zip,
+      zip: this.props.selectedUserAddress?.zip,
     };
   }
   async componentDidMount() {
@@ -77,7 +77,7 @@ class ProductView extends Component {
       this.setState({
         pinErrorMesg: true,
       });
-    } else {
+    } else if(this.checkPin() == false) {
       this.setState({
         pinErrorMesg: false,
       });
@@ -103,7 +103,6 @@ class ProductView extends Component {
   };
 
   addToCart = async params => {
-  
     if (this.checkPin() == true) {
       const {cart, itemIndex} = this.state;
       let cartListData = cart !== null ? cart : [];
@@ -129,6 +128,9 @@ class ProductView extends Component {
         pinErrorMesg: true,
       });
       alertmessages.showSuccess('This  product is added in the cart!');
+      setTimeout(() => {
+        this.props.navigation.goBack();
+      }, 1000);
     } else {
       this.setState({
         pinErrorMesg: false,
@@ -265,7 +267,7 @@ class ProductView extends Component {
             ref={input => {
               this.nameOrId = input;
             }}
-            value={this.props.selectedUserAddress.zip}
+            value={this.props.selectedUserAddress?.zip}
             placeholder={'pincode'}
             placeholderTextColor={COLORS.grey}
             contextMenuHidden={true}
@@ -538,6 +540,8 @@ class ProductView extends Component {
             onClose={() => {
               this.setState({showFilterModal: false});
             }}
+            pinsuccess={() => this.setState({pinErrorMesg:true})}
+            pinfailure={() => this.setState({pinErrorMesg:false})}
           />
         )}
         {this.footerPart(productItem, count)}

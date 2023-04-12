@@ -33,7 +33,7 @@ class ProductItem extends Component {
   };
 
   onItemClicked = item => {
-    this.props.navi;
+    // this.props.navi;
   };
 
   render() {

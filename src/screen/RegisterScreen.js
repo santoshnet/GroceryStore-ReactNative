@@ -36,10 +36,18 @@ import {
   NAME_RULE,
   PHONE_RULE,
   PASSWORD_RULE,
+  EMAIL_RULE,
   PINCODE_RULE,
 } from '../utils/Validator/rule';
 import Toast from 'react-native-simple-toast';
 import alertmessages from '../utils/helpers';
+import {
+  addSelectedAddress,
+  setSelectedAddress,
+  deleteSelectedAddress,
+  checkItemDeliveryAddress,
+} from '../redux/userAddress/actions';
+import {connect} from 'react-redux';
 
 class RegisterScreen extends Component {
   constructor(props) {
@@ -56,10 +64,15 @@ class RegisterScreen extends Component {
       mobileErrorMessage: '',
       pincodeErrorMessage: '',
       passwordErrorMessage: '',
+      zipErrorMessage: '',
       showOTP: false,
       otp: '',
-
+      zipError: '',
+      zip: '',
       pincodeError: false,
+      email: '',
+      emailError: '',
+      emailErrorMessage: '',
     };
   }
 
@@ -73,6 +86,10 @@ class RegisterScreen extends Component {
       passwordError: false,
       pincodeErrorMessage: '',
       pincodeError: false,
+      zipError: false,
+      zipErrorMessage: '',
+      emailError: false,
+      emailErrorMessage: '',
     });
   };
   componentDidMount = () => {
@@ -87,18 +104,18 @@ class RegisterScreen extends Component {
   }
 
   onChangePincode(code) {
-    console.log(code);
     this.resetState();
     this.setState({
-      pincode: code.replace(/[^0-6]/g, ''),
+      zip: code,
     });
   }
-
+  
   register = () => {
     const {
       name,
       mobile,
       password,
+      email,
       pincode,
       nameError,
       mobileError,
@@ -108,6 +125,8 @@ class RegisterScreen extends Component {
       passwordErrorMessage,
       pincodeErrorMessage,
       pincodeError,
+      zipErrorMessage,
+      zip,
     } = this.state;
 
     if (!Validator(name, DEFAULT_RULE)) {
@@ -121,6 +140,13 @@ class RegisterScreen extends Component {
       this.setState({
         nameErrorMessage: Strings.nameErrorMessage,
         nameError: true,
+      });
+      return;
+    }
+    if (!Validator(email, EMAIL_RULE)) {
+      this.setState({
+        emailErrorMessage: Strings.emailErrorMessage,
+        emailError: true,
       });
       return;
     }
@@ -138,10 +164,10 @@ class RegisterScreen extends Component {
       });
       return;
     }
-    if (!Validator(pincode, PINCODE_RULE)) {
+    if (!Validator(zip, PINCODE_RULE)) {
       this.setState({
-        pincodeErrorMessage: Strings.pincodeErrorMessage,
-        pincodeError: true,
+        zipErrorMessage: Strings.pincodeErrorMessage,
+        zipError: true,
       });
       return;
     }
@@ -161,10 +187,10 @@ class RegisterScreen extends Component {
     //   return;
     // }
     this.setState({loading: true});
-    userRegister(name, mobile, pincode, password)
+    userRegister(name, mobile, email, zip, password)
       .then(response => {
         let data = response.data;
-      
+
         if (data.status === 201) {
           alertmessages.showSuccess(data.message);
           // this.showToast(data.message);
@@ -172,6 +198,7 @@ class RegisterScreen extends Component {
           // setUserDetails(data.data);
         } else {
           this.showToast(data.message);
+          alertmessages.showError(data.message);
         }
 
         this.setState({loading: false});
@@ -194,6 +221,10 @@ class RegisterScreen extends Component {
         if (data.status === 200) {
           this.showToast(data.message);
           setUserDetails(data.data);
+          if (this.props.userAddress.length === 0) {
+            this.props.addSelectedAddress(data.data);
+            this.props.setSelectedAddress(data.data);
+          }
           this.props.navigation.replace('HomeScreen');
         } else {
           this.showToast(data.message);
@@ -270,6 +301,18 @@ class RegisterScreen extends Component {
                     }}
                   />
                   <UserInput
+                    placeholder={Strings.emailHint}
+                    value={this.state.email}
+                    error={this.state.emailError}
+                    errorMessage={this.state.emailErrorMessage}
+                    onChangeText={email => {
+                      this.setState({
+                        email,
+                      }),
+                        this.resetState();
+                    }}
+                  />
+                  <UserInput
                     keyboardType="numeric"
                     placeholder={Strings.mobileHint}
                     error={this.state.mobileError}
@@ -281,12 +324,12 @@ class RegisterScreen extends Component {
 
                   <UserInput
                     keyboardType="numeric"
-                    placeholder={Strings.pincodeHint}
-                    error={this.state.pincodeError}
-                    // value={this.state.pincode}
-                    errorMessage={this.state.pincodeErrorMessage}
+                    placeholder={Strings.zipHint}
+                    error={this.state.zipError}
+                    value={this.state.zip}
+                    errorMessage={this.state.zipErrorMessage}
                     maxLength={6}
-                    onChangeText={code => this.onChangePincode(code)}
+                    onChangeText={zip => this.onChangePincode(zip)}
                   />
                   {this.state.showOTP ? (
                     <View
@@ -459,4 +502,34 @@ const styles = StyleSheet.create({
   buttonContainer: {},
 });
 
-export default RegisterScreen;
+
+
+
+
+function mapStateToProps(state) {
+  console.log(state, 'state');
+  return {
+    userAddress: state?.userAddressReducer.userAddress,
+    selectedUserAddress: state?.userAddressReducer.selectedUserAddress,
+    isDeliveryToLocation: state?.userAddressReducer.isDeliveryToLocation,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    addSelectedAddress: selectedAddress => {
+      return dispatch(addSelectedAddress(selectedAddress));
+    },
+    setSelectedAddress: selectedAddress => {
+      return dispatch(setSelectedAddress(selectedAddress));
+    },
+    deleteSelectedAddress: selectedAddressId => {
+      return dispatch(deleteSelectedAddress(selectedAddressId));
+    },
+    checkItemDeliveryAddress: selectedAddressPin => {
+      return dispatch(checkItemDeliveryAddress(selectedAddressPin));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterScreen);

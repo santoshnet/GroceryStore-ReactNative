@@ -164,7 +164,7 @@ class AddressScreen extends Component {
                 value={this.state.phone}
                 maxLength={50}
                 editable={false}
-                value={this.state.phone}
+         
               />
               <UserInput
                 placeholder={Strings.emailHint}
