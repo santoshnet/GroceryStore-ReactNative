@@ -95,7 +95,7 @@ export class AllAddress extends Component {
           <TouchableOpacity
             style={styles.Add_address_container}
             onPress={() => {
-              this.props.navigation.navigate('AddressDetails');
+              this.props.navigation.navigate('AddressDetailsScreen');
             }}>
             <Text style={styles.checkout}>ADD ADDRESS +</Text>
           </TouchableOpacity>
