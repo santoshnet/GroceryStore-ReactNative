@@ -44,13 +44,16 @@ export class AllAddress extends Component {
       zipError: '',
       token: '',
       loading: false,
+      userId: '',
     };
   }
 
   async componentDidMount() {
     let user = await getUserDetails();
+    console.log(user,"user")
     this.setState({
       token: user.token,
+      userId: user.id,
     });
   }
 
@@ -58,7 +61,7 @@ export class AllAddress extends Component {
     if (this.props.userAddress.length > 0) {
       this.setState({loading: true});
       const checkoutlocation = {
-        id: Math.random().toString(36).slice(2),
+        id: this.state.userId,
         mobile: this.props?.selectedUserAddress?.mobile,
         name: this.props?.selectedUserAddress?.name,
         email: this.props?.selectedUserAddress?.email,
@@ -68,7 +71,7 @@ export class AllAddress extends Component {
         zip: this.props?.selectedUserAddress?.zip,
         token: this.state.token,
       };
-      // console.log(checkoutlocation,"checkoutlocation")
+      console.log(checkoutlocation,"checkoutlocation")
       updateUser(checkoutlocation)
         .then(response => {
           let data = response.data;

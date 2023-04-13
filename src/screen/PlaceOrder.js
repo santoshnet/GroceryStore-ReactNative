@@ -1,3 +1,5 @@
+/* eslint-disable no-dupe-keys */
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   View,
@@ -10,7 +12,8 @@ import {
 import AppStatusBar from '../components/AppStatusBar';
 import {Color, Fonts, Strings, Dimension} from '../theme';
 import ToolBar from '../components/ToolBar';
-import {TouchableOpacity} from 'react-native';import Icon from 'react-native-vector-icons/Feather';
+import {TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import {getUserDetails, getCart, setCart} from '../utils/LocalStorage';
 import BadgeIcon from '../components/BadgeIcon';
 import Cart from '../utils/Cart';
@@ -19,7 +22,12 @@ import OrderItem from '../components/ProductItem/OrderItem';
 import {Picker} from '@react-native-community/picker';
 import {orderPlace} from '../axios/ServerRequest';
 import Loading from '../components/Loading';
-
+import {
+  addSelectedAddress,
+  setSelectedAddress,
+  deleteSelectedAddress,
+} from '../redux/userAddress/actions';
+import {connect} from 'react-redux';
 class PlaceOrder extends Component {
   constructor(props) {
     super(props);
@@ -41,7 +49,6 @@ class PlaceOrder extends Component {
     let cart = await getCart();
     let userDetails = await getUserDetails();
     let totalPrice = cart.reduce((accum, item) => accum + item.subTotal, 0);
-
     this.setState({
       cartCount: Cart.getTotalCartCount(cart),
       cartList: cart,
@@ -54,29 +61,29 @@ class PlaceOrder extends Component {
     this.refs.loading.show();
     const {user, cartList, totalPrice} = this.state;
     let orderitems = [];
-    for (let i = 0; i < cartList.length; i++) {
-      orderItem = {
-        itemName: cartList[i].item.name,
-        itemQuantity: cartList[i].count,
-        attribute: cartList[i].item.attribute,
-        currency: cartList[i].item.currency,
-        itemImage: cartList[i].item.image,
-        itemPrice: cartList[i].item.price,
-        itemTotal: cartList[i].subTotal,
+    for (const element of cartList) {
+      let orderItem = {
+        itemName: element.item.name,
+        itemQuantity: element.count,
+        attribute: element.item.attribute,
+        currency: element.item.currency,
+        itemImage: element.item.image,
+        itemPrice: element.item.price,
+        itemTotal: element.subTotal,
       };
       orderitems.push(orderItem);
     }
 
     let orderDetails = {
-      token: user.token,
-      name: user.name,
-      email: user.email,
-      mobile: user.mobile,
-      city: user.city,
-      address: user.address,
-      state: user.state,
-      zip_code: user.zip_code,
-      user_id: user.id,
+      token: user?.token,
+      name: user?.name,
+      email: user?.email,
+      mobile: user?.mobile,
+      city: user?.city,
+      address: user?.address,
+      state: user?.state,
+      zip_code: user?.zip_code,
+      user_id: user?.id,
       orderitems: orderitems,
     };
     console.log(orderDetails);
@@ -286,7 +293,6 @@ const styles = StyleSheet.create({
   },
   paymentContainer: {
     flexDirection: 'row',
-    flexDirection: 'row',
   },
   total_price: {
     height: 50,
@@ -312,5 +318,26 @@ const styles = StyleSheet.create({
     color: Color.white,
   },
 });
+function mapStateToProps(state) {
+  console.log(state, 'state');
+  return {
+    userAddress: state?.userAddressReducer.userAddress,
+    selectedUserAddress: state?.userAddressReducer.selectedUserAddress,
+  };
+}
 
-export default PlaceOrder;
+function mapDispatchToProps(dispatch) {
+  return {
+    addSelectedAddress: selectedAddress => {
+      return dispatch(addSelectedAddress(selectedAddress));
+    },
+    setSelectedAddress: selectedAddress => {
+      return dispatch(setSelectedAddress(selectedAddress));
+    },
+    deleteSelectedAddress: selectedAddressId => {
+      return dispatch(deleteSelectedAddress(selectedAddressId));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PlaceOrder);

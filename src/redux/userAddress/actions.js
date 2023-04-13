@@ -8,6 +8,18 @@ export const DELETE_ADDRESS = 'DELETE_ADDRESS';
 export const CHECK_PRODUCT_DELIVERY_LOCATION =
   'CHECK_PRODUCT_DELIVERY_LOCATION';
 export const FETCH_DELIVERY_PINCODE = 'FETCH_DELIVERY_PINCODE';
+export const RESET_ADDRESS = 'RESET_ADDRESS';
+
+
+export const resetAddressSuccess = () => ({
+  type: RESET_ADDRESS,
+});
+
+export function resetAddress() {
+  return async dispatch => {
+    dispatch(resetAddressSuccess());
+  };
+}
 
 export const fetchDeliveryPinCodeAddressSuccess = deliveryAvailablePin => ({
   type: FETCH_DELIVERY_PINCODE,
@@ -53,8 +65,6 @@ export function updateSelectedAddress(selectedAddress) {
     dispatch(updateSelectedAddressSuccess(selectedAddress));
   };
 }
-
-
 
 export const deleteSelectedAddressSuccess = selectedAddressId => ({
   type: DELETE_ADDRESS,

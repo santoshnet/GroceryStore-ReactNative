@@ -75,31 +75,31 @@ class AddressDetailsScreen extends Component {
       cityError,
       zipError,
     } = this.state;
-
-    if (!Validator(address, DEFAULT_RULE)) {
-      this.setState({
-        addressError: true,
-      });
-      return;
-    }
-    if (!Validator(state, DEFAULT_RULE)) {
-      this.setState({
-        stateError: true,
-      });
-      return;
-    }
-    if (!Validator(city, DEFAULT_RULE)) {
-      this.setState({
-        cityError: true,
-      });
-      return;
-    }
     if (!Validator(zip, DEFAULT_RULE)) {
       this.setState({
         zipError: true,
       });
       return;
     }
+    // if (!Validator(address, DEFAULT_RULE)) {
+    //   this.setState({
+    //     addressError: true,
+    //   });
+    //   return;
+    // }
+    // if (!Validator(state, DEFAULT_RULE)) {
+    //   this.setState({
+    //     stateError: true,
+    //   });
+    //   return;
+    // }
+    // if (!Validator(city, DEFAULT_RULE)) {
+    //   this.setState({
+    //     cityError: true,
+    //   });
+    //   return;
+    // }
+
 
     this.setState({loading: true});
 
@@ -116,7 +116,7 @@ class AddressDetailsScreen extends Component {
     };
     addSelectedAddress(newAddress);
     this.props.setSelectedAddress(newAddress);
-
+    this.props.navigation.navigate('AllAddress');
     this.setState({loading: false});
   };
 
@@ -205,7 +205,7 @@ class AddressDetailsScreen extends Component {
               loading={this.state.loading}
               onPress={() => {
                 this.updateAddress(addSelectedAddress);
-                navigation.navigate('AllAddress');
+              
               }}
             />
           </View>

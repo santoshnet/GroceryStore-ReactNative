@@ -95,8 +95,8 @@ class LoginScreen extends Component {
         .then(res => {
           let data = res.data;
           console.log(data, 'logindata');
-          if (data.status === 200) {
-            this.showToast(data.message);
+          if (data?.status === 200) {
+            this.showToast(data?.message);
             this.setState({showOTP: true});
           } else {
             alertmessages.showError('Invalid User');
@@ -121,16 +121,29 @@ class LoginScreen extends Component {
       .then(res => {
         let data = res.data;
         console.log(res.data);
-        if (data.status === 200) {
-          this.showToast(data.message);
-          setUserDetails(data.data);
+        if (data?.status === 200) {
+          this.showToast(data?.message);
+          setUserDetails(data?.data);
           if (this.props.userAddress.length === 0) {
-            this.props.addSelectedAddress(data.data);
-            this.props.setSelectedAddress(data.data);
+            let userdatas = {
+              userId: data?.data?.id,
+              id: data?.data?.id,
+              mobile: data?.data?.mobile,
+              name: data?.data?.name,
+              email: data?.data?.email,
+              address: data?.data?.address,
+              city: data?.data?.city,
+              state: data?.data?.state,
+              zip: data?.data?.zip,
+              token: data?.data?.token,
+            };
+            console.log(userdatas,"userdata in login")
+            this.props.addSelectedAddress(userdatas);
+            this.props.setSelectedAddress(userdatas);
             this.props.navigation.replace('HomeScreen');
           }
         } else {
-          this.showToast(data.message);
+          this.showToast(data?.message);
         }
         this.setState({loading: false});
       })

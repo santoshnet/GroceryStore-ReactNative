@@ -49,6 +49,8 @@ const userAddressReducer = (state = initialstate, action) => {
           ele => ele.pin === action.payload.selectedPin,
         ),
       };
+    case 'RESET_ADDRESS':
+      return initialstate;
     default:
       return state;
   }

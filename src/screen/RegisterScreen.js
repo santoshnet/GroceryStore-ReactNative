@@ -109,7 +109,7 @@ class RegisterScreen extends Component {
       zip: code,
     });
   }
-  
+
   register = () => {
     const {
       name,
@@ -222,8 +222,21 @@ class RegisterScreen extends Component {
           this.showToast(data.message);
           setUserDetails(data.data);
           if (this.props.userAddress.length === 0) {
-            this.props.addSelectedAddress(data.data);
-            this.props.setSelectedAddress(data.data);
+            let userdatas = {
+              userId: data?.data?.id,
+              id: data?.data?.id,
+              mobile: data?.data?.mobile,
+              name: data?.data?.name,
+              email: data?.data?.email,
+              address: data?.data?.address,
+              city: data?.data?.city,
+              state: data?.data?.state,
+              zip: data?.data?.zip,
+              token: data?.data?.token,
+            };
+            console.log(userdatas, 'userdatas in register');
+            this.props.addSelectedAddress(userdatas);
+            this.props.setSelectedAddress(userdatas);
           }
           this.props.navigation.replace('HomeScreen');
         } else {
@@ -501,10 +514,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {},
 });
-
-
-
-
 
 function mapStateToProps(state) {
   console.log(state, 'state');
