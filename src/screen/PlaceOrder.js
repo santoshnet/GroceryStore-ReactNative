@@ -21,6 +21,7 @@ import Logo from '../components/Logo';
 import OrderItem from '../components/ProductItem/OrderItem';
 import {Picker} from '@react-native-community/picker';
 import {orderPlace} from '../axios/ServerRequest';
+import RazorpayCheckout from 'react-native-razorpay';
 import Loading from '../components/Loading';
 import {
   addSelectedAddress,
@@ -58,52 +59,83 @@ class PlaceOrder extends Component {
   };
 
   onPlaceOrder = () => {
-    this.refs.loading.show();
+    if (this.state.paymentMethod === 'Online payment') {
+      this.onRazorpayInit();
+    }
+    // this.refs.loading.show();
     const {user, cartList, totalPrice} = this.state;
     let orderitems = [];
-    for (const element of cartList) {
-      let orderItem = {
-        itemName: element.item.name,
-        itemQuantity: element.count,
-        attribute: element.item.attribute,
-        currency: element.item.currency,
-        itemImage: element.item.image,
-        itemPrice: element.item.price,
-        itemTotal: element.subTotal,
-      };
-      orderitems.push(orderItem);
-    }
+    // for (const element of cartList) {
+    //   let orderItem = {
+    //     itemName: element.item.name,
+    //     itemQuantity: element.count,
+    //     attribute: element.item.attribute,
+    //     currency: element.item.currency,
+    //     itemImage: element.item.image,
+    //     itemPrice: element.item.price,
+    //     itemTotal: element.subTotal,
+    //   };
+    //   orderitems.push(orderItem);
+    // }
 
-    let orderDetails = {
-      token: user?.token,
-      name: user?.name,
-      email: user?.email,
-      mobile: user?.mobile,
-      city: user?.city,
-      address: user?.address,
-      state: user?.state,
-      zip_code: user?.zip_code,
-      user_id: user?.id,
-      orderitems: orderitems,
-    };
-    console.log(orderDetails);
+    // let orderDetails = {
+    //   token: user?.token,
+    //   name: user?.name,
+    //   email: user?.email,
+    //   mobile: user?.mobile,
+    //   city: user?.city,
+    //   address: user?.address,
+    //   state: user?.state,
+    //   zip_code: user?.zip_code,
+    //   user_id: user?.id,
+    //   orderitems: orderitems,
+    // };
 
-    orderPlace(orderDetails)
-      .then(response => {
-        let data = response.data;
-        console.log(response);
-        if (data.code === 200) {
-          setCart(null);
-          this.props.navigation.navigate('ThankYou');
-          this.refs.loading.close();
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        this.refs.loading.close();
-      });
+    // orderPlace(orderDetails)
+    //   .then(response => {
+    //     let data = response.data;
+    //     console.log(response);
+    //     if (data.code === 200) {
+    //       setCart(null);
+    //       this.props.navigation.navigate('ThankYou');
+    //       this.refs.loading.close();
+    //     }
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //     this.refs.loading.close();
+    //   });
   };
 
+  onRazorpayInit = () => {
+    // alert(RAZOR_RAZOR_KEY)
+    var options = {
+      description: 'Credits towards consultation',
+      image: Logo ,
+      currency: 'INR',
+      key: 'rzp_test_zw0zd2NFOxLbSc', // Your api key
+      amount: '5000',
+      name: 'Primeefresh',
+      prefill: {
+        email: 'void@razorpay.com',
+        contact: '9191919191',
+        name: 'Razorpay Software',
+      },
+      theme: {color: '#F37254'},
+    };
+    RazorpayCheckout.open(options)
+      .then(data => {
+        // handle success
+        alert(`Success: ${data.razorpay_payment_id}`);
+
+        // navigation.navigate("orderdetails")
+      })
+      .catch(error => {
+        // handle failure
+        console.log(`Error: ${error.code} | ${error.description}`);
+      });
+    // setModalVisible(!modalVisible)
+  };
   renderCartItem(item) {
     return (
       <OrderItem item={item.item} count={item.count} subTotal={item.subTotal} />

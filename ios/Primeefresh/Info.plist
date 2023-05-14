@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>GroceryStore</string>
+	<string>Primeefresh</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -53,16 +53,14 @@
 	<false/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Jost-Black.ttf</string>
-		<string>Jost-Bold.ttf</string>
-		<string>Jost-ExtraBold.ttf</string>
-		<string>Jost-ExtraLight.ttf</string>
-		<string>Jost-Italic.ttf</string>
-		<string>Jost-Light.ttf</string>
-		<string>Jost-Medium.ttf</string>
-		<string>Jost-Regular.ttf</string>
-		<string>Jost-SemiBold.ttf</string>
-		<string>Jost-Thin.ttf</string>
+		<string>Poppins-Black.ttf</string>
+		<string>Poppins-Bold.ttf</string>
+		<string>Poppins-Light.ttf</string>
+		<string>Poppins-Medium.ttf</string>
+		<string>Poppins-Regular.ttf</string>
+		<string>Poppins-SemiBold.ttf</string>
+		<string>Poppins-Thin.ttf</string>
+		<string>feather1s.ttf</string>
 	</array>
 </dict>
 </plist>

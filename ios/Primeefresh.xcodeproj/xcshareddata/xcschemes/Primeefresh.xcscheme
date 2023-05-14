@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "GroceryStore.app"
-               BlueprintName = "GroceryStore"
-               ReferencedContainer = "container:GroceryStore.xcodeproj">
+               BuildableName = "Primeefresh.app"
+               BlueprintName = "Primeefresh"
+               ReferencedContainer = "container:Primeefresh.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "GroceryStoreTests.xctest"
-               BlueprintName = "GroceryStoreTests"
-               ReferencedContainer = "container:GroceryStore.xcodeproj">
+               BuildableName = "PrimeefreshTests.xctest"
+               BlueprintName = "PrimeefreshTests"
+               ReferencedContainer = "container:Primeefresh.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "GroceryStore.app"
-            BlueprintName = "GroceryStore"
-            ReferencedContainer = "container:GroceryStore.xcodeproj">
+            BuildableName = "Primeefresh.app"
+            BlueprintName = "Primeefresh"
+            ReferencedContainer = "container:Primeefresh.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "GroceryStore.app"
-            BlueprintName = "GroceryStore"
-            ReferencedContainer = "container:GroceryStore.xcodeproj">
+            BuildableName = "Primeefresh.app"
+            BlueprintName = "Primeefresh"
+            ReferencedContainer = "container:Primeefresh.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
