@@ -116,7 +116,7 @@ class PlaceOrder extends Component {
       key: 'rzp_test_zw0zd2NFOxLbSc', // Your api key
       amount: '5000',
       name: 'Primeefresh',
-      prefill: {
+      prefill: {  
         email: 'void@razorpay.com',
         contact: '9191919191',
         name: 'Razorpay Software',
