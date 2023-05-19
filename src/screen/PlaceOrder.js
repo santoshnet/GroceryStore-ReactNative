@@ -14,13 +14,18 @@ import {Color, Fonts, Strings, Dimension} from '../theme';
 import ToolBar from '../components/ToolBar';
 import {TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import {getUserDetails, getCart, setCart} from '../utils/LocalStorage';
+import {
+  getUserDetails,
+  getCart,
+  setCart,
+  getToken,
+} from '../utils/LocalStorage';
 import BadgeIcon from '../components/BadgeIcon';
 import Cart from '../utils/Cart';
 import Logo from '../components/Logo';
 import OrderItem from '../components/ProductItem/OrderItem';
 import {Picker} from '@react-native-community/picker';
-import {orderPlace} from '../axios/ServerRequest';
+import {cancelPayment, orderPlace, updatePayment} from '../axios/ServerRequest';
 import RazorpayCheckout from 'react-native-razorpay';
 import Loading from '../components/Loading';
 import {
@@ -36,7 +41,7 @@ class PlaceOrder extends Component {
       user: null,
       cartList: [],
       totalPrice: '',
-      paymentMethod: 'Cash on Delivery',
+      paymentMethod: 'ONLINE',
     };
   }
 
@@ -59,81 +64,81 @@ class PlaceOrder extends Component {
   };
 
   onPlaceOrder = () => {
-    if (this.state.paymentMethod === 'Online payment') {
-      this.onRazorpayInit();
-    }
-    // this.refs.loading.show();
+    // if (this.state.paymentMethod === 'Online payment') {
+    //   this.onRazorpayInit();
+    // }
+    this.refs.loading.show();
     const {user, cartList, totalPrice} = this.state;
     let orderitems = [];
-    // for (const element of cartList) {
-    //   let orderItem = {
-    //     itemName: element.item.name,
-    //     itemQuantity: element.count,
-    //     attribute: element.item.attribute,
-    //     currency: element.item.currency,
-    //     itemImage: element.item.image,
-    //     itemPrice: element.item.price,
-    //     itemTotal: element.subTotal,
-    //   };
-    //   orderitems.push(orderItem);
-    // }
+    for (const element of cartList) {
+      let orderItem = {
+        itemName: element.item.name,
+        itemQuantity: element.count,
+        attribute: element.item.attribute,
+        currency: element.item.currency,
+        itemImage: element.item.image,
+        itemPrice: element.item.price,
+        itemTotal: element.subTotal,
+      };
+      orderitems.push(orderItem);
+    }
 
-    // let orderDetails = {
-    //   token: user?.token,
-    //   name: user?.name,
-    //   email: user?.email,
-    //   mobile: user?.mobile,
-    //   city: user?.city,
-    //   address: user?.address,
-    //   state: user?.state,
-    //   zip_code: user?.zip_code,
-    //   user_id: user?.id,
-    //   orderitems: orderitems,
-    // };
+    let orderDetails = {
+      token: user?.token,
+      name: user?.name,
+      email: user?.email,
+      mobile: user?.mobile,
+      city: user?.city,
+      address: user?.address,
+      state: user?.state,
+      zip_code: user?.zip_code,
+      user_id: user?.id,
+      payment_mode: this.state.paymentMethod,
+      orderitems: orderitems,
+    };
 
-    // orderPlace(orderDetails)
-    //   .then(response => {
-    //     let data = response.data;
-    //     console.log(response);
-    //     if (data.code === 200) {
-    //       setCart(null);
-    //       this.props.navigation.navigate('ThankYou');
-    //       this.refs.loading.close();
-    //     }
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //     this.refs.loading.close();
-    //   });
+    orderPlace(orderDetails)
+      .then(response => {
+        let data = response.data;
+        console.log(response);
+        if (data.status === 200) {
+          setCart(null);
+          if (this.state.paymentMethod === 'COD') {
+            this.props.navigation.navigate('ThankYou');
+          } else {
+            this.onRazorpayInit(data.data);
+          }
+          this.refs.loading.close();
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        this.refs.loading.close();
+      });
   };
 
-  onRazorpayInit = () => {
+  onRazorpayInit = async data => {
     // alert(RAZOR_RAZOR_KEY)
-    var options = {
-      description: 'Credits towards consultation',
-      image: Logo ,
-      currency: 'INR',
-      key: 'rzp_test_zw0zd2NFOxLbSc', // Your api key
-      amount: '5000',
-      name: 'Primeefresh',
-      prefill: {  
-        email: 'void@razorpay.com',
-        contact: '9191919191',
-        name: 'Razorpay Software',
-      },
-      theme: {color: '#F37254'},
-    };
+    this.refs.loading.show();
+
+    var options = data;
     RazorpayCheckout.open(options)
       .then(data => {
         // handle success
-        alert(`Success: ${data.razorpay_payment_id}`);
+        if (data.status_code === 200) {
+          this.updatePaymentData(data);
+        }
 
         // navigation.navigate("orderdetails")
       })
       .catch(error => {
         // handle failure
         console.log(`Error: ${error.code} | ${error.description}`);
+        this.refs.loading.close();
+        this.cancelPaymentData(data);
+        // navigation.navigate('orderdetails');
       });
+
     // setModalVisible(!modalVisible)
   };
   renderCartItem(item) {
@@ -141,6 +146,46 @@ class PlaceOrder extends Component {
       <OrderItem item={item.item} count={item.count} subTotal={item.subTotal} />
     );
   }
+
+  updatePaymentData = async data => {
+    this.refs.loading.show();
+
+    let options = {
+      razorpay_order_id: data.razorpay_order_id,
+      razorpay_payment_id: data.razorpay_payment_id,
+      razorpay_signature: data.razorpay_signature,
+      token: await getToken(),
+    };
+    await updatePayment(options)
+      .then(res => {
+        if (res.data.status === 200) {
+          this.props.navigation.navigate('ThankYou');
+        }
+        this.refs.loading.close();
+      })
+      .catch(err => {
+        console.log(err);
+        this.refs.loading.close();
+      });
+  };
+  cancelPaymentData = async data => {
+    this.refs.loading.show();
+
+    let options = {
+      razorpay_order_id: data.order_id,
+      token: await getToken(),
+    };
+    await cancelPayment(options)
+      .then(res => {
+        if (res.data.status === 400) {
+          this.props.navigation.navigate('MyOrder');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        this.refs.loading.close();
+      });
+  };
 
   render() {
     const {navigation} = this.props;
@@ -225,11 +270,8 @@ class PlaceOrder extends Component {
                   onValueChange={(itemValue, itemIndex) =>
                     this.setState({paymentMethod: itemValue})
                   }>
-                  <Picker.Item
-                    label="Cash on Delivery"
-                    value="Cash on Delivery"
-                  />
-                  <Picker.Item label="Online payment" value="Online payment" />
+                  <Picker.Item label="Cash on Delivery" value="COD" />
+                  <Picker.Item label="Online payment" value="ONLINE" />
                 </Picker>
               </View>
             </View>

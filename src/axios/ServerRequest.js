@@ -225,3 +225,23 @@ export const getAllPincode = async () => {
     return res;
   });
 };
+
+export const updatePayment = async (data) => {
+  return await API({
+    method: 'POST',
+    url: 'api/v1/payment',
+    data: data,
+  }).then(res => {
+    return res;
+  });
+};
+
+export const cancelPayment = async (data) => {
+  return await API({
+    method: 'POST',
+    url: 'api/v1/payment/cancel',
+    data: data,
+  }).then(res => {
+    return res;
+  });
+};
