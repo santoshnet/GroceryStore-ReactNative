@@ -34,6 +34,18 @@ import {
   deleteSelectedAddress,
 } from '../redux/userAddress/actions';
 import {connect} from 'react-redux';
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  updateCartCountAndTotal,
+  addToCart,
+  resetCart,
+} from '../redux/cart/cartActions';
+import {
+  set_User_Details,
+  clearUserDetails,
+} from './../redux/userDetails/userActions';
 class PlaceOrder extends Component {
   constructor(props) {
     super(props);
@@ -54,7 +66,9 @@ class PlaceOrder extends Component {
   init = async () => {
     let cart = await getCart();
     let userDetails = await getUserDetails();
+
     let totalPrice = cart.reduce((accum, item) => accum + item.subTotal, 0);
+    // this.props.set_User_Details(userDetails);
     this.setState({
       cartCount: Cart.getTotalCartCount(cart),
       cartList: cart,
@@ -67,35 +81,43 @@ class PlaceOrder extends Component {
     // if (this.state.paymentMethod === 'Online payment') {
     //   this.onRazorpayInit();
     // }
-    this.refs.loading.show();
-    const {user, cartList, totalPrice} = this.state;
+    // this.refs.loading.show();
+    const {userAddress} = this.props;
+
     let orderitems = [];
-    for (const element of cartList) {
+    for (const element of this.props.cartItems) {
       let orderItem = {
-        itemName: element.item.name,
-        itemQuantity: element.count,
-        attribute: element.item.attribute,
-        currency: element.item.currency,
-        itemImage: element.item.image,
-        itemPrice: element.item.price,
-        itemTotal: element.subTotal,
+        itemName: element.name,
+        itemQuantity: element.quantity,
+        attribute: element.attribute,
+        currency: element.currency,
+        itemImage: element.images,
+        itemPrice: element.price,
+        itemSubTotal: element.price * element.quantity,
       };
-      orderitems.push(orderItem);
+      orderitems.push(orderItem, 'orderItems');
     }
+    orderitems.push({
+      itemTotal:
+        this.props.cartTotal > 300
+          ? this.props.cartTotal
+          : parseFloat(this.props.cartTotal) + 50,
+    });
 
     let orderDetails = {
-      token: user?.token,
-      name: user?.name,
-      email: user?.email,
-      mobile: user?.mobile,
-      city: user?.city,
-      address: user?.address,
-      state: user?.state,
-      zip_code: user?.zip_code,
-      user_id: user?.id,
+      token: userAddress[0]?.token,
+      name: userAddress[0]?.name,
+      email: userAddress[0]?.email,
+      mobile: userAddress[0]?.mobile,
+      city: userAddress[0]?.city,
+      address: userAddress[0]?.address,
+      state: userAddress[0]?.state,
+      zip_code: userAddress[0]?.zip,
+      user_id: userAddress[0]?.userId,
       payment_mode: this.state.paymentMethod,
       orderitems: orderitems,
     };
+    console.log(orderDetails, 'orderDetails');
 
     orderPlace(orderDetails)
       .then(response => {
@@ -104,6 +126,7 @@ class PlaceOrder extends Component {
         if (data.status === 200) {
           setCart(null);
           if (this.state.paymentMethod === 'COD') {
+            this.props.resetCart();
             this.props.navigation.navigate('ThankYou');
           } else {
             this.onRazorpayInit(data.data);
@@ -126,6 +149,7 @@ class PlaceOrder extends Component {
       .then(data => {
         // handle success
         if (data.status_code === 200) {
+          this.props.resetCart();
           this.updatePaymentData(data);
         }
 
@@ -142,8 +166,13 @@ class PlaceOrder extends Component {
     // setModalVisible(!modalVisible)
   };
   renderCartItem(item) {
+    console.log(item, 'renderItem');
     return (
-      <OrderItem item={item.item} count={item.count} subTotal={item.subTotal} />
+      <OrderItem
+        item={item}
+        count={item?.quantity}
+        subTotal={this.props.cartTotal}
+      />
     );
   }
 
@@ -159,6 +188,7 @@ class PlaceOrder extends Component {
     await updatePayment(options)
       .then(res => {
         if (res.data.status === 200) {
+          this.props.resetCart();
           this.props.navigation.navigate('ThankYou');
         }
         this.refs.loading.close();
@@ -188,7 +218,7 @@ class PlaceOrder extends Component {
   };
 
   render() {
-    const {navigation} = this.props;
+    const {navigation, cartItems, cartCount, cartTotal} = this.props;
 
     return (
       <View style={styles.mainContainer}>
@@ -205,7 +235,7 @@ class PlaceOrder extends Component {
           <ScrollView style={{paddingBottom: 200}}>
             <FlatList
               key={'flatlist'}
-              data={this.state.cartList}
+              data={cartItems}
               renderItem={({item, index}) => this.renderCartItem(item, index)}
               keyExtractor={item => item.id}
               extraData={this.state}
@@ -221,7 +251,7 @@ class PlaceOrder extends Component {
                   marginBottom: 10,
                 }}>
                 <Text style={styles.title}>SubTotal : </Text>
-                <Text style={styles.title}>Rs.{this.state.totalPrice}</Text>
+                <Text style={styles.title}>Rs.{this.props.cartTotal}</Text>
               </View>
 
               <View
@@ -234,7 +264,9 @@ class PlaceOrder extends Component {
                   marginBottom: 10,
                 }}>
                 <Text style={styles.title}>Shipping Charges : </Text>
-                <Text style={styles.title}>Rs.0.0</Text>
+                <Text style={styles.title}>
+                  {this.props.cartTotal > 300 ? 'Rs.0.0' : 'Rs.50.00'}
+                </Text>
               </View>
               <View
                 style={{
@@ -254,7 +286,12 @@ class PlaceOrder extends Component {
                   marginBottom: 10,
                 }}>
                 <Text style={styles.title}>Total Amount : </Text>
-                <Text style={styles.title}>Rs.{this.state.totalPrice}</Text>
+                <Text style={styles.title}>
+                  Rs.
+                  {this.props.cartTotal > 300
+                    ? this.props.cartTotal
+                    : parseFloat(this.props.cartTotal) + 50}
+                </Text>
               </View>
             </View>
           </ScrollView>
@@ -280,7 +317,10 @@ class PlaceOrder extends Component {
                 style={styles.checkout_container}
                 onPress={() => this.onPlaceOrder()}>
                 <Text style={styles.checkout}>
-                  Pay - {this.state.totalPrice}
+                  Pay -inr{' '}
+                  {this.props.cartTotal > 300
+                    ? this.props.cartTotal
+                    : parseFloat(this.props.cartTotal) + 50}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -397,6 +437,10 @@ function mapStateToProps(state) {
   return {
     userAddress: state?.userAddressReducer.userAddress,
     selectedUserAddress: state?.userAddressReducer.selectedUserAddress,
+    cartItems: state.cart?.cartItems, // Updated
+    cartCount: state.cart?.cartCount,
+    cartTotal: state.cart?.cartTotal,
+    user_Details: state.user.userDetails,
   };
 }
 
@@ -411,6 +455,9 @@ function mapDispatchToProps(dispatch) {
     deleteSelectedAddress: selectedAddressId => {
       return dispatch(deleteSelectedAddress(selectedAddressId));
     },
+    resetCart,
+    set_User_Details,
+    clearUserDetails,
   };
 }
 

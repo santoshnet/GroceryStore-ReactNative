@@ -205,6 +205,9 @@ function mapStateToProps(state) {
     selectedUserAddress: state?.userAddressReducer.selectedUserAddress,
     isDeliveryToLocation: state?.userAddressReducer.isDeliveryToLocation,
     deliveryItemPinCode: state.userAddressReducer?.deliveryItemPinCode,
+    cartItems: state.cart?.cartItems, // Updated
+    cartCount: state.cart?.cartCount,
+    cartTotal: state.cart?.cartTotal,
   };
 }
 
@@ -227,6 +230,10 @@ function mapDispatchToProps(dispatch) {
     },
   };
 }
+
+
+
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(CustomSidebarMenu);
 

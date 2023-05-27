@@ -24,6 +24,10 @@ import {getUserDetails} from '../utils/LocalStorage';
 import {updateUser} from '../axios/ServerRequest';
 import {getToken, setUserDetails} from '../utils/LocalStorage';
 import alertmessages from '../utils/helpers';
+import {
+  set_User_Details,
+  clearUserDetails,
+} from './../redux/userDetails/userActions';
 export class AllAddress extends Component {
   constructor(props) {
     super(props);
@@ -50,7 +54,7 @@ export class AllAddress extends Component {
 
   async componentDidMount() {
     let user = await getUserDetails();
-    console.log(user,"user")
+    this.props.set_User_Details(user)
     this.setState({
       token: user.token,
       userId: user.id,
@@ -71,11 +75,11 @@ export class AllAddress extends Component {
         zip: this.props?.selectedUserAddress?.zip,
         token: this.state.token,
       };
-      console.log(checkoutlocation,"checkoutlocation")
+      // console.log(checkoutlocation,"checkoutlocation")
       updateUser(checkoutlocation)
         .then(response => {
           let data = response.data;
-          console.log(response);
+ 
           if (data.status === 200) {
             this.props.navigation.navigate('PlaceOrder');
             setUserDetails(checkoutlocation);
@@ -293,6 +297,7 @@ function mapDispatchToProps(dispatch) {
     deleteSelectedAddress: selectedAddressId => {
       return dispatch(deleteSelectedAddress(selectedAddressId));
     },
+    set_User_Details
   };
 }
 

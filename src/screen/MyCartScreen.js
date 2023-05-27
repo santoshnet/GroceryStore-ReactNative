@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 
 import {
@@ -12,79 +13,38 @@ import {
 import AppStatusBar from '../components/AppStatusBar';
 import {Color, Fonts, Strings, Dimension} from '../theme';
 import ToolBar from '../components/ToolBar';
-import {TouchableOpacity} from 'react-native';import Icon from 'react-native-vector-icons/Feather';
+import {TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import {getUserDetails, getCart, setCart} from '../utils/LocalStorage';
 import BadgeIcon from '../components/BadgeIcon';
 import Cart from '../utils/Cart';
 import CartItem from '../components/CartItem';
 import EmptyCart from '../assets/images/emptycart.png';
+import {connect} from 'react-redux';
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  updateCartCountAndTotal,
+  addToCart,
+} from '../redux/cart/cartActions';
 class MyCartScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      cartCount: 0,
-      user: null,
-      cartList: [],
-      totalPrice: '',
-    };
   }
 
-  async componentDidMount() {
-    this.reRenderSomething = this.props.navigation.addListener('focus', () => {
-      this.init();
-    });
-  }
-
-  init = async () => {
-    let cart = await getCart();
-    let userDetails = await getUserDetails();
-    let totalPrice = cart.reduce((accum, item) => accum + item.subTotal, 0);
-
-    this.setState({
-      cartCount: Cart.getTotalCartCount(cart),
-      cartList: cart,
-      user: userDetails,
-      totalPrice: totalPrice,
-    });
-  };
-
-  addToCart = async params => {
-    let cart = await getCart();
-    let cartListData = cart !== null ? cart : [];
-    let itemIndex = Cart.isProductExist(cartListData, params);
-    if (itemIndex === -1) {
-      cartListData.push(params);
-    } else {
-      if (params.count > 0) {
-        cartListData[itemIndex] = params;
-      } else {
-        let filterData = cartListData.filter(item => item.id !== params.id);
-        cartListData = filterData;
-      }
-    }
-    console.log(cartListData);
-    let totalCount = Cart.getTotalCartCount(cartListData);
-    let totalPrice = cartListData.reduce(
-      (accum, item) => accum + item.subTotal,
-      0,
-    );
-    this.setState({
-      cartCount: totalCount,
-      cartList: cartListData,
-      totalPrice: totalPrice,
-    });
-    setCart(cartListData);
-    //this.resetData();
-  };
   renderCartItem(item) {
-    let count = Cart.getItemCount(this.state.cartList, item);
     return (
-      <CartItem item={item.item} addToCart={this.addToCart} count={count} />
+      <CartItem
+        item={item}
+        addToCart={this.addToCart}
+        count={this.props.cartCount}
+      />
     );
   }
 
   render() {
-    const {navigation} = this.props;
+    const {navigation, cartItems, cartTotal, cartCount} = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.box1}>
@@ -97,9 +57,10 @@ class MyCartScreen extends Component {
             icon="arrow-left"
             onPress={() => navigation.goBack()}
           />
+
           <FlatList
             key={'flatlist'}
-            data={this.state.cartList}
+            data={cartItems}
             renderItem={({item, index}) => this.renderCartItem(item, index)}
             keyExtractor={item => item.id}
             extraData={this.state}
@@ -107,12 +68,10 @@ class MyCartScreen extends Component {
             contentContainerStyle={{paddingBottom: 150}}
           />
         </View>
-        {this.state.cartCount > 0 ? (
+        {cartCount > 0 ? (
           <View style={styles.box2}>
             <View style={{width: '50%'}}>
-              <Text style={styles.total_price}>
-                Total: RS. {this.state.totalPrice}
-              </Text>
+              <Text style={styles.total_price}>Total: RS. {cartTotal}</Text>
             </View>
             <View style={{width: '50%'}}>
               <TouchableOpacity
@@ -141,7 +100,7 @@ class MyCartScreen extends Component {
               color={Color.colorPrimaryDark}
               title="Shop Now"
               onPress={() => {
-                this.props.navigation.navigate('Category');
+                this.props.navigation.navigate('Home');
               }}
             />
           </View>
@@ -219,4 +178,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyCartScreen;
+const mapStateToProps = state => {
+  return {
+    cartItems: state.cart?.cartItems, // Updated
+    cartCount: state.cart?.cartCount,
+    cartTotal: state.cart?.cartTotal,
+  };
+};
+const mapDispatchToProps = {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  addToCart,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyCartScreen);

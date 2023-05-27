@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
 import {Color, Fonts, Strings, Dimension} from '../../theme';
 import {ProductImage} from '../../axios/ServerRequest';
-import { BASE_URL } from '../../axios/API';
+import {BASE_URL} from '../../axios/API';
 
 class OrderItem extends Component {
   constructor(props) {
@@ -28,8 +28,13 @@ class OrderItem extends Component {
               {item.attribute + ' - ' + item.currency + ' ' + item.price}
             </Text>
             <Text style={styles.title}>
-              {count}X{item.currency + ' ' + item.price}=
-              {item.currency + ' ' + subTotal}
+              {item.quantity +
+                '*' +
+                item.price +
+                ' = ' +
+                item.currency +
+                ' ' +
+                item.quantity * item.price}
             </Text>
           </View>
         </View>

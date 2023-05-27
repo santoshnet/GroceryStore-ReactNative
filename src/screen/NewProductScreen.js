@@ -20,7 +20,14 @@ import {getUserDetails, getCart, setCart} from '../utils/LocalStorage';
 import ProductRow from '../components/ProductItem/ProductRow';
 import Cart from '../utils/Cart';
 import Loading from '../components/Loading';
-
+import {connect} from 'react-redux';
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  updateCartCountAndTotal,
+  addToCart,
+} from '../redux/cart/cartActions';
 class NewProductScreen extends Component {
   constructor(props) {
     super(props);
@@ -130,7 +137,7 @@ class NewProductScreen extends Component {
 
           <BadgeIcon
             icon="shopping-cart"
-            count={this.state.cartCount}
+            count={this.props.cartCount}
             onPress={() => {
               navigation.navigate('MyCart');
             }}
@@ -165,4 +172,20 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewProductScreen;
+
+const mapStateToProps = state => {
+  return {
+    cartItems: state.cart?.cartItems, // Updated
+    cartCount: state.cart?.cartCount,
+    cartTotal: state.cart?.cartTotal,
+  };
+};
+const mapDispatchToProps = {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  addToCart,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewProductScreen);
+

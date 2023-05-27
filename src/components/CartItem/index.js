@@ -3,11 +3,20 @@ import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
 import {Color, Fonts, Strings, Dimension} from '../../theme';
 import {ProductImage} from '../../axios/ServerRequest';
 import Icon from 'react-native-vector-icons/Feather';
-import {TouchableOpacity} from 'react-native';import PropTypes from 'prop-types';
+import {TouchableOpacity} from 'react-native';
+import PropTypes from 'prop-types';
 import AppStatusBar from '../../components/AppStatusBar';
 import ToolBar from '../../components/ToolBar';
-import { BASE_URL } from '../../axios/API';
-class ProductItem extends Component {
+import {BASE_URL} from '../../axios/API';
+import {connect} from 'react-redux';
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  updateCartCountAndTotal,
+  addToCart,
+} from '../../redux/cart/cartActions';
+class CartItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,25 +27,34 @@ class ProductItem extends Component {
     };
   }
 
-  setCart = (item, id, value, price) => {
-    let cart = {
-      count: value,
-      id: id,
-      item: item,
-      subTotal: parseFloat(price) * value,
-    };
-    this.setState(
-      {
-        cart: cart,
-      },
-      () => {
-        this.props.addToCart(this.state.cart);
-      },
-    );
-  };
+  // setCart = (item, id, value, price) => {
+  //   let cart = {
+  //     count: value,
+  //     id: id,
+  //     item: item,
+  //     subTotal: parseFloat(price) * value,
+  //   };
+  //   this.setState(
+  //     {
+  //       cart: cart,
+  //     },
+  //     () => {
+  //       this.props.addToCart(this.state.cart);
+  //     },
+  //   );
+  // };
 
   render() {
-    const {item, count} = this.props;
+    const {
+      item,
+      cartItems,
+      cartTotal,
+      cartCount,
+      removeFromCart,
+      increaseQuantity,
+      decreaseQuantity,
+      updateCartCountAndTotal,
+    } = this.props;
     return (
       <View style={styles.mainContainer}>
         <View style={styles.container}>
@@ -50,7 +68,9 @@ class ProductItem extends Component {
               />
             </View>
             <View style={{flex: 1, display: 'flex', flexDirection: 'column'}}>
-              <Text style={styles.title} ellipsizeMode="tail" numberOfLines={2}>{item.name}</Text>
+              <Text style={styles.title} ellipsizeMode="tail" numberOfLines={2}>
+                {item.name}
+              </Text>
               <Text style={styles.attribute}>
                 {' '}
                 {item.attribute + ' - ' + item.currency + ' ' + item.price}
@@ -58,38 +78,22 @@ class ProductItem extends Component {
               <View style={styles.quantitContainer}>
                 <TouchableOpacity
                   onPress={() => {
-                    this.setState({
-                      count: this.state.count - 1,
-                    });
-                    this.setCart(
-                      item,
-                      item.id,
-                      this.state.count - 1,
-                      item.price,
-                    );
+                    decreaseQuantity(item.id);
                   }}>
                   <Icon name="minus" size={20} color={Color.red} />
                 </TouchableOpacity>
                 <Text style={styles.quantityCount}>
-                  {count +
+                  {item.quantity +
                     '*' +
                     item.price +
                     ' = ' +
                     item.currency +
                     ' ' +
-                    count * item.price}
+                    item.quantity * item.price}
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
-                    this.setState({
-                      count: this.state.count + 1,
-                    });
-                    this.setCart(
-                      item,
-                      item.id,
-                      this.state.count + 1,
-                      item.price,
-                    );
+                    increaseQuantity(item.id);
                   }}>
                   <Icon name="plus" size={20} color={Color.colorPrimary} />
                 </TouchableOpacity>
@@ -99,10 +103,7 @@ class ProductItem extends Component {
           <View style={styles.deleteBtn}>
             <TouchableOpacity
               onPress={() => {
-                this.setState({
-                  count: 0,
-                });
-                this.setCart(item, item.id, 0, item.price);
+                removeFromCart(item.id);
               }}>
               <Icon name="trash-2" size={20} color={Color.red} />
             </TouchableOpacity>
@@ -113,7 +114,7 @@ class ProductItem extends Component {
   }
 }
 
-ProductItem.propTypes = {
+CartItem.propTypes = {
   addToCart: PropTypes.func,
   item: PropTypes.object,
   count: PropTypes.number,
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 10,
     marginBottom: 10,
-    marginTop:10
+    marginTop: 10,
   },
   counter: {
     fontFamily: Fonts.primarySemiBold,
@@ -263,4 +264,19 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
 });
-export default ProductItem;
+
+const mapStateToProps = state => {
+  return {
+    cartItems: state.cart?.cartItems, // Updated
+    cartCount: state.cart?.cartCount,
+    cartTotal: state.cart?.cartTotal,
+  };
+};
+const mapDispatchToProps = {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  addToCart,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CartItem);

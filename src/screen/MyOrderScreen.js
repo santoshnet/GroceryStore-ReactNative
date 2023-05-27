@@ -82,7 +82,7 @@ class MyOrderScreen extends Component {
           </View>
           <View style={{display: 'flex', flexDirection: 'row'}}>
             <Text style={styles.title}>Order Status : </Text>
-            <Text style={[styles.subTitle, {color: Color.colorPrimaryDark}]}>
+            <Text style={[styles.subTitle, {color:item.status === "Payment Fail" ? Color.red : Color.colorPrimaryDark}]}>
               {item.status}
             </Text>
           </View>

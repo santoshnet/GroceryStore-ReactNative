@@ -1,6 +1,6 @@
 {
   "name": "primeefresh",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -21,6 +21,7 @@
     "moment": "^2.29.4",
     "react": "18.2.0",
     "react-native": "0.71.5",
+    "react-native-animatable": "^1.3.3",
     "react-native-app-intro-slider": "^4.0.4",
     "react-native-bottom-drawer-view": "^1.0.3",
     "react-native-country-codes-picker": "^2.2.2",

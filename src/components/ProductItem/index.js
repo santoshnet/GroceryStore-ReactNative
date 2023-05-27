@@ -3,8 +3,18 @@ import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
 import {Color, Fonts, Strings, Dimension} from '../../theme';
 import {ProductImage} from '../../axios/ServerRequest';
 import Icon from 'react-native-vector-icons/Feather';
-import {TouchableOpacity} from 'react-native';import PropTypes from 'prop-types';
-import { BASE_URL } from '../../axios/API';
+import {TouchableOpacity} from 'react-native';
+import PropTypes from 'prop-types';
+import {BASE_URL} from '../../axios/API';
+import {connect} from 'react-redux';
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  updateCartCountAndTotal,
+  addToCart,
+} from '../../redux/cart/cartActions';
+
 class ProductItem extends Component {
   constructor(props) {
     super(props);
@@ -15,29 +25,43 @@ class ProductItem extends Component {
     };
   }
 
-  setCart = (item, id, value, price) => {
-    let cart = {
-      count: value,
-      id: id,
-      item: item,
-      subTotal: parseFloat(price) * value,
-    };
-    this.setState(
-      {
-        cart: cart,
-      },
-      () => {
-        this.props.addToCart(this.state.cart);
-      },
-    );
-  };
-
+  getProductQuantity(productId) {
+    const {cartItems} = this.props;
+    const cartItem = cartItems.find(item => item.id === productId);
+    return cartItem ? cartItem.quantity : 0;
+  }
   onItemClicked = item => {
     // this.props.navi;
   };
 
+  handleRemoveFromCart = itemId => {
+    this.props.removeFromCart(itemId);
+    this.props.updateCartCountAndTotal();
+  };
+
+  handleIncreaseQuantity = itemId => {
+    this.props.increaseQuantity(itemId);
+    this.props.updateCartCountAndTotal();
+  };
+
+  handleDecreaseQuantity = itemId => {
+    this.props.decreaseQuantity(itemId);
+    this.props.updateCartCountAndTotal();
+  };
+
   render() {
-    const {item, count, navigation} = this.props;
+    const {
+      item,
+      count,
+      cartCount,
+      cartTotal,
+      removeFromCart,
+      increaseQuantity,
+      decreaseQuantity,
+      cartItems,
+      addToCart,
+    } = this.props;
+    const productQuantity = this.getProductQuantity(item.id);
     return (
       <View style={styles.container}>
         <View style={styles.box1}>
@@ -56,28 +80,31 @@ class ProductItem extends Component {
               </Text>
             </TouchableOpacity>
           </View>
-          {/* {count > 0 ? (
+
+          {productQuantity > 0 ? (
             <View style={styles.quantity}>
               <TouchableOpacity
                 activeOpacity={1}
                 style={styles.plusBtn}
                 onPress={() => {
-                  this.setState({
-                    count: this.state.count - 1,
-                  });
-                  this.setCart(item, item.id, this.state.count - 1, item.price);
+                  // this.setState({
+                  //   count: this.state.count - 1,
+                  // });
+                  // this.setCart(item, item.id, this.state.count - 1, item.price);
+                  this.props.decreaseQuantity(item.id);
                 }}>
                 <Icon name="minus" size={20} color={Color.red} />
               </TouchableOpacity>
-              <Text style={styles.counter}>{count}</Text>
+              <Text style={styles.counter}>{productQuantity}</Text>
               <TouchableOpacity
                 activeOpacity={1}
                 style={styles.plusBtn}
                 onPress={() => {
-                  this.setState({
-                    count: this.state.count + 1,
-                  });
-                  this.setCart(item, item.id, this.state.count + 1, item.price);
+                  // this.setState({
+                  //   count: this.state.count + 1,
+                  // });
+                  // this.setCart(item, item.id, this.state.count + 1, item.price);
+                  this.props.increaseQuantity(item.id);
                 }}>
                 <Icon name="plus" size={18} color={Color.colorPrimary} />
               </TouchableOpacity>
@@ -87,18 +114,19 @@ class ProductItem extends Component {
               <TouchableOpacity
                 activeOpacity={1}
                 onPress={() => {
-                  this.setState({count: this.state.count + 1});
-                  this.setCart(item, item.id, this.state.count + 1, item.price);
+                  // this.setState({count: this.state.count + 1});
+                  // this.setCart(item, item.id, this.state.count + 1, item.price);
+                  addToCart({...item, quantity: 1});
                 }}>
                 <Text style={styles.addToCartText}>Add To Cart</Text>
               </TouchableOpacity>
             </View>
-          )} */}
+          )}
         </View>
         <View style={styles.box2}>
-          {/* <TouchableOpacity activeOpacity={1} style={styles.favoriteContainer}>
+          <TouchableOpacity activeOpacity={1} style={styles.favoriteContainer}>
             <Icon name="heart" size={24} color={Color.colorPrimary} />
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -113,7 +141,7 @@ ProductItem.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    height: 220,
+    height: 280,
     width: 220,
     backgroundColor: Color.white,
     shadowColor: '#000',
@@ -176,8 +204,8 @@ const styles = StyleSheet.create({
   productImage: {
     height: 100,
     width: 100,
-    resizeMode:'cover',
-    alignSelf:'center'
+    resizeMode: 'cover',
+    alignSelf: 'center',
   },
   addToCart: {
     backgroundColor: Color.colorPrimary,
@@ -224,4 +252,19 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
-export default ProductItem;
+
+const mapStateToProps = state => {
+  return {
+    cartItems: state.cart?.cartItems, // Updated
+    cartCount: state.cart?.cartCount,
+    cartTotal: state.cart?.cartTotal,
+  };
+};
+const mapDispatchToProps = {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  addToCart,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductItem);

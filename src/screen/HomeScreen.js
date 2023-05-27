@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-undef */
 import React, {Component} from 'react';
 import {
@@ -37,7 +38,14 @@ import SearchBar from '../components/SearchBar';
 import Offer1 from '../assets/images/offer1.jpg';
 import Offer2 from '../assets/images/offer2.jpg';
 import {BASE_URL} from '../axios/API';
-import FastImage from 'react-native-fast-image'
+import FastImage from 'react-native-fast-image';
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  updateCartCountAndTotal,
+  addToCart,
+} from '../redux/cart/cartActions';
 
 import {
   addSelectedAddress,
@@ -170,30 +178,7 @@ class HomeScreen extends Component {
       });
   };
 
-  addToCart = async params => {
-    let cart = await getCart();
-    let cartListData = cart !== null ? cart : [];
-    let itemIndex = Cart.isProductExist(cartListData, params);
-    if (itemIndex === -1) {
-      cartListData.push(params);
-    } else {
-      if (params.count > 0) {
-        cartListData[itemIndex] = params;
-      } else {
-        let filterData = cartListData.filter(item => item.id !== params.id);
-        cartListData = filterData;
-      }
-    }
-    console.log(cartListData);
-    let totalCount = Cart.getTotalCartCount(cartListData);
-    this.setState({
-      cartCount: totalCount,
-      cartList: cartListData,
-      selected: !this.state.selected,
-    });
-    setCart(cartListData);
-    //this.resetData();
-  };
+
   resetData = () => {
     this.setState({newProduct: this.state.newProduct});
     this.setState({popularProduct: this.state.popularProduct});
@@ -221,7 +206,6 @@ class HomeScreen extends Component {
     return (
       <ProductItem
         item={item}
-        addToCart={this.addToCart}
         count={cart}
         onPress={() => {
           this.navigateToScreen(item);
@@ -255,7 +239,7 @@ class HomeScreen extends Component {
   }
 
   render() {
-    const {navigation} = this.props;
+    const {navigation, cartCount} = this.props;
     return (
       <View style={styles.mainContainer}>
         <View style={styles.mainContainer}>
@@ -274,7 +258,7 @@ class HomeScreen extends Component {
 
             <BadgeIcon
               icon="shopping-cart"
-              count={this.state.cartCount}
+              count={cartCount}
               onPress={() => {
                 navigation.navigate('MyCart');
               }}
@@ -364,9 +348,12 @@ class HomeScreen extends Component {
                 </View>
               </ScrollView>
 
-              <View style={{marginLeft: 20, marginTop: 20}}>
-                <Text style={styles.title}>Popular Products</Text>
-              </View>
+              {this.state?.popularProduct?.length > 0 && (
+                <View style={{marginLeft: 20, marginTop: 20}}>
+                  <Text style={styles.title}>Popular Products</Text>
+                </View>
+              )}
+
               <FlatList
                 style={{marginLeft: 10}}
                 showsHorizontalScrollIndicator={false}
@@ -518,6 +505,9 @@ function mapStateToProps(state) {
     userAddress: state?.userAddressReducer.userAddress,
     selectedUserAddress: state?.userAddressReducer.selectedUserAddress,
     isDeliveryToLocation: state?.userAddressReducer.isDeliveryToLocation,
+    cartItems: state.cart.cartItems,
+    cartTotal: state.cart.cartTotal,
+    cartCount: state.cart.cartCount,
   };
 }
 
@@ -532,6 +522,9 @@ function mapDispatchToProps(dispatch) {
     fetchDeliveryPinCodeAddress: deliveryAvailablePin => {
       return dispatch(fetchDeliveryPinCodeAddress(deliveryAvailablePin));
     },
+    increaseQuantity,
+    decreaseQuantity,
+    removeFromCart,
   };
 }
 

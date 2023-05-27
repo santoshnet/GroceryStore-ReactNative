@@ -4,6 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {persistStore, persistReducer} from 'redux-persist';
 import userAddressReducer from './userAddress/reducers';
 import thunk from 'redux-thunk';
+import cartReducer from './cart/cartReducer';
+import userReducer from './userDetails/userReducer';
 
 const persistConfig = {
   key: 'root',
@@ -12,6 +14,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   userAddressReducer,
+  cart: cartReducer,
+  user: userReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

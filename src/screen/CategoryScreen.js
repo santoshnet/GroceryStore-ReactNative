@@ -8,6 +8,14 @@ import {getCart} from '../utils/LocalStorage';
 import BadgeIcon from '../components/BadgeIcon';
 import Cart from '../utils/Cart';
 import Loading from '../components/Loading';
+import {connect} from 'react-redux';
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  updateCartCountAndTotal,
+  addToCart,
+} from '../redux/cart/cartActions';
 
 import {
   getAllCategory,
@@ -89,7 +97,7 @@ class CategoryScreen extends Component {
           onPress={() => navigation.openDrawer()}>
           <BadgeIcon
             icon="shopping-cart"
-            count={this.state.cartCount}
+            count={this.props.cartCount}
             onPress={() => {
               navigation.navigate('MyCart');
             }}
@@ -144,4 +152,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-export default CategoryScreen;
+
+const mapStateToProps = state => {
+  return {
+    cartItems: state.cart?.cartItems, // Updated
+    cartCount: state.cart?.cartCount,
+    cartTotal: state.cart?.cartTotal,
+  };
+};
+const mapDispatchToProps = {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  addToCart,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryScreen);

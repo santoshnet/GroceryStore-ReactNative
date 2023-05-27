@@ -1,4 +1,4 @@
-const appName = 'Grocery Store';
+const appName = 'Primeefresh';
 export default {
   title_home: 'Home',
   title_dashboard: 'Dashboard',
@@ -10,7 +10,7 @@ export default {
   company_prompt: 'Choose a company',
   cafeteria_prompt: 'Choose a cafeteria',
   login_text: 'SignIn',
-  login_text1: 'SignIn to Grocery App',
+  login_text1: 'SignIn to Primeefresh',
   login_text2: ' enter email & password to continue',
   forgot_text1: 'Reset Your Password',
   forgot_text2: 'you need One Time Password to reset password',

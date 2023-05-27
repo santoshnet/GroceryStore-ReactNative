@@ -10,11 +10,20 @@ import {
 import AppStatusBar from '../components/AppStatusBar';
 import {Color, Fonts, Strings, Dimension} from '../theme';
 import ToolBar from '../components/ToolBar';
-import {TouchableOpacity} from 'react-native';import Icon from 'react-native-vector-icons/Feather';
+import {TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import {getUserDetails, getCart} from '../utils/LocalStorage';
 import BadgeIcon from '../components/BadgeIcon';
 import Cart from '../utils/Cart';
 import Logo from '../components/Logo';
+import {connect} from 'react-redux';
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  updateCartCountAndTotal,
+  addToCart,
+} from '../redux/cart/cartActions';
 class ProfileScreen extends Component {
   constructor(props) {
     super(props);
@@ -54,7 +63,7 @@ class ProfileScreen extends Component {
           onPress={() => navigation.openDrawer()}>
           <BadgeIcon
             icon="shopping-cart"
-            count={this.state.cartCount}
+            count={this.props.cartCount}
             onPress={() => {
               navigation.navigate('MyCart');
             }}
@@ -128,4 +137,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+const mapStateToProps = state => {
+  return {
+    cartItems: state.cart?.cartItems, // Updated
+    cartCount: state.cart?.cartCount,
+    cartTotal: state.cart?.cartTotal,
+  };
+};
+const mapDispatchToProps = {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  addToCart,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen);

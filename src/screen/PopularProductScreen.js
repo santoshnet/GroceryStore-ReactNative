@@ -12,7 +12,8 @@ import {Color, Fonts, Strings, Dimension} from '../theme';
 
 import ToolBar from '../components/ToolBar';
 
-import {TouchableOpacity} from 'react-native';import Icon from 'react-native-vector-icons/Feather';
+import {TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import BadgeIcon from '../components/BadgeIcon';
 import BannerSlider from '../components/BannerSlider';
 import {getPopularProducts} from '../axios/ServerRequest';
@@ -20,6 +21,14 @@ import {getUserDetails, getCart, setCart} from '../utils/LocalStorage';
 import ProductRow from '../components/ProductItem/ProductRow';
 import Cart from '../utils/Cart';
 import Loading from '../components/Loading';
+import {connect} from 'react-redux';
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  updateCartCountAndTotal,
+  addToCart,
+} from '../redux/cart/cartActions';
 
 class PopularProductScreen extends Component {
   constructor(props) {
@@ -130,7 +139,7 @@ class PopularProductScreen extends Component {
 
           <BadgeIcon
             icon="shopping-cart"
-            count={this.state.cartCount}
+            count={this.props.cartCount}
             onPress={() => {
               navigation.navigate('MyCart');
             }}
@@ -165,4 +174,21 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PopularProductScreen;
+const mapStateToProps = state => {
+  return {
+    cartItems: state.cart?.cartItems, // Updated
+    cartCount: state.cart?.cartCount,
+    cartTotal: state.cart?.cartTotal,
+  };
+};
+const mapDispatchToProps = {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  addToCart,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(PopularProductScreen);

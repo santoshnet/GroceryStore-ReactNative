@@ -462,7 +462,7 @@ class ProductView extends Component {
           onPress={() => navigation.goBack()}>
           <BadgeIcon
             icon="shopping-cart"
-            count={this.state.cartCount}
+            count={this.props.cartCount}
             onPress={() => {
               navigation.navigate('MyCart');
             }}

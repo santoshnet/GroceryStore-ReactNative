@@ -10,6 +10,14 @@ import Cart from '../utils/Cart';
 import {getOffers} from '../axios/ServerRequest';
 import {BASE_URL} from '../axios/API';
 import Loading from '../components/Loading';
+import {connect} from 'react-redux';
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  updateCartCountAndTotal,
+  addToCart,
+} from '../redux/cart/cartActions';
 class OffersScreen extends Component {
   constructor(props) {
     super(props);
@@ -74,7 +82,7 @@ class OffersScreen extends Component {
           title="Offer"
           icon="menu"
           onPress={() => navigation.openDrawer()}>
-          <BadgeIcon icon="shopping-cart" count={this.state.cartCount} />
+          <BadgeIcon icon="shopping-cart" count={this.props.cartCount} />
         </ToolBar>
 
         <FlatList
@@ -120,4 +128,20 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
 });
-export default OffersScreen;
+
+const mapStateToProps = state => {
+  return {
+    cartItems: state.cart?.cartItems, // Updated
+    cartCount: state.cart?.cartCount,
+    cartTotal: state.cart?.cartTotal,
+  };
+};
+const mapDispatchToProps = {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  addToCart,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OffersScreen);
+
