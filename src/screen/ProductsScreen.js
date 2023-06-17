@@ -31,6 +31,7 @@ import Loading from '../components/Loading';
 import EmptyProduct from '../assets/images/emptyproduct.png';
 import DummyImage from '../assets/images/image.png';
 import {connect} from 'react-redux';
+import alertmessages from '../utils/helpers';
 import {
   removeFromCart,
   increaseQuantity,
@@ -194,6 +195,8 @@ class ProductsScreen extends Component {
                   key={index}
                   onPress={() => {
                     this.fetchProductByCategory(item.id);
+                  
+                    this.setState({category: item?.category})
                   }}
                   style={{
                     width: 100,
@@ -361,6 +364,7 @@ class ProductsScreen extends Component {
                           // });
                           // this.setCart(item, item.id, this.state.count + 1, item.price);
                           this.props.increaseQuantity(item.id);
+                          alertmessages.showSuccess('This  product is added in the cart!');
                         }}>
                         <Icon
                           name="plus"
@@ -377,6 +381,7 @@ class ProductsScreen extends Component {
                           // this.setState({count: this.state.count + 1});
                           // this.setCart(item, item.id, this.state.count + 1, item.price);
                           addToCart({...item, quantity: 1});
+                          alertmessages.showSuccess('This  product is added in the cart!');
                         }}>
                         <Text style={styles.addToCartText}>Add To Cart</Text>
                       </TouchableOpacity>

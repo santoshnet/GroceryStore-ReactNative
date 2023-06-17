@@ -40,6 +40,13 @@ import {
 import {connect} from 'react-redux';
 import CheckPinCode from './CheckPinCode';
 import {listenerCount} from 'process';
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  updateCartCountAndTotal,
+  addToCart,
+} from '../redux/cart/cartActions';
 
 class ProductView extends Component {
   constructor(props) {
@@ -56,77 +63,29 @@ class ProductView extends Component {
     };
   }
   async componentDidMount() {
-    let cart = await getCart();
     let item = null;
     if (this.props.route.params !== undefined) {
       item = this.props.route.params.item;
     }
 
-    let cartCount = Cart.getTotalCartCount(cart);
-    let productIndex = Cart.isProductExist(cart, item);
-    let count = Cart.getItemCount(cart, item);
     this.setState({
       productItem: item,
-      cartCount: cartCount,
-      itemIndex: productIndex,
-      cart: cart,
-      count: count,
     });
 
     if (this.checkPin() == true) {
       this.setState({
         pinErrorMesg: true,
       });
-    } else if(this.checkPin() == false) {
+    } else if (this.checkPin() == false) {
       this.setState({
         pinErrorMesg: false,
       });
     }
   }
 
-  setToCart = (item, id, value, price) => {
-    let cart = {
-      count: value,
-      id: id,
-      item: item,
-      subTotal: parseFloat(price) * value,
-    };
-    this.addToCart(cart);
-  };
-
-  checkPin = () => {
-    let {deliveryItemPinCode} = this.props;
-    let checkpinCode = deliveryItemPinCode.some(
-      ele => ele.pin === this.props?.selectedUserAddress?.zip,
-    );
-    return checkpinCode;
-  };
-
-  addToCart = async params => {
+  setToCart = productItem => {
     if (this.checkPin() == true) {
-      const {cart, itemIndex} = this.state;
-      let cartListData = cart !== null ? cart : [];
-
-      if (itemIndex === -1) {
-        cartListData.push(params);
-      } else {
-        if (params.count > 0) {
-          cartListData[itemIndex] = params;
-        } else {
-          let filterData = cartListData.filter(item => item.id !== params.id);
-          cartListData = filterData;
-        }
-      }
-      // console.log(cartListData);
-      let totalCount = Cart.getTotalCartCount(cartListData);
-      this.setState({
-        cartCount: totalCount,
-        cart: cartListData,
-      });
-      setCart(cartListData);
-      this.setState({
-        pinErrorMesg: true,
-      });
+      this.props.addToCart({...productItem, quantity: 1});
       alertmessages.showSuccess('This  product is added in the cart!');
       setTimeout(() => {
         this.props.navigation.goBack();
@@ -136,8 +95,14 @@ class ProductView extends Component {
         pinErrorMesg: false,
       });
     }
+  };
 
-    //this.resetData();
+  checkPin = () => {
+    let {deliveryItemPinCode} = this.props;
+    let checkpinCode = deliveryItemPinCode.some(
+      ele => ele.pin === this.props?.selectedUserAddress?.zip,
+    );
+    return checkpinCode;
   };
 
   renderFoodInfo(productItem, count) {
@@ -324,7 +289,7 @@ class ProductView extends Component {
     );
   }
 
-  renderDetails(productItem, count) {
+  renderDetails(productItem) {
     return (
       <View
         style={{
@@ -392,7 +357,7 @@ class ProductView extends Component {
     );
   }
 
-  footerPart(productItem, count) {
+  footerPart(productItem) {
     return (
       <View style={styles.box2}>
         <View style={{width: '50%'}}>
@@ -404,15 +369,7 @@ class ProductView extends Component {
           <TouchableOpacity
             style={styles.checkout_container}
             onPress={() => {
-              this.setState({
-                count: count + 1,
-              });
-              this.setToCart(
-                productItem,
-                productItem.id,
-                count + 1,
-                productItem.price,
-              );
+              this.setToCart(productItem);
             }}>
             <Text style={styles.checkout}>ADD CART</Text>
           </TouchableOpacity>
@@ -448,8 +405,8 @@ class ProductView extends Component {
   render() {
     const {navigation, checkItemDeliveryAddress, selectedUserAddress} =
       this.props;
-    const {productItem, isProductExist, count} = this.state;
-    console.log(this.state.cart);
+    const {productItem, isProductExist} = this.state;
+
     return (
       <View style={styles.mainContainer}>
         <AppStatusBar
@@ -470,7 +427,7 @@ class ProductView extends Component {
         </ToolBar>
         <ScrollView style={styles.scrollView}>
           {productItem !== undefined && productItem !== null ? (
-            this.renderDetails(productItem, count)
+            this.renderDetails(productItem)
           ) : (
             <View
               style={{
@@ -498,41 +455,6 @@ class ProductView extends Component {
               </View>
             </View>
           )}
-
-          {/* {productItem !== undefined && productItem !== null ? (
-          <ScrollView style={styles.scrollView}>
-            <View style={styles.imageContainer}>
-              <View>
-                <Image
-                  style={styles.productImage}
-                  source={{
-                    uri: `${BASE_URL + productItem.images[0].image}`,
-                  }}
-                />
-              </View>
-
-              <View style={styles.box2}>
-              </View>
-            </View>
-            <View style={styles.contentContainer}>
-              <Text style={styles.option}>
-                {productItem.attribute +
-                  ' - ' +
-                  productItem.currency +
-                  ' ' +
-                  productItem.price}
-              </Text>
-              <Text style={styles.title}>{productItem.name}</Text>
-              <Text style={styles.description}>
-                <RenderHTML
-                  source={{
-                    html: productItem.description,
-                  }}
-                />
-              </Text>
-            </View>
-          </ScrollView>
-        ) : null} */}
         </ScrollView>
         {this.state.showFilterModal && (
           <CheckPinCode
@@ -540,11 +462,11 @@ class ProductView extends Component {
             onClose={() => {
               this.setState({showFilterModal: false});
             }}
-            pinsuccess={() => this.setState({pinErrorMesg:true})}
-            pinfailure={() => this.setState({pinErrorMesg:false})}
+            pinsuccess={() => this.setState({pinErrorMesg: true})}
+            pinfailure={() => this.setState({pinErrorMesg: false})}
           />
         )}
-        {this.footerPart(productItem, count)}
+        {this.footerPart(productItem)}
       </View>
     );
   }
@@ -703,6 +625,9 @@ function mapStateToProps(state) {
     selectedUserAddress: state?.userAddressReducer.selectedUserAddress,
     isDeliveryToLocation: state?.userAddressReducer.isDeliveryToLocation,
     deliveryItemPinCode: state.userAddressReducer?.deliveryItemPinCode,
+    cartItems: state.cart.cartItems,
+    cartTotal: state.cart.cartTotal,
+    cartCount: state.cart.cartCount,
   };
 }
 
@@ -720,6 +645,12 @@ function mapDispatchToProps(dispatch) {
     checkItemDeliveryAddress: selectedAddressPin => {
       return dispatch(checkItemDeliveryAddress(selectedAddressPin));
     },
+    addToCart: item => {
+      return dispatch(addToCart(item));
+    },
+    increaseQuantity,
+    decreaseQuantity,
+    removeFromCart,
   };
 }
 

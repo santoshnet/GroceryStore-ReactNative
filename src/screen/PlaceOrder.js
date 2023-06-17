@@ -57,25 +57,7 @@ class PlaceOrder extends Component {
     };
   }
 
-  async componentDidMount() {
-    this.reRenderSomething = this.props.navigation.addListener('focus', () => {
-      this.init();
-    });
-  }
 
-  init = async () => {
-    let cart = await getCart();
-    let userDetails = await getUserDetails();
-
-    let totalPrice = cart.reduce((accum, item) => accum + item.subTotal, 0);
-    // this.props.set_User_Details(userDetails);
-    this.setState({
-      cartCount: Cart.getTotalCartCount(cart),
-      cartList: cart,
-      user: userDetails,
-      totalPrice: totalPrice,
-    });
-  };
 
   onPlaceOrder = () => {
     // if (this.state.paymentMethod === 'Online payment') {
@@ -91,18 +73,12 @@ class PlaceOrder extends Component {
         itemQuantity: element.quantity,
         attribute: element.attribute,
         currency: element.currency,
-        itemImage: element.images,
+        itemImage: element.images[0].image,
         itemPrice: element.price,
-        itemSubTotal: element.price * element.quantity,
+        itemTotal: element.price * element.quantity,
       };
-      orderitems.push(orderItem, 'orderItems');
+      orderitems.push(orderItem);
     }
-    orderitems.push({
-      itemTotal:
-        this.props.cartTotal > 300
-          ? this.props.cartTotal
-          : parseFloat(this.props.cartTotal) + 50,
-    });
 
     let orderDetails = {
       token: userAddress[0]?.token,
@@ -317,7 +293,7 @@ class PlaceOrder extends Component {
                 style={styles.checkout_container}
                 onPress={() => this.onPlaceOrder()}>
                 <Text style={styles.checkout}>
-                  Pay -inr{' '}
+                  Pay -Rs.{' '}
                   {this.props.cartTotal > 300
                     ? this.props.cartTotal
                     : parseFloat(this.props.cartTotal) + 50}

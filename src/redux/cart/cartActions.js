@@ -37,10 +37,13 @@ export const fetchProductsFailure = error => ({
   payload: {error},
 });
 
-export const addToCart = product => ({
-  type: ADD_TO_CART,
-  payload: {product},
-});
+export const addToCart = product => (
+  console.log(product,"cartActionsingle"),
+  {
+    type: ADD_TO_CART,
+    payload: {product},
+  }
+);
 
 export const removeFromCart = productId => ({
   type: REMOVE_FROM_CART,

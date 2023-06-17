@@ -38,16 +38,47 @@ const cartReducer = (state = initialState, action) => {
     }
     case 'ADD_TO_CART': {
       const {product} = action.payload;
-      const updatedCartItems = [...state.cartItems, product];
-      const updatedCartCount = state.cartCount + 1;
-      const updatedCartTotal = calculateCartTotal(updatedCartItems);
-      return {
-        ...state,
-        cartItems: updatedCartItems,
-        cartCount: updatedCartCount,
-        cartTotal: updatedCartTotal,
-      };
+      const existingCartItem = state.cartItems.find(
+        item => item.id === product.id,
+      );
+
+      if (existingCartItem) {
+        // If the product already exists in the cart, increase the quantity
+        const updatedCartItems = state.cartItems.map(item => {
+          if (item.id === product.id) {
+            return {...item, quantity: item.quantity + 1};
+          }
+          return item;
+        });
+
+        const updatedCartCount = state.cartCount + 1;
+        const updatedCartTotal = state.cartTotal + parseFloat(product.price);
+
+        return {
+          ...state,
+          cartItems: updatedCartItems,
+          cartCount: updatedCartCount,
+          cartTotal: updatedCartTotal,
+        };
+      } else {
+        // If the product is not in the cart, add it with quantity 1
+        const updatedCartItems = [
+          ...state.cartItems,
+          {...product, quantity: 1},
+        ];
+
+        const updatedCartCount = state.cartCount + 1;
+        const updatedCartTotal = state.cartTotal + parseFloat(product.price);
+
+        return {
+          ...state,
+          cartItems: updatedCartItems,
+          cartCount: updatedCartCount,
+          cartTotal: updatedCartTotal,
+        };
+      }
     }
+
     case 'REMOVE_FROM_CART': {
       const {productId} = action.payload;
       const updatedCartItems = state.cartItems.filter(
