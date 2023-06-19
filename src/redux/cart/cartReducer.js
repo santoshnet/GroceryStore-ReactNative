@@ -119,13 +119,14 @@ const cartReducer = (state = initialState, action) => {
         cartTotal: updatedCartTotal,
       };
     }
-    case 'RESET_CART':
+    case 'RESET_CART': {
       return {
         ...state,
         cartItems: [],
         cartCount: 0,
         cartTotal: 0,
       };
+    }
 
     default:
       return state;

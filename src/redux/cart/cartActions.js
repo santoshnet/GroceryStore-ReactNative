@@ -60,8 +60,7 @@ export const decreaseQuantity = productId => ({
   payload: {productId},
 });
 
-export const resetCart = () => {
-  return {
-    type: 'RESET_CART',
-  };
-};
+export const resetCart = () => ({
+  type: 'RESET_CART',
+  payload: {},
+});

@@ -32,6 +32,7 @@ import UpdateAddress from './src/screen/UpdateAddress';
 import {Provider} from 'react-redux';
 import {stores, persistor} from './src/redux/stores';
 import {PersistGate} from 'redux-persist/integration/react';
+import InstamojoPayment from './src/screen/InstamojoPayment';
 
 const MainStack = createNativeStackNavigator();
 const RootStack = createNativeStackNavigator();
@@ -97,6 +98,7 @@ class App extends Component {
         component={AddressDetailsScreen}
       />
       <ProductStack.Screen name="PlaceOrder" component={PlaceOrder} />
+      <ProductStack.Screen name="InstamojoPayment" component={InstamojoPayment} />
       <ProductStack.Screen name="ThankYou" component={ThankYou} />
     </ProductStack.Navigator>
   );

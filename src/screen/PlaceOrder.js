@@ -57,8 +57,6 @@ class PlaceOrder extends Component {
     };
   }
 
-
-
   onPlaceOrder = () => {
     // if (this.state.paymentMethod === 'Online payment') {
     //   this.onRazorpayInit();
@@ -105,7 +103,8 @@ class PlaceOrder extends Component {
             this.props.resetCart();
             this.props.navigation.navigate('ThankYou');
           } else {
-            this.onRazorpayInit(data.data);
+            this.props.resetCart();
+            this.props.navigation.replace('InstamojoPayment', {url: data.url});
           }
           this.refs.loading.close();
         }
@@ -141,6 +140,7 @@ class PlaceOrder extends Component {
 
     // setModalVisible(!modalVisible)
   };
+
   renderCartItem(item) {
     console.log(item, 'renderItem');
     return (
