@@ -129,16 +129,16 @@ class NewProductScreen extends Component {
       <View style={styles.mainContainer}>
         <AppStatusBar backgroundColor="#44C062" barStyle="light-content" />
         <ToolBar
-          title="Popular Product"
+          title="New Products"
           icon="menu"
           onPress={() => navigation.openDrawer()}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{marginRight: 10}}
             onPress={() => {
               this.setState({showSearch: true});
             }}>
             <Icon name="search" size={24} color="#ffffff" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <BadgeIcon
             icon="shopping-cart"

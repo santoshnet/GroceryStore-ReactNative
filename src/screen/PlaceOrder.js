@@ -64,12 +64,14 @@ class PlaceOrder extends Component {
     // this.refs.loading.show();
     const {userAddress} = this.props;
     let orderItems = [];
-    for (const element of this.props.cartItems) {
-      let itemTotal =
-        this.props.cartTotal > 300
-          ? this.props.cartTotal
-          : parseFloat(this.props.cartTotal) + 50;
+    // let item_whole_Total =
+    //   this.props.cartTotal > 300
+    //     ? this.props.cartTotal
+    //     : parseFloat(this.props.cartTotal) + 50;
 
+    // console.log(item_whole_Total, 'item_whole_Total');
+
+    for (const element of this.props.cartItems) {
       let orderItem = {
         itemName: element.name,
         itemQuantity: element.quantity,
@@ -77,7 +79,7 @@ class PlaceOrder extends Component {
         currency: element.currency,
         itemImage: element.images[0].image,
         itemPrice: element.price,
-        itemTotal: itemTotal,
+        itemTotal: element.price * element.quantity,
       };
       orderItems.push(orderItem);
     }

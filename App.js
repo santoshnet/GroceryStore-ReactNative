@@ -98,7 +98,10 @@ class App extends Component {
         component={AddressDetailsScreen}
       />
       <ProductStack.Screen name="PlaceOrder" component={PlaceOrder} />
-      <ProductStack.Screen name="InstamojoPayment" component={InstamojoPayment} />
+      <ProductStack.Screen
+        name="InstamojoPayment"
+        component={InstamojoPayment}
+      />
       <ProductStack.Screen name="ThankYou" component={ThankYou} />
     </ProductStack.Navigator>
   );

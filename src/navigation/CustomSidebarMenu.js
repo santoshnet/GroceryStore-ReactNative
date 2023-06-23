@@ -56,11 +56,11 @@ class CustomSidebarMenu extends Component {
         navOptionName: 'New Products',
         screenToNavigate: 'NewProducts',
       },
-      {
-        navOptionThumb: 'codesandbox',
-        navOptionName: 'Popular Products',
-        screenToNavigate: 'PopularProducts',
-      },
+      // {
+      //   navOptionThumb: 'codesandbox',
+      //   navOptionName: 'Popular Products',
+      //   screenToNavigate: 'PopularProducts',
+      // },
 
       {
         navOptionThumb: 'shopping-cart',
