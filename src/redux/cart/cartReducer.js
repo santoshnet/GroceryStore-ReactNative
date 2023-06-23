@@ -1,12 +1,8 @@
-// cartReducer.js
-
-// cartReducer.js
-
 const initialState = {
   products: [],
   cartItems: [],
   cartCount: 0,
-  cartTotal: '0.00', // Initialize cartTotal as a string with 2 decimal places
+  cartTotal: 0,
   error: null,
 };
 
@@ -21,6 +17,7 @@ export const calculateCartTotal = cartItems => {
 };
 
 const cartReducer = (state = initialState, action) => {
+  console.log(action, 'checks reducers');
   switch (action.type) {
     case 'FETCH_PRODUCTS_SUCCESS': {
       return {
@@ -42,41 +39,33 @@ const cartReducer = (state = initialState, action) => {
         item => item.id === product.id,
       );
 
+      let updatedCartItems, updatedCartCount, updatedCartTotal;
+
       if (existingCartItem) {
-        // If the product already exists in the cart, increase the quantity
-        const updatedCartItems = state.cartItems.map(item => {
+        updatedCartItems = state.cartItems.map(item => {
           if (item.id === product.id) {
             return {...item, quantity: item.quantity + 1};
           }
           return item;
         });
-
-        const updatedCartCount = state.cartCount + 1;
-        const updatedCartTotal = state.cartTotal + parseFloat(product.price);
-
-        return {
-          ...state,
-          cartItems: updatedCartItems,
-          cartCount: updatedCartCount,
-          cartTotal: updatedCartTotal,
-        };
+        updatedCartCount = state.cartCount; // No change in cart count
+        updatedCartTotal = (
+          parseFloat(state.cartTotal) + parseFloat(product.price)
+        ).toFixed(2);
       } else {
-        // If the product is not in the cart, add it with quantity 1
-        const updatedCartItems = [
-          ...state.cartItems,
-          {...product, quantity: 1},
-        ];
-
-        const updatedCartCount = state.cartCount + 1;
-        const updatedCartTotal = state.cartTotal + parseFloat(product.price);
-
-        return {
-          ...state,
-          cartItems: updatedCartItems,
-          cartCount: updatedCartCount,
-          cartTotal: updatedCartTotal,
-        };
+        updatedCartItems = [...state.cartItems, {...product, quantity: 1}];
+        updatedCartCount = state.cartCount + 1; // Increment cart count by 1
+        updatedCartTotal = (
+          parseFloat(state.cartTotal) + parseFloat(product.price)
+        ).toFixed(2);
       }
+
+      return {
+        ...state,
+        cartItems: updatedCartItems,
+        cartCount: updatedCartCount,
+        cartTotal: updatedCartTotal,
+      };
     }
 
     case 'REMOVE_FROM_CART': {
@@ -120,6 +109,7 @@ const cartReducer = (state = initialState, action) => {
       };
     }
     case 'RESET_CART': {
+      console.log('rest reducers');
       return {
         ...state,
         cartItems: [],

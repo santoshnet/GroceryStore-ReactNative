@@ -22,6 +22,7 @@ import ProductRow from '../components/ProductItem/ProductRow';
 import Cart from '../utils/Cart';
 import Loading from '../components/Loading';
 import {connect} from 'react-redux';
+import SearchBar from '../components/SearchBar';
 import {
   removeFromCart,
   increaseQuantity,
@@ -40,6 +41,7 @@ class PopularProductScreen extends Component {
       selected: false,
       cartCount: 0,
       cartList: [],
+      showSearch: false,
     };
   }
 
@@ -133,9 +135,13 @@ class PopularProductScreen extends Component {
           title="Popular Product"
           icon="menu"
           onPress={() => navigation.openDrawer()}>
-          <TouchableOpacity style={{marginRight: 10}}>
+          {/* <TouchableOpacity
+            style={{marginRight: 10}}
+            onPress={() => {
+              this.setState({showSearch: true});
+            }}>
             <Icon name="search" size={24} color="#ffffff" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <BadgeIcon
             icon="shopping-cart"
@@ -156,6 +162,27 @@ class PopularProductScreen extends Component {
           />
         </View>
         <Loading ref="loading" indicatorColor={Color.colorPrimary} />
+        {this.state.showSearch ? (
+          <View style={styles.searchContainer}>
+            <SearchBar
+              onChangeText={text => this.onchangeSearchText(text)}
+              onClose={() => {
+                this.setState({showSearch: false, searchData: []});
+              }}
+              data={this.state.searchData}
+            />
+
+            <FlatList
+              key={'flatlist3'}
+              data={this.state.searchData}
+              renderItem={({item, index}) =>
+                this.renderSearchProductItem(item, index)
+              }
+              keyExtractor={item => item.id}
+              extraData={this.props}
+            />
+          </View>
+        ) : null}
       </View>
     );
   }

@@ -63,9 +63,13 @@ class PlaceOrder extends Component {
     // }
     // this.refs.loading.show();
     const {userAddress} = this.props;
-
-    let orderitems = [];
+    let orderItems = [];
     for (const element of this.props.cartItems) {
+      let itemTotal =
+        this.props.cartTotal > 300
+          ? this.props.cartTotal
+          : parseFloat(this.props.cartTotal) + 50;
+
       let orderItem = {
         itemName: element.name,
         itemQuantity: element.quantity,
@@ -73,9 +77,9 @@ class PlaceOrder extends Component {
         currency: element.currency,
         itemImage: element.images[0].image,
         itemPrice: element.price,
-        itemTotal: element.price * element.quantity,
+        itemTotal: itemTotal,
       };
-      orderitems.push(orderItem);
+      orderItems.push(orderItem);
     }
 
     let orderDetails = {
@@ -89,7 +93,7 @@ class PlaceOrder extends Component {
       zip_code: userAddress[0]?.zip,
       user_id: userAddress[0]?.userId,
       payment_mode: this.state.paymentMethod,
-      orderitems: orderitems,
+      orderitems: orderItems,
     };
     console.log(orderDetails, 'orderDetails');
 
@@ -106,12 +110,12 @@ class PlaceOrder extends Component {
             this.props.resetCart();
             this.props.navigation.replace('InstamojoPayment', {url: data.url});
           }
-          this.refs.loading.close();
+          // this.refs.loading.close();
         }
       })
       .catch(error => {
         console.log(error);
-        this.refs.loading.close();
+        // this.refs.loading.close();
       });
   };
 
@@ -266,7 +270,11 @@ class PlaceOrder extends Component {
                   Rs.
                   {this.props.cartTotal > 300
                     ? this.props.cartTotal
-                    : parseFloat(this.props.cartTotal) + 50}
+                    : parseFloat(
+                        (Math.round(this.props.cartTotal * 100) / 100).toFixed(
+                          2,
+                        ),
+                      ) + 50}
                 </Text>
               </View>
             </View>
@@ -296,7 +304,11 @@ class PlaceOrder extends Component {
                   Pay -Rs.{' '}
                   {this.props.cartTotal > 300
                     ? this.props.cartTotal
-                    : parseFloat(this.props.cartTotal) + 50}
+                    : parseFloat(
+                        (Math.round(this.props.cartTotal * 100) / 100).toFixed(
+                          2,
+                        ),
+                      ) + 50}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -431,7 +443,9 @@ function mapDispatchToProps(dispatch) {
     deleteSelectedAddress: selectedAddressId => {
       return dispatch(deleteSelectedAddress(selectedAddressId));
     },
-    resetCart,
+    resetCart: () => {
+      return dispatch(resetCart());
+    },
     set_User_Details,
     clearUserDetails,
   };

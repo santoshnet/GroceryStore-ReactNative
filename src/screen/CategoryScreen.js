@@ -77,7 +77,7 @@ class CategoryScreen extends Component {
             }}
             style={{height: 45, width: 45}}
           />
-          <Text style={styles.title}>{item.categry}</Text>
+          <Text style={styles.title}>{item.categry}</Text> 
         </View>
       </TouchableOpacity>
     );

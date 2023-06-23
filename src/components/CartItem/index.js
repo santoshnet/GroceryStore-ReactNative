@@ -15,6 +15,7 @@ import {
   decreaseQuantity,
   updateCartCountAndTotal,
   addToCart,
+  resetCart,
 } from '../../redux/cart/cartActions';
 class CartItem extends Component {
   constructor(props) {
@@ -103,7 +104,8 @@ class CartItem extends Component {
           <View style={styles.deleteBtn}>
             <TouchableOpacity
               onPress={() => {
-                removeFromCart(item.id);
+                // this.props.resetCart()
+                this.props.removeFromCart(item.id);
               }}>
               <Icon name="trash-2" size={20} color={Color.red} />
             </TouchableOpacity>
@@ -277,6 +279,7 @@ const mapDispatchToProps = {
   increaseQuantity,
   decreaseQuantity,
   addToCart,
+  resetCart,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CartItem);

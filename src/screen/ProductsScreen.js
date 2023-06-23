@@ -406,9 +406,7 @@ class ProductsScreen extends Component {
           title={this.state.category}
           icon="arrow-left"
           onPress={() => navigation.goBack()}>
-          <TouchableOpacity style={{marginRight: 10}}>
-            <Icon name="search" size={24} color="#ffffff" />
-          </TouchableOpacity>
+     
 
           <BadgeIcon
             icon="shopping-cart"

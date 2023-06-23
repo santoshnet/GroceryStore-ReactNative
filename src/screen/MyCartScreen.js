@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 
@@ -27,7 +28,9 @@ import {
   decreaseQuantity,
   updateCartCountAndTotal,
   addToCart,
+  resetCart,
 } from '../redux/cart/cartActions';
+
 class MyCartScreen extends Component {
   constructor(props) {
     super(props);
@@ -186,7 +189,10 @@ const mapStateToProps = state => {
   };
 };
 const mapDispatchToProps = {
-  removeFromCart,
+  removeFromCart: itemid => {
+    return dispatch(removeFromCart(itemid));
+  },
+  resetCart,
   increaseQuantity,
   decreaseQuantity,
   addToCart,

@@ -10,7 +10,8 @@ import {
 import AppStatusBar from '../components/AppStatusBar';
 import {Color, Fonts, Strings, Dimension} from '../theme';
 import ToolBar from '../components/ToolBar';
-import {TouchableOpacity} from 'react-native';import Icon from 'react-native-vector-icons/Feather';
+import {TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import {getUserDetails} from '../utils/LocalStorage';
 import BadgeIcon from '../components/BadgeIcon';
 import Cart from '../utils/Cart';
@@ -19,6 +20,16 @@ import OrderItem from '../components/ProductItem/OrderItem';
 import {Picker} from '@react-native-community/picker';
 import {getOrderDetails} from '../axios/ServerRequest';
 import Loading from '../components/Loading';
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  updateCartCountAndTotal,
+  addToCart,
+  resetCart,
+} from '../redux/cart/cartActions';
+import {connect} from 'react-redux';
+
 class MyOrderScreen extends Component {
   constructor(props) {
     super(props);
@@ -82,7 +93,16 @@ class MyOrderScreen extends Component {
           </View>
           <View style={{display: 'flex', flexDirection: 'row'}}>
             <Text style={styles.title}>Order Status : </Text>
-            <Text style={[styles.subTitle, {color:item.status === "Payment Fail" ? Color.red : Color.colorPrimaryDark}]}>
+            <Text
+              style={[
+                styles.subTitle,
+                {
+                  color:
+                    item.status === 'Payment Fail'
+                      ? Color.red
+                      : Color.colorPrimaryDark,
+                },
+              ]}>
               {item.status}
             </Text>
           </View>
@@ -119,7 +139,6 @@ class MyOrderScreen extends Component {
   }
 }
 
-export default MyOrderScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -167,3 +186,20 @@ const styles = StyleSheet.create({
     color: Color.gray,
   },
 });
+
+const mapStateToProps = state => {
+  return {
+    cartItems: state.cart?.cartItems, // Updated
+    cartCount: state.cart?.cartCount,
+    cartTotal: state.cart?.cartTotal,
+  };
+};
+const mapDispatchToProps = {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  addToCart,
+  resetCart,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyOrderScreen);

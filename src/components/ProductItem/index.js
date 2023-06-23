@@ -87,10 +87,6 @@ class ProductItem extends Component {
                 activeOpacity={1}
                 style={styles.plusBtn}
                 onPress={() => {
-                  // this.setState({
-                  //   count: this.state.count - 1,
-                  // });
-                  // this.setCart(item, item.id, this.state.count - 1, item.price);
                   this.props.decreaseQuantity(item.id);
                 }}>
                 <Icon name="minus" size={20} color={Color.red} />
@@ -123,11 +119,11 @@ class ProductItem extends Component {
             </View>
           )}
         </View>
-        <View style={styles.box2}>
+        {/* <View style={styles.box2}>
           <TouchableOpacity activeOpacity={1} style={styles.favoriteContainer}>
             <Icon name="heart" size={24} color={Color.colorPrimary} />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     );
   }

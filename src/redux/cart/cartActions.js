@@ -1,4 +1,3 @@
-// cartActions.js
 import axios from 'axios';
 
 export const FETCH_PRODUCTS_SUCCESS = 'FETCH_PRODUCTS_SUCCESS';
@@ -7,6 +6,7 @@ export const ADD_TO_CART = 'ADD_TO_CART';
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
 export const INCREASE_QUANTITY = 'INCREASE_QUANTITY';
 export const DECREASE_QUANTITY = 'DECREASE_QUANTITY';
+export const RESET_CART = 'RESET_CART';
 
 export const fetchProducts = () => {
   return async dispatch => {
@@ -14,15 +14,9 @@ export const fetchProducts = () => {
       const response = await axios.get(
         'https://jsonplaceholder.typicode.com/posts',
       );
-      dispatch({
-        type: 'FETCH_PRODUCTS_SUCCESS',
-        payload: response.data,
-      });
+      dispatch(fetchProductsSuccess(response.data));
     } catch (error) {
-      dispatch({
-        type: 'FETCH_PRODUCTS_FAILURE',
-        payload: error.message,
-      });
+      dispatch(fetchProductsFailure(error.message));
     }
   };
 };
@@ -37,13 +31,10 @@ export const fetchProductsFailure = error => ({
   payload: {error},
 });
 
-export const addToCart = product => (
-  console.log(product,"cartActionsingle"),
-  {
-    type: ADD_TO_CART,
-    payload: {product},
-  }
-);
+export const addToCart = product => ({
+  type: ADD_TO_CART,
+  payload: {product},
+});
 
 export const removeFromCart = productId => ({
   type: REMOVE_FROM_CART,
@@ -61,6 +52,5 @@ export const decreaseQuantity = productId => ({
 });
 
 export const resetCart = () => ({
-  type: 'RESET_CART',
-  payload: {},
+  type: RESET_CART,
 });

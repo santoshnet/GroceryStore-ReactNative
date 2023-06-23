@@ -12,7 +12,8 @@ import {Color, Fonts, Strings, Dimension} from '../theme';
 
 import ToolBar from '../components/ToolBar';
 
-import {TouchableOpacity} from 'react-native';import Icon from 'react-native-vector-icons/Feather';
+import {TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import BadgeIcon from '../components/BadgeIcon';
 import BannerSlider from '../components/BannerSlider';
 import {getNewProducts} from '../axios/ServerRequest';
@@ -131,7 +132,11 @@ class NewProductScreen extends Component {
           title="Popular Product"
           icon="menu"
           onPress={() => navigation.openDrawer()}>
-          <TouchableOpacity style={{marginRight: 10}}>
+          <TouchableOpacity
+            style={{marginRight: 10}}
+            onPress={() => {
+              this.setState({showSearch: true});
+            }}>
             <Icon name="search" size={24} color="#ffffff" />
           </TouchableOpacity>
 
@@ -172,7 +177,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 const mapStateToProps = state => {
   return {
     cartItems: state.cart?.cartItems, // Updated
@@ -188,4 +192,3 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewProductScreen);
-

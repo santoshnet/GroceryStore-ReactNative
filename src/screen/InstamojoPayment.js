@@ -1,58 +1,65 @@
 import React from 'react';
 import {Text, ToastAndroid, Alert} from 'react-native';
 import WebView from 'react-native-webview';
-import { BackHandler } from 'react-native';
-import { cancelPayment } from '../axios/ServerRequest';
-import { getToken } from '../utils/LocalStorage';
+import {BackHandler} from 'react-native';
+import {cancelPayment} from '../axios/ServerRequest';
+import {getToken} from '../utils/LocalStorage';
 
 export default class InstamojoPayment extends React.Component {
   constructor(props) {
     super(props);
     this.state = {url: null};
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
-
   }
 
   componentWillMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
-}
-componentWillUnmount() {
-  BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-}
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
 
   componentDidMount() {
     var url = this.props.route.params.url;
     this.setState({url: url});
   }
   handleBackButtonClick() {
-    this.cancelPaymentData ()
-    this.props.navigation.replace("MyCart");
+    this.cancelPaymentData();
+    this.props.navigation.replace('MyCart');
     return true;
-}
+  }
 
-cancelPaymentData = async () => {
-  let paymentURL = this.props.route.params.url;
-  paymentURL=paymentURL.split("/");
-  let request_id=paymentURL[paymentURL.length-1];
-  let options = {
-    razorpay_order_id: request_id,
-    token: await getToken(),
+  cancelPaymentData = async () => {
+    let paymentURL = this.props.route.params.url;
+    paymentURL = paymentURL.split('/');
+    let request_id = paymentURL[paymentURL.length - 1];
+    let options = {
+      razorpay_order_id: request_id,
+      token: await getToken(),
+    };
+    await cancelPayment(options)
+      .then(res => {
+        if (res.data.status === 200) {
+          this.props.navigation.navigate('MyOrder');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
-  await cancelPayment(options)
-    .then(res => {
-      if (res.data.status === 200) {
-        this.props.navigation.navigate('MyOrder');
-      }
-    })
-    .catch(err => {
-      console.log(err);
-     
-    });
-};
   onNavigationChange(webViewState) {
     let hitUrl = webViewState.url;
-    console.log("==============>",webViewState);
-    if(hitUrl && hitUrl.includes('https://primeefresh.com/api/v1/update_payment')){
+    console.log('==============>', webViewState);
+    if (
+      hitUrl &&
+      hitUrl.includes('https://primeefresh.com/api/v1/update_payment')
+    ) {
       console.log(hitUrl);
       this.props.navigation.navigate('ThankYou');
     }
