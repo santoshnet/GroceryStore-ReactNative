@@ -92,6 +92,17 @@ export const getNewProducts = async () => {
     return res;
   });
 };
+
+export const getBestSellingProducts = async () => {
+  return await API({
+    method: 'POST',
+    url: 'api/v1/bestSellings',
+    data: {token: await getToken()},
+  }).then(res => {
+    return res;
+  });
+};
+
 export const getBanners = async () => {
   return await API({
     method: 'GET',
@@ -226,7 +237,7 @@ export const getAllPincode = async () => {
   });
 };
 
-export const updatePayment = async (data) => {
+export const updatePayment = async data => {
   return await API({
     method: 'POST',
     url: 'api/v1/payment',
@@ -236,7 +247,7 @@ export const updatePayment = async (data) => {
   });
 };
 
-export const cancelPayment = async (data) => {
+export const cancelPayment = async data => {
   return await API({
     method: 'POST',
     url: 'api/v1/payment/cancel',

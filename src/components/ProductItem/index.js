@@ -1,6 +1,7 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
-import {Color, Fonts, Strings, Dimension} from '../../theme';
+import {Color, Fonts, Strings, Dimension, SIZES, COLORS} from '../../theme';
 import {ProductImage} from '../../axios/ServerRequest';
 import Icon from 'react-native-vector-icons/Feather';
 import {TouchableOpacity} from 'react-native';
@@ -63,7 +64,7 @@ class ProductItem extends Component {
     } = this.props;
     const productQuantity = this.getProductQuantity(item.id);
     return (
-      <View style={styles.container}>
+      <View style={styles.Maincontainer}>
         <View style={styles.box1}>
           <View style={styles.innerContainer}>
             <TouchableOpacity activeOpacity={1} onPress={this.props.onPress}>
@@ -73,57 +74,80 @@ class ProductItem extends Component {
                   uri: `${BASE_URL + item?.images[0]?.image}`,
                 }}
               />
-              <Text style={styles.title}>{item.name}</Text>
-
-              <Text style={styles.option}>
-                {item.attribute + ' - ' + item.currency + ' ' + item.price}
-              </Text>
             </TouchableOpacity>
           </View>
 
-          {productQuantity > 0 ? (
-            <View style={styles.quantity}>
-              <TouchableOpacity
-                activeOpacity={1}
-                style={styles.plusBtn}
-                onPress={() => {
-                  this.props.decreaseQuantity(item.id);
-                }}>
-                <Icon name="minus" size={20} color={Color.red} />
-              </TouchableOpacity>
-              <Text style={styles.counter}>{productQuantity}</Text>
-              <TouchableOpacity
-                activeOpacity={1}
-                style={styles.plusBtn}
-                onPress={() => {
-                  // this.setState({
-                  //   count: this.state.count + 1,
-                  // });
-                  // this.setCart(item, item.id, this.state.count + 1, item.price);
-                  this.props.increaseQuantity(item.id);
-                }}>
-                <Icon name="plus" size={18} color={Color.colorPrimary} />
-              </TouchableOpacity>
+          <View
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              // height:60
+            }}>
+            <Text style={styles.title}>{item.name}</Text>
+            <Text style={styles.option}>{item.attribute}</Text>
+          </View>
+
+          <View
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}>
+            <View>
+              <Text style={{ color: COLORS.black}}>
+                {item.currency + ' ' + item.price}
+              </Text>
             </View>
-          ) : (
-            <View style={styles.addToCart}>
-              <TouchableOpacity
-                activeOpacity={1}
-                onPress={() => {
-                  // this.setState({count: this.state.count + 1});
-                  // this.setCart(item, item.id, this.state.count + 1, item.price);
-                  addToCart({...item, quantity: 1});
-                }}>
-                <Text style={styles.addToCartText}>Add To Cart</Text>
-              </TouchableOpacity>
+            <View>
+              {productQuantity > 0 ? (
+                <View style={styles.quantity}>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.plusBtn}
+                    onPress={() => {
+                      this.props.decreaseQuantity(item.id);
+                    }}>
+                    <Icon name="minus" size={20} color={COLORS.darkGray2} />
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      borderColor: '#E2E2E2',
+                      borderWidth: 1,
+                      borderRadius: 12,
+                      boxShadow: '0px 6px 12px 0px rgba(0, 0, 0, 0.00)',
+                      height: 40,
+                      width: 40,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={styles.counter}>{productQuantity}</Text>
+                  </View>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.plusBtn}
+                    onPress={() => {
+                      this.props.increaseQuantity(item.id);
+                    }}>
+                    <Icon name="plus" size={18} color={Color.colorPrimary} />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={styles.addToCart}>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => {
+                      addToCart({...item, quantity: 1});
+                    }}>
+                    <Text style={styles.addToCartText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
-          )}
+          </View>
         </View>
-        {/* <View style={styles.box2}>
-          <TouchableOpacity activeOpacity={1} style={styles.favoriteContainer}>
-            <Icon name="heart" size={24} color={Color.colorPrimary} />
-          </TouchableOpacity>
-        </View> */}
       </View>
     );
   }
@@ -136,30 +160,23 @@ ProductItem.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  Maincontainer: {
     height: 280,
-    width: 220,
-    backgroundColor: Color.white,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    borderRadius: 10,
-    elevation: 5,
-    margin: 10,
-    justifyContent: 'center',
+    width: 200,
+    backgroundColor: COLORS.white,
+    borderColor: '#E2E2E2',
+    borderWidth: 1,
+    borderRadius: 18,
+    boxShadow: '0px 6px 12px 0px rgba(0, 0, 0, 0.00)',
+    padding: SIZES.radius,
     alignItems: 'center',
-    display: 'flex',
-    flexDirection: 'column',
+    margin: 10,
   },
   box1: {
     width: '100%',
     height: '100%',
     justifyContent: 'center',
-    alignItems: 'center',
+    // alignItems: 'center',
   },
   innerContainer: {
     display: 'flex',
@@ -169,7 +186,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: Fonts.primarySemiBold,
-    fontSize: 14,
+    fontSize: 12,
     color: Color.black,
     display: 'flex',
     justifyContent: 'center',
@@ -179,19 +196,20 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     marginTop: 10,
-    height: 35,
+    height: 45,
   },
   counter: {
     fontFamily: Fonts.primarySemiBold,
-    fontSize: 16,
-    color: Color.black,
+    fontSize: 13,
+    color: COLORS.darkGray2,
     textAlign: 'center',
     width: 30,
   },
   option: {
     fontFamily: Fonts.primarySemiBold,
     fontSize: 14,
-    color: Color.red,
+    fontWeight: '300',
+    color: COLORS.lightGray1,
     textAlign: 'center',
     marginLeft: 10,
     marginRight: 10,
@@ -204,10 +222,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   addToCart: {
-    backgroundColor: Color.colorPrimary,
+    backgroundColor: '#53B175',
     color: Color.white,
     textAlign: 'center',
-    borderRadius: 20,
+    borderRadius: 17,
+    width: 50,
+    height: 50,
+    display: 'flex',
+    justifyContent: 'center',
   },
   quantity: {
     display: 'flex',
@@ -218,16 +240,16 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 33,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
+    // height: 33,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 1,
+    // },
+    // shadowOpacity: 0.2,
+    // shadowRadius: 1.41,
 
-    elevation: 2,
+    // elevation: 2,
   },
 
   addToCartText: {

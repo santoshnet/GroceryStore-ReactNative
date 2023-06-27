@@ -26,7 +26,7 @@ class SplashScreen extends Component {
       if (user !== null) {
         this.props.navigation.replace('HomeScreen');
       } else {
-        this.props.navigation.replace('WelcomeScreen');
+        this.props.navigation.replace('GetStartsScreen');
       }
     }
   }

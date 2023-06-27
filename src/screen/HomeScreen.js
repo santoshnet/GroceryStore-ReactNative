@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-/* eslint-disable no-undef */
+
 import React, {Component} from 'react';
 import {
   FlatList,
@@ -9,9 +9,12 @@ import {
   StyleSheet,
   Text,
   View,
+  TextInput,
+  Platform,
 } from 'react-native';
+
 import AppStatusBar from '../components/AppStatusBar';
-import {Color, Dimension, Fonts} from '../theme';
+import {Color, Dimension, Fonts, SIZES, COLORS, FONTS, item} from '../theme';
 
 import ToolBar from '../components/ToolBar';
 
@@ -46,6 +49,13 @@ import {
   updateCartCountAndTotal,
   addToCart,
 } from '../redux/cart/cartActions';
+import {
+  fetchCategories,
+  fetchBestSellingProducts,
+  fetchNewProducts,
+  fetchOffers,
+} from '../redux/products/productsActions';
+import drawerMenu from '../assets/images/menu.png';
 
 import {
   addSelectedAddress,
@@ -53,6 +63,7 @@ import {
   fetchDeliveryPinCodeAddress,
 } from '../redux/userAddress/actions';
 import {connect} from 'react-redux';
+
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
@@ -73,6 +84,17 @@ class HomeScreen extends Component {
   }
 
   async componentDidMount() {
+    const {
+      fetchCategories,
+      fetchBestSellingProducts,
+      fetchNewProducts,
+      fetchOffers,
+    } = this.props;
+
+    fetchCategories();
+    fetchBestSellingProducts();
+    fetchNewProducts();
+    fetchOffers();
     this.reRenderSomething = this.props.navigation.addListener('focus', () => {
       this.init();
     });
@@ -178,7 +200,6 @@ class HomeScreen extends Component {
       });
   };
 
-
   resetData = () => {
     this.setState({newProduct: this.state.newProduct});
     this.setState({popularProduct: this.state.popularProduct});
@@ -192,12 +213,14 @@ class HomeScreen extends Component {
   };
 
   onchangeSearchText(text) {
+    this.setState({searchText: text});
     searchProduct(text)
       .then(response => {
-        this.setState({searchData: response.data.products});
+        this.setState({searchData: response.data.products, showSearch: true});
       })
       .catch(error => {
         console.log(error);
+        this.setState({showSearch: false});
       });
   }
 
@@ -232,144 +255,243 @@ class HomeScreen extends Component {
               style={{height: 35, width: 35}}
             />
           </View>
-          <Text style={{fontSize: 16}}>{item.name}</Text>
+          <Text style={{fontSize: 16}}>{item?.name}</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
-  render() {
+  renderHeader = () => {
     const {navigation, cartCount} = this.props;
+    return (
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 20,
+          paddingVertical: 20,
+        }}>
+        <View style={{width: 27, height: 27}}>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={styles.toggle}
+            onPress={() => navigation.openDrawer()}>
+            <Image source={drawerMenu} style={styles.iconFilter} />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.containerSearch}>
+          {/* Icon */}
+          <Icon
+            name="search"
+            style={styles.iconSearch}
+            size={20}
+            color={COLORS.black}
+          />
+
+          {/* Text Input */}
+          <TextInput
+            style={styles.textInputSearch}
+            placeholder="search ..."
+            value={this.state.searchText}
+            onChangeText={text => this.onchangeSearchText(text)}
+          />
+        </View>
+
+        <View
+          style={{
+            width: 37,
+            height: 27,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <BadgeIcon
+            icon="shopping-cart"
+            count={cartCount}
+            onPress={() => {
+              navigation.navigate('MyCart');
+            }}
+          />
+        </View>
+      </View>
+    );
+  };
+
+  render() {
+    const {
+      categoryData,
+      bestSellingProducts,
+      newProducts,
+      offers,
+      loading,
+      error,
+    } = this.props.productsReducer;
     return (
       <View style={styles.mainContainer}>
         <View style={styles.mainContainer}>
           <AppStatusBar backgroundColor="#44C062" barStyle="light-content" />
-          <ToolBar
-            title="Home"
-            icon="menu"
-            onPress={() => navigation.openDrawer()}>
-            <TouchableOpacity
-              style={{marginRight: 10}}
-              onPress={() => {
-                this.setState({showSearch: true});
-              }}>
-              <Icon name="search" size={24} color="#ffffff" />
-            </TouchableOpacity>
 
-            <BadgeIcon
-              icon="shopping-cart"
-              count={cartCount}
-              onPress={() => {
-                navigation.navigate('MyCart');
-              }}
-            />
-          </ToolBar>
+          {this.renderHeader()}
 
-          <ScrollView style={styles.scrollView}>
-            <View>
-              {this.state.banners.length > 0 && (
-                <BannerSlider banners={this.state.banners} />
-              )}
-              <View style={styles.categoryMainContainer}>
-                <View style={styles.categoryHeaderContainer}>
-                  <Text style={styles.title}>All Categories</Text>
-                </View>
-                <ScrollView
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}>
-                  {this.state.categoryData &&
-                    this.state.categoryData.slice(0, 7).map((item, index) => {
-                      return (
-                        <View
-                          style={styles.categoryDetailsContainer}
-                          key={index}>
-                          <TouchableOpacity
-                            activeOpacity={1}
-                            onPress={() => {
-                              this.props.navigation.navigate('ProductView', {
-                                screen: 'Products',
-                                params: {item: item},
-                              });
-                            }}>
-                            <View style={styles.categoryContainer}>
-                              <Image
-                                source={{
-                                  uri: `${BASE_URL + item?.cateimg}`,
-                                }}
-                                style={{
-                                  height: 65,
-                                  width: 65,
-                                  resizeMode: 'cover',
-                                  borderRadius: 10,
-                                }}
-                              />
-                            </View>
-                            <Text style={styles.catTitle}>{item.category}</Text>
-                          </TouchableOpacity>
-                        </View>
-                      );
-                    })}
-                </ScrollView>
-              </View>
-              <View style={{marginLeft: 20, marginTop: 20}}>
-                <Text style={styles.title}>New Products</Text>
+          {this.state.showSearch ? (
+            <View style={{paddingHorizontal: 20}}>
+              <View
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-end',
+                  flexDirection: 'row',
+                }}>
+                <Icon
+                  name="x-circle"
+                  style={styles.iconSearch}
+                  size={20}
+                  color={COLORS.black}
+                  onPress={() =>
+                    this.setState({showSearch: false, searchText: ''})
+                  }
+                />
               </View>
               <FlatList
-                style={{marginLeft: 10}}
-                showsHorizontalScrollIndicator={false}
-                horizontal={true}
-                key={'flatlist'}
-                data={this.state.newProduct}
+                key={'flatlist3'}
+                data={this.state.searchData}
                 renderItem={({item, index}) =>
-                  this.renderProductItem(item, index)
+                  this.renderSearchProductItem(item, index)
                 }
                 keyExtractor={item => item.id}
-                extraData={this.state}
-              />
-
-              <ScrollView horizontal={true}>
-                <View
-                  style={{display: 'flex', flexDirection: 'row', padding: 10}}>
-                  {this.state.offers.map((item, index) => {
-                    return (
-                      <Image
-                        key={index}
-                        source={{uri: BASE_URL + item.image}}
-                        style={{
-                          width: Dimension.window.width - 70,
-                          resizeMode: 'contain',
-                          borderRadius: 10,
-                          height: 150,
-                          marginRight: 20,
-                        }}
-                      />
-                    );
-                  })}
-                </View>
-              </ScrollView>
-
-              {this.state?.popularProduct?.length > 0 && (
-                <View style={{marginLeft: 20, marginTop: 20}}>
-                  <Text style={styles.title}>Popular Products</Text>
-                </View>
-              )}
-
-              <FlatList
-                style={{marginLeft: 10}}
-                showsHorizontalScrollIndicator={false}
-                horizontal={true}
-                key={'flatlist1'}
-                data={this.state.popularProduct}
-                renderItem={({item, index}) =>
-                  this.renderProductItem(item, index)
-                }
-                keyExtractor={item => item.id}
-                extraData={this.state}
+                extraData={this.props}
               />
             </View>
-          </ScrollView>
+          ) : (
+            <ScrollView style={styles.scrollView}>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}>
+                {categoryData &&
+                  categoryData.slice(0, 7).map((item, index) => {
+                    return (
+                      <View style={styles.categoryDetailsContainer} key={index}>
+                        <TouchableOpacity
+                          activeOpacity={1}
+                          onPress={() => {
+                            this.props.navigation.navigate('ProductView', {
+                              screen: 'Products',
+                              params: {item: item},
+                            });
+                          }}>
+                          <View style={styles.categoryContainer}>
+                            <Image
+                              source={{
+                                uri: `${BASE_URL + item?.cateimg}`,
+                              }}
+                              style={{
+                                height: 65,
+                                width: 65,
+                                resizeMode: 'cover',
+                                borderRadius: 10,
+                              }}
+                            />
+                          </View>
+                          <Text style={styles.catTitle}>{item.category}</Text>
+                        </TouchableOpacity>
+                      </View>
+                    );
+                  })}
+              </ScrollView>
+
+              <View>
+                {this.state.banners.length > 0 && (
+                  <BannerSlider banners={this.state.banners} />
+                )}
+                <View style={styles.categoryMainContainer}>
+                  <View
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                    }}>
+                    <View style={{marginLeft: 20, marginTop: 20}}>
+                      <Text style={styles.title}>New Products</Text>
+                    </View>
+                    <View style={{marginRight: 20, marginTop: 20}}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.props.navigation.navigate('ProductView', {
+                            screen: 'Products',
+                            params: {item: item},
+                          });
+                        }}>
+                        <Text style={{color: COLORS.green}}>See all</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                  <FlatList
+                    style={{marginLeft: 10}}
+                    showsHorizontalScrollIndicator={false}
+                    horizontal={true}
+                    key={'flatlist'}
+                    data={newProducts}
+                    renderItem={({item, index}) =>
+                      this.renderProductItem(item, index)
+                    }
+                    keyExtractor={item => item.id}
+                    extraData={this.state}
+                  />
+
+                  <ScrollView horizontal={true}>
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        padding: 10,
+                      }}>
+                      {this.state.offers.map((item, index) => {
+                        return (
+                          <Image
+                            key={index}
+                            source={{uri: BASE_URL + item.image}}
+                            style={{
+                              width: Dimension.window.width - 70,
+                              resizeMode: 'contain',
+                              borderRadius: 10,
+                              height: 150,
+                              marginRight: 20,
+                            }}
+                          />
+                        );
+                      })}
+                    </View>
+                  </ScrollView>
+                </View>
+
+                {bestSellingProducts.length > 0 && (
+                  <View style={{marginLeft: 20, marginTop: 20}}>
+                    <Text style={styles.title}>Popular Products</Text>
+                  </View>
+                )}
+
+                <FlatList
+                  style={{marginLeft: 10}}
+                  showsHorizontalScrollIndicator={false}
+                  horizontal={true}
+                  key={'flatlist1'}
+                  data={bestSellingProducts}
+                  renderItem={({item, index}) =>
+                    this.renderProductItem(item, index)
+                  }
+                  keyExtractor={item => item.id}
+                  extraData={this.state}
+                />
+              </View>
+            </ScrollView>
+          )}
         </View>
-        {this.state.showSearch ? (
+
+        {/* {this.state.showSearch ? (
           <View style={styles.searchContainer}>
             <SearchBar
               onChangeText={text => this.onchangeSearchText(text)}
@@ -389,7 +511,7 @@ class HomeScreen extends Component {
               extraData={this.props}
             />
           </View>
-        ) : null}
+        ) : null} */}
 
         <Loading ref="loading" indicatorColor={Color.colorPrimary} />
       </View>
@@ -427,19 +549,10 @@ const styles = StyleSheet.create({
     height: 75,
     width: 75,
     padding: 10,
-    borderRadius: 15,
+    borderRadius: 45,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Color.white,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-
-    elevation: 6,
+    backgroundColor: '#B5F98B',
     marginBottom: 10,
     marginTop: 10,
     marginLeft: 10,
@@ -497,10 +610,46 @@ const styles = StyleSheet.create({
   spinnerTextStyle: {
     color: '#FFF',
   },
+
+  containerSearch: {
+    flexDirection: 'row',
+    ...Platform.select({
+      android: {height: 45},
+      ios: {height: 40},
+    }),
+    display: 'flex',
+    justifyContent: 'center',
+    width: '70%',
+    maxWidth: 290,
+    alignItems: 'center',
+    marginHorizontal: SIZES.padding,
+    marginVertical: SIZES.base,
+    paddingHorizontal: SIZES.radius,
+    borderRadius: SIZES.radius * 2,
+    backgroundColor: COLORS.lightGray2,
+  },
+  iconSearch: {
+    height: 20,
+    width: 20,
+    tintColor: COLORS.black,
+  },
+  iconFilter: {
+    height: 30,
+    width: 30,
+    tintColor: '#D9D9D9',
+  },
+  textInputSearch: {
+    flex: 1,
+    marginLeft: SIZES.radius,
+    ...FONTS.body3,
+    ...Platform.select({
+      android: {justifyContent: 'center', top: 3},
+    }),
+  },
 });
 
 function mapStateToProps(state) {
-  // console.log(state, 'state');
+  console.log(state, 'state');
   return {
     userAddress: state?.userAddressReducer.userAddress,
     selectedUserAddress: state?.userAddressReducer.selectedUserAddress,
@@ -508,6 +657,7 @@ function mapStateToProps(state) {
     cartItems: state.cart.cartItems,
     cartTotal: state.cart.cartTotal,
     cartCount: state.cart.cartCount,
+    productsReducer: state.productsReducer,
   };
 }
 
@@ -525,6 +675,10 @@ function mapDispatchToProps(dispatch) {
     increaseQuantity,
     decreaseQuantity,
     removeFromCart,
+    fetchCategories: () => dispatch(fetchCategories()),
+    fetchBestSellingProducts: () => dispatch(fetchBestSellingProducts()),
+    fetchNewProducts: () => dispatch(fetchNewProducts()),
+    fetchOffers: () => dispatch(fetchOffers()),
   };
 }
 
