@@ -269,7 +269,7 @@ class RegisterScreen extends Component {
   render() {
     return (
       <View style={styles.mainContainer}>
-        <AppStatusBar barStyle="dark-content" backgroundColor={Color.colo} />
+        <AppStatusBar barStyle="dark-content" translucent={true} backgroundColor={Color.transparent} />
 
         <KeyboardAvoidingView
           behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
@@ -282,7 +282,7 @@ class RegisterScreen extends Component {
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps={'always'}>
               <View style={styles.container}>
-                <View style={styles.loginLinkContainer}>
+                {/* <View style={styles.loginLinkContainer}>
                   <TouchableOpacity
                     onPress={() => {
                       this.props.navigation.navigate('Login');
@@ -292,13 +292,15 @@ class RegisterScreen extends Component {
                   <Text style={styles.activeLinkText}>
                     {Strings.signup_text}
                   </Text>
-                </View>
-                <View style={styles.headingContainer}>
+                </View> */}
+                {/* <View style={styles.headingContainer}>
                   <Text style={styles.heading}>{Strings.signup_text1}</Text>
 
                   <Text style={styles.tagline}>{Strings.signup_text2}</Text>
-                </View>
-                <Logo />
+                </View> */}
+                <Logo style={{ marginTop:20 }} />
+
+                <Text style={styles.heading}>Sign UP</Text>
                 <Card style={{margin: 30, padding: 20}}>
                   <UserInput
                     placeholder={Strings.nameHint}
@@ -415,12 +417,7 @@ class RegisterScreen extends Component {
             </ScrollView>
           </View>
         </KeyboardAvoidingView>
-        <View style={styles.bottomImage}>
-          <Image
-            source={require('../assets/images/thumb3.png')}
-            style={{width: 120, height: 120}}
-          />
-        </View>
+       
       </View>
     );
   }
@@ -429,7 +426,7 @@ class RegisterScreen extends Component {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: Color.white,
+    backgroundColor: '#F5F5F5',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -438,6 +435,7 @@ const styles = StyleSheet.create({
     flex: 1,
     zIndex: 99999999,
     width: '100%',
+    padding:15
   },
   loginLinkContainer: {
     display: 'flex',

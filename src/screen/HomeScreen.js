@@ -468,7 +468,7 @@ class HomeScreen extends Component {
                   </ScrollView>
                 </View>
 
-                {bestSellingProducts.length > 0 && (
+                {bestSellingProducts?.length > 0 && (
                   <View style={{marginLeft: 20, marginTop: 20}}>
                     <Text style={styles.title}>Popular Products</Text>
                   </View>
