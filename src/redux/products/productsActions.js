@@ -1,15 +1,12 @@
 import {
-  getAllCategory,
-  getBestSellingProducts,
-  getNewProducts,
-  getOffers,
+  getBestSellingProducts as getBestSellingProductsAPI,
+  getNewProducts as getNewProductsAPI,
+  getOffers as getOffersAPI,
+  getBanners as getBannersAPI,
+  getAllCategory
 } from '../../axios/ServerRequest';
 
 // Action types
-export const FETCH_CATEGORIES_REQUEST = 'FETCH_CATEGORIES_REQUEST';
-export const FETCH_CATEGORIES_SUCCESS = 'FETCH_CATEGORIES_SUCCESS';
-export const FETCH_CATEGORIES_FAILURE = 'FETCH_CATEGORIES_FAILURE';
-
 export const FETCH_BEST_SELLING_PRODUCTS_REQUEST =
   'FETCH_BEST_SELLING_PRODUCTS_REQUEST';
 export const FETCH_BEST_SELLING_PRODUCTS_SUCCESS =
@@ -25,7 +22,16 @@ export const FETCH_OFFERS_REQUEST = 'FETCH_OFFERS_REQUEST';
 export const FETCH_OFFERS_SUCCESS = 'FETCH_OFFERS_SUCCESS';
 export const FETCH_OFFERS_FAILURE = 'FETCH_OFFERS_FAILURE';
 
-// Category actions
+export const FETCH_BANNERS_REQUEST = 'FETCH_BANNERS_REQUEST';
+export const FETCH_BANNERS_SUCCESS = 'FETCH_BANNERS_SUCCESS';
+export const FETCH_BANNERS_FAILURE = 'FETCH_BANNERS_FAILURE';
+
+// Action types
+export const FETCH_CATEGORIES_REQUEST = 'FETCH_CATEGORIES_REQUEST';
+export const FETCH_CATEGORIES_SUCCESS = 'FETCH_CATEGORIES_SUCCESS';
+export const FETCH_CATEGORIES_FAILURE = 'FETCH_CATEGORIES_FAILURE';
+
+// Action creators
 export const fetchCategoriesRequest = () => ({
   type: FETCH_CATEGORIES_REQUEST,
 });
@@ -52,7 +58,6 @@ export const fetchCategories = () => {
   };
 };
 
-// Best selling products actions
 export const fetchBestSellingProductsRequest = () => ({
   type: FETCH_BEST_SELLING_PRODUCTS_REQUEST,
 });
@@ -71,7 +76,7 @@ export const fetchBestSellingProducts = () => {
   return async dispatch => {
     dispatch(fetchBestSellingProductsRequest());
     try {
-      const response = await getBestSellingProducts();
+      const response = await getBestSellingProductsAPI();
       dispatch(fetchBestSellingProductsSuccess(response.data.products));
     } catch (error) {
       dispatch(fetchBestSellingProductsFailure(error));
@@ -79,7 +84,6 @@ export const fetchBestSellingProducts = () => {
   };
 };
 
-// New products actions
 export const fetchNewProductsRequest = () => ({
   type: FETCH_NEW_PRODUCTS_REQUEST,
 });
@@ -98,7 +102,7 @@ export const fetchNewProducts = () => {
   return async dispatch => {
     dispatch(fetchNewProductsRequest());
     try {
-      const response = await getNewProducts();
+      const response = await getNewProductsAPI();
       dispatch(fetchNewProductsSuccess(response.data.products));
     } catch (error) {
       dispatch(fetchNewProductsFailure(error));
@@ -106,7 +110,6 @@ export const fetchNewProducts = () => {
   };
 };
 
-// Offers actions
 export const fetchOffersRequest = () => ({
   type: FETCH_OFFERS_REQUEST,
 });
@@ -125,10 +128,44 @@ export const fetchOffers = () => {
   return async dispatch => {
     dispatch(fetchOffersRequest());
     try {
-      const response = await getOffers();
+      const response = await getOffersAPI();
       dispatch(fetchOffersSuccess(response.data.offers));
     } catch (error) {
       dispatch(fetchOffersFailure(error));
     }
   };
 };
+
+export const fetchBannersRequest = () => ({
+  type: FETCH_BANNERS_REQUEST,
+});
+
+export const fetchBannersSuccess = banners => ({
+  type: FETCH_BANNERS_SUCCESS,
+  payload: banners,
+});
+
+export const fetchBannersFailure = error => ({
+  type: FETCH_BANNERS_FAILURE,
+  payload: error,
+});
+
+export const fetchBanners = () => {
+  return async dispatch => {
+    dispatch(fetchBannersRequest());
+    try {
+      const response = await getBannersAPI();
+      dispatch(fetchBannersSuccess(response.data.banners));
+    } catch (error) {
+      dispatch(fetchBannersFailure(error));
+    }
+  };
+};
+
+// Combine all the action creators into a single export statement
+// export {
+//   fetchBestSellingProducts,
+//   fetchNewProducts,
+//   fetchOffers,
+//   fetchBanners,
+// };

@@ -34,7 +34,7 @@ import {Provider} from 'react-redux';
 import {stores, persistor} from './src/redux/stores';
 import {PersistGate} from 'redux-persist/integration/react';
 import InstamojoPayment from './src/screen/InstamojoPayment';
-import SearchScreen from './src/screen/SearchScreen';
+import OurProductScreen from './src/screen/OurProductScreen';
 
 const MainStack = createNativeStackNavigator();
 const RootStack = createNativeStackNavigator();
@@ -66,7 +66,7 @@ class App extends Component {
       <Drawer.Screen name="PopularProducts" component={PopularProductScreen} />
       <Drawer.Screen name="MyCart" component={MyCartScreen} />
       <Drawer.Screen name="MyOrder" component={MyOrder} />
-      <Drawer.Screen name="SearchScreen" component={SearchScreen} />
+      <Drawer.Screen name="OurProductScreen" component={OurProductScreen} />
     </Drawer.Navigator>
   );
 

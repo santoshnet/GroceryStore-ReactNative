@@ -54,6 +54,7 @@ import {
   fetchBestSellingProducts,
   fetchNewProducts,
   fetchOffers,
+  fetchBanners,
 } from '../redux/products/productsActions';
 import drawerMenu from '../assets/images/menu.png';
 
@@ -89,10 +90,16 @@ class HomeScreen extends Component {
       fetchBestSellingProducts,
       fetchNewProducts,
       fetchOffers,
+      fetchBanners,
     } = this.props;
-
+    fetchBestSellingProducts().catch(error => {
+      console.log('Error fetching best selling products:', error);
+    });
+    fetchCategories().catch(error => {
+      console.log('Error fetching fetchCategories:', error);
+    });
     fetchCategories();
-    fetchBestSellingProducts();
+    fetchBanners();
     fetchNewProducts();
     fetchOffers();
     this.reRenderSomething = this.props.navigation.addListener('focus', () => {
@@ -320,12 +327,37 @@ class HomeScreen extends Component {
     );
   };
 
+  renderHeadingSeeAll(offerTitle) {
+    return (
+      <View
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexDirection: 'row',
+        }}>
+        <View style={{marginLeft: 20, marginTop: 20}}>
+          <Text style={styles.title}>{offerTitle}</Text>
+        </View>
+        <View style={{marginRight: 20, marginTop: 20}}>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate('OurProductScreen');
+            }}>
+            <Text style={{color: COLORS.green}}>See all</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
   render() {
     const {
       categoryData,
       bestSellingProducts,
       newProducts,
       offers,
+      banners,
       loading,
       error,
     } = this.props.productsReducer;
@@ -367,125 +399,105 @@ class HomeScreen extends Component {
             </View>
           ) : (
             <ScrollView style={styles.scrollView}>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}>
-                {categoryData &&
-                  categoryData.slice(0, 7).map((item, index) => {
-                    return (
-                      <View style={styles.categoryDetailsContainer} key={index}>
-                        <TouchableOpacity
-                          activeOpacity={1}
-                          onPress={() => {
-                            this.props.navigation.navigate('ProductView', {
-                              screen: 'Products',
-                              params: {item: item},
-                            });
-                          }}>
-                          <View style={styles.categoryContainer}>
-                            <Image
-                              source={{
-                                uri: `${BASE_URL + item?.cateimg}`,
-                              }}
-                              style={{
-                                height: 65,
-                                width: 65,
-                                resizeMode: 'cover',
-                                borderRadius: 10,
-                              }}
-                            />
-                          </View>
-                          <Text style={styles.catTitle}>{item.category}</Text>
-                        </TouchableOpacity>
-                      </View>
-                    );
-                  })}
-              </ScrollView>
+              <View style={styles.categoryMainContainer}>
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}>
+                  {categoryData &&
+                    categoryData.slice(0, 7).map((item, index) => {
+                      return (
+                        <View
+                          style={styles.categoryDetailsContainer}
+                          key={index}>
+                          <TouchableOpacity
+                            activeOpacity={1}
+                            onPress={() => {
+                              this.props.navigation.navigate('ProductView', {
+                                screen: 'Products',
+                                params: {item: item},
+                              });
+                            }}>
+                            <View style={styles.categoryContainer}>
+                              <Image
+                                source={{
+                                  uri: `${BASE_URL + item?.cateimg}`,
+                                }}
+                                style={{
+                                  height: 65,
+                                  width: 65,
+                                  resizeMode: 'cover',
+                                  borderRadius: 10,
+                                }}
+                              />
+                            </View>
+                            <Text style={styles.catTitle}>{item.category}</Text>
+                          </TouchableOpacity>
+                        </View>
+                      );
+                    })}
+                </ScrollView>
+              </View>
 
               <View>
-                {this.state.banners.length > 0 && (
-                  <BannerSlider banners={this.state.banners} />
-                )}
-                <View style={styles.categoryMainContainer}>
-                  <View
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                    }}>
-                    <View style={{marginLeft: 20, marginTop: 20}}>
-                      <Text style={styles.title}>New Products</Text>
-                    </View>
-                    <View style={{marginRight: 20, marginTop: 20}}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          this.props.navigation.navigate('ProductView', {
-                            screen: 'Products',
-                            params: {item: item},
-                          });
-                        }}>
-                        <Text style={{color: COLORS.green}}>See all</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  <FlatList
-                    style={{marginLeft: 10}}
-                    showsHorizontalScrollIndicator={false}
-                    horizontal={true}
-                    key={'flatlist'}
-                    data={newProducts}
-                    renderItem={({item, index}) =>
-                      this.renderProductItem(item, index)
-                    }
-                    keyExtractor={item => item.id}
-                    extraData={this.state}
-                  />
+                {banners.length > 0 && <BannerSlider banners={banners} />}
 
-                  <ScrollView horizontal={true}>
-                    <View
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        padding: 10,
-                      }}>
-                      {this.state.offers.map((item, index) => {
-                        return (
-                          <Image
-                            key={index}
-                            source={{uri: BASE_URL + item.image}}
-                            style={{
-                              width: Dimension.window.width - 70,
-                              resizeMode: 'contain',
-                              borderRadius: 10,
-                              height: 150,
-                              marginRight: 20,
-                            }}
-                          />
-                        );
-                      })}
-                    </View>
-                  </ScrollView>
-                </View>
-
-                {bestSellingProducts?.length > 0 && (
-                  <View style={{marginLeft: 20, marginTop: 20}}>
-                    <Text style={styles.title}>Popular Products</Text>
-                  </View>
-                )}
-
+                {this.renderHeadingSeeAll('New Products')}
                 <FlatList
                   style={{marginLeft: 10}}
                   showsHorizontalScrollIndicator={false}
                   horizontal={true}
-                  key={'flatlist1'}
-                  data={bestSellingProducts}
+                  key={'flatlist'}
+                  data={newProducts}
                   renderItem={({item, index}) =>
                     this.renderProductItem(item, index)
                   }
                   keyExtractor={item => item.id}
                   extraData={this.state}
                 />
+
+                {this.renderHeadingSeeAll('Best Offers')}
+                <ScrollView horizontal={true}>
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      padding: 10,
+                    }}>
+                    {offers.map((item, index) => {
+                      return (
+                        <Image
+                          key={index}
+                          source={{uri: BASE_URL + item.image}}
+                          style={{
+                            width: Dimension.window.width - 70,
+                            resizeMode: 'contain',
+                            borderRadius: 10,
+                            height: 150,
+                            marginRight: 20,
+                          }}
+                        />
+                      );
+                    })}
+                  </View>
+                </ScrollView>
+
+                {bestSellingProducts.length > 0 && (
+                  <>
+                    {this.renderHeadingSeeAll('Best Selling')}
+                    <FlatList
+                      style={{marginLeft: 10}}
+                      showsHorizontalScrollIndicator={false}
+                      horizontal={true}
+                      key={'flatlist1'}
+                      data={bestSellingProducts}
+                      renderItem={({item, index}) =>
+                        this.renderProductItem(item, index)
+                      }
+                      keyExtractor={item => item.id}
+                      extraData={this.state}
+                    />
+                  </>
+                )}
               </View>
             </ScrollView>
           )}
@@ -679,6 +691,7 @@ function mapDispatchToProps(dispatch) {
     fetchBestSellingProducts: () => dispatch(fetchBestSellingProducts()),
     fetchNewProducts: () => dispatch(fetchNewProducts()),
     fetchOffers: () => dispatch(fetchOffers()),
+    fetchBanners: () => dispatch(fetchBanners()),
   };
 }
 
