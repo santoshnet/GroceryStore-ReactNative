@@ -11,6 +11,12 @@ import {
   FETCH_BANNERS_REQUEST,
   FETCH_BANNERS_SUCCESS,
   FETCH_BANNERS_FAILURE,
+  FETCH_PRODUCTS_BY_CATEGORY_REQUEST,
+  FETCH_PRODUCTS_BY_CATEGORY_SUCCESS,
+  FETCH_PRODUCTS_BY_CATEGORY_FAILURE,
+  FETCH_CATEGORIES_REQUEST,
+  FETCH_CATEGORIES_SUCCESS,
+  FETCH_CATEGORIES_FAILURE,
 } from './productsActions';
 
 const initialState = {
@@ -20,10 +26,31 @@ const initialState = {
   banners: [],
   loading: false,
   error: null,
+  products: [],
+  categoryData: [],
 };
 
 const productsReducer = (state = initialState, action) => {
   switch (action.type) {
+    case FETCH_CATEGORIES_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case FETCH_CATEGORIES_SUCCESS:
+      return {
+        ...state,
+        categoryData: action.payload,
+        loading: false,
+        error: null,
+      };
+    case FETCH_CATEGORIES_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
     case FETCH_BEST_SELLING_PRODUCTS_REQUEST:
       return {
         ...state,
@@ -95,6 +122,25 @@ const productsReducer = (state = initialState, action) => {
         error: null,
       };
     case FETCH_BANNERS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case FETCH_PRODUCTS_BY_CATEGORY_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case FETCH_PRODUCTS_BY_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        products: action.payload,
+        loading: false,
+        error: null,
+      };
+    case FETCH_PRODUCTS_BY_CATEGORY_FAILURE:
       return {
         ...state,
         loading: false,

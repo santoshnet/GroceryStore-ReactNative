@@ -119,7 +119,14 @@ class ProductView extends Component {
           {useNativeDriver: false},
         )}>
         {/* {restaurant?.menu.map((item, index) => ( */}
-        <View style={{alignItems: 'center'}}>
+        <View
+          style={{
+            alignItems: 'center',
+            height: SIZES.height * 0.38,
+            borderBottomLeftRadius: 16,
+            borderBottomRightRadius: 16,
+            backgroundColor: COLORS.green,
+          }}>
           <View style={{height: SIZES.height * 0.38}}>
             {/* Food Image */}
             <Image
@@ -289,20 +296,28 @@ class ProductView extends Component {
     );
   }
 
+  getProductQuantity(productId) {
+    const {cartItems} = this.props;
+    const cartItem = cartItems.find(item => item.id === productId);
+    return cartItem ? cartItem.quantity : 0;
+  }
+
   renderDetails(productItem) {
+    const productQuantity = this.getProductQuantity(productItem.id);
     return (
       <View
         style={{
-          marginTop: SIZES.base,
           marginBottom: SIZES.padding,
-          paddingHorizontal: SIZES.padding,
+          backgroundColor: COLORS.lightGray2,
         }}>
         {/* item card section */}
         <View
           style={{
             height: 250,
-            borderRadius: 15,
+            width: '100%',
             backgroundColor: COLORS.white,
+            borderBottomLeftRadius: 28,
+            borderBottomRightRadius: 28,
           }}>
           {/* Favourite & new section */}
 
@@ -321,38 +336,151 @@ class ProductView extends Component {
         </View>
 
         {/* item info */}
-        <ScrollView style={styles.scrollView}>
-          <View
-            style={{
-              marginTop: SIZES.padding,
-            }}>
-            {/* Name and Description  */}
-            <Text
+        <View
+          style={{
+            backgroundColor: COLORS.lightGray2,
+            paddingHorizontal: SIZES.padding,
+          }}>
+          <ScrollView style={styles.scrollView}>
+            <View
               style={{
-                ...FONTS.h2,
-                color: COLORS.black,
-                fontWeight: 'bold',
+                marginTop: SIZES.padding,
+                color: COLORS.white,
               }}>
-              {productItem?.name}
-            </Text>
-            <ReadMore
-              numberOfLines={3}
-              renderTruncatedFooter={this._renderTruncatedFooter}
-              renderRevealedFooter={this._renderRevealedFooter}
-              onReady={this._handleTextReady}>
+              {/* Name and Description  */}
               <Text
                 style={{
-                  marginTop: SIZES.base,
-                  color: COLORS.darkGray,
-                  textAlign: 'justify',
-                  ...FONTS.h5,
+                  ...FONTS.h2,
+                  color: COLORS.black,
+                  fontWeight: 'bold',
                 }}>
-                {productItem?.description.replace(/<\/?[^>]+(>|$)/g, '')}
+                {productItem?.name}
               </Text>
-            </ReadMore>
-            {this.renderPincodeChange()}
-          </View>
-        </ScrollView>
+              <Text
+                style={{
+                  ...FONTS.body3,
+                  fontSize: 16,
+                  fontFamily: 'Poppins',
+                  fontStyle: 'normal',
+                  color: COLORS.gray2,
+                }}>
+                {productItem.attribute}
+              </Text>
+
+              <View
+                style={{
+                  paddingVertical: 18,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                }}>
+                <View style={styles.quantity}>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.plusBtn}
+                    onPress={() => {
+                      this.props.decreaseQuantity(productItem.id);
+                    }}>
+                    <Icon name="minus" size={20} color={COLORS.darkGray2} />
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      borderColor: '#E2E2E2',
+                      borderWidth: 1,
+                      borderRadius: 12,
+                      boxShadow: '0px 6px 12px 0px rgba(0, 0, 0, 0.00)',
+                      height: 40,
+                      width: 40,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={styles.counter}>{productQuantity}</Text>
+                  </View>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.plusBtn}
+                    onPress={() => {
+                      this.props.increaseQuantity(productItem.id);
+                    }}>
+                    <Icon name="plus" size={18} color={Color.colorPrimary} />
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <Text
+                    style={{
+                      ...FONTS.h1,
+                      fontSize: 18,
+                      fontFamily: 'Poppins',
+                      fontStyle: 'normal',
+                      color: COLORS.black,
+                      fontWeight: 'bold',
+                    }}>
+                    Rs. {productItem.price}
+                  </Text>
+                </View>
+              </View>
+
+              <View
+                style={{
+                  backgroundColor: '#E2E2E2',
+                  height: 1,
+                  marginTop: 17,
+                  marginBottom: 12,
+                }}
+              />
+              <View
+                style={{
+                  paddingVertical: 18,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                }}>
+                <View>
+                  <Text
+                    style={{
+                      ...FONTS.h1,
+                      fontSize: 18,
+                      fontFamily: 'Poppins',
+                      fontStyle: 'normal',
+                      color: COLORS.black,
+                      fontWeight: 'bold',
+                    }}>
+                    Product Detail
+                  </Text>
+                </View>
+
+                <View>
+                  {/* <Icon
+                    name={'chevron-down'}
+                    style={{paddingLeft: 7}}
+                    size={25}
+                    color={COLORS.black}
+                    onPress={() => this._renderRevealedFooter}
+                  /> */}
+                </View>
+              </View>
+              <ReadMore
+                numberOfLines={3}
+                renderTruncatedFooter={this._renderTruncatedFooter}
+                renderRevealedFooter={this._renderRevealedFooter}
+                onReady={this._handleTextReady}>
+                <Text
+                  style={{
+                    marginTop: SIZES.base,
+                    color: COLORS.darkGray,
+                    textAlign: 'justify',
+                    ...FONTS.h5,
+                  }}>
+                  {productItem?.description.replace(/<\/?[^>]+(>|$)/g, '')}
+                </Text>
+              </ReadMore>
+              {this.renderPincodeChange()}
+            </View>
+          </ScrollView>
+        </View>
       </View>
     );
   }
@@ -360,20 +488,34 @@ class ProductView extends Component {
   footerPart(productItem) {
     return (
       <View style={styles.box2}>
-        <View style={{width: '50%'}}>
-          <Text style={styles.total_price}>
-            Price: {'\u20B9'} {productItem?.price}
-          </Text>
-        </View>
-        <View style={{width: '50%'}}>
-          <TouchableOpacity
-            style={styles.checkout_container}
-            onPress={() => {
-              this.setToCart(productItem);
+        <TouchableOpacity
+          style={{
+            backgroundColor: '#63AC36',
+            borderRadius: 16,
+            height: 67,
+            width: 356,
+            paddingHorizontal: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'row',
+          }}
+          onPress={() => {
+            this.setToCart(productItem);
+          }}>
+          <View />
+          <Text
+            style={{
+              color: '#FFF9FF',
+              fontSize: 18,
+              fontFamily: 'Poppins',
+              fontWeight: '400',
+              textAlign: 'center',
+              lineHeight: 18,
             }}>
-            <Text style={styles.checkout}>ADD CART</Text>
-          </TouchableOpacity>
-        </View>
+            Add To Basket
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -413,18 +555,47 @@ class ProductView extends Component {
           backgroundColor={Color.colorPrimary}
           barStyle="light-content"
         />
-        <ToolBar
-          title="ProductView"
-          icon="arrow-left"
-          onPress={() => navigation.goBack()}>
-          <BadgeIcon
-            icon="shopping-cart"
-            count={this.props.cartCount}
-            onPress={() => {
-              navigation.navigate('MyCart');
-            }}
+        <View
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexDirection: 'row',
+            marginHorizontal: 5,
+            marginVertical: 5,
+            backgroundColor: COLORS.white,
+          }}>
+          <Icon
+            name="arrow-left"
+            style={{paddingLeft: 7}}
+            size={25}
+            color={COLORS.black}
+            onPress={() => this.props.navigation.goBack()}
           />
-        </ToolBar>
+          <Text
+            style={{fontSize: 20, paddingVertical: 10, color: COLORS.black}}>
+            {/* Our Products */}
+          </Text>
+          <View
+            style={{
+              width: 37,
+              height: 27,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginRight: 7,
+              marginTop: 5,
+            }}>
+            <BadgeIcon
+              icon="shopping-cart"
+              count={this.props.cartCount}
+              onPress={() => {
+                this.props.navigation.navigate('MyCart');
+              }}
+            />
+          </View>
+        </View>
+
         <ScrollView style={styles.scrollView}>
           {productItem !== undefined && productItem !== null ? (
             this.renderDetails(productItem)
@@ -434,7 +605,7 @@ class ProductView extends Component {
                 display: 'flex',
                 flexDirection: 'row',
                 marginTop: 50,
-                backgroundColor: COLORS.lightGray,
+                backgroundColor: COLORS.lightGray1,
                 padding: 15,
                 borderRadius: 10,
                 alignItems: 'center',
@@ -475,14 +646,14 @@ class ProductView extends Component {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: Color.white,
+    backgroundColor: COLORS.white,
     // flexDirection: 'column',
   },
   scrollView: {
     flex: 1,
-    backgroundColor: Color.backgroundColor,
     flexDirection: 'column',
     marginBottom: 20,
+    backgroundColor: COLORS.lightGray2,
   },
   title: {
     fontFamily: Fonts.primarySemiBold,
@@ -502,11 +673,16 @@ const styles = StyleSheet.create({
     width: 200,
   },
   box2: {
+    width: Dimension.window.width,
+    height: 50,
     position: 'absolute',
-    top: 2,
-    right: 2,
-    width: 20,
-    height: 20,
+    bottom: 30,
+    flexDirection: 'row',
+    backgroundColor: COLORS.lightGray2,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   },
   contentContainer: {
     display: 'flex',
@@ -531,6 +707,15 @@ const styles = StyleSheet.create({
     color: Color.gray,
     textAlign: 'center',
     marginTop: 20,
+  },
+  quantity: {
+    display: 'flex',
+    flexDirection: 'row',
+    color: Color.white,
+    textAlign: 'center',
+    // borderRadius: 20,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   counter: {
     fontFamily: Fonts.primarySemiBold,
@@ -562,37 +747,7 @@ const styles = StyleSheet.create({
     width: 100,
     marginTop: 20,
   },
-  quantity: {
-    display: 'flex',
-    flexDirection: 'row',
-    backgroundColor: Color.white,
-    color: Color.white,
-    textAlign: 'center',
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 33,
-    width: 100,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
-    marginTop: 20,
-  },
-  box2: {
-    width: Dimension.window.width,
-    height: 50,
-    position: 'absolute',
-    bottom: 0,
-    flexDirection: 'row',
-    backgroundColor: Color.colorPrimary,
-    display: 'flex',
-    flex: 1,
-  },
+
   total_price: {
     height: 50,
     paddingTop: 10,
@@ -648,8 +803,12 @@ function mapDispatchToProps(dispatch) {
     addToCart: item => {
       return dispatch(addToCart(item));
     },
-    increaseQuantity,
-    decreaseQuantity,
+    increaseQuantity: productId => {
+      return dispatch(increaseQuantity(productId));
+    },
+    decreaseQuantity: productId => {
+      return dispatch(decreaseQuantity(productId));
+    },
     removeFromCart,
   };
 }

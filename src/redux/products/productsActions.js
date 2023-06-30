@@ -3,7 +3,8 @@ import {
   getNewProducts as getNewProductsAPI,
   getOffers as getOffersAPI,
   getBanners as getBannersAPI,
-  getAllCategory
+  getAllCategory,
+  getProductByCategory as getProductByCategoryAPI,
 } from '../../axios/ServerRequest';
 
 // Action types
@@ -30,6 +31,32 @@ export const FETCH_BANNERS_FAILURE = 'FETCH_BANNERS_FAILURE';
 export const FETCH_CATEGORIES_REQUEST = 'FETCH_CATEGORIES_REQUEST';
 export const FETCH_CATEGORIES_SUCCESS = 'FETCH_CATEGORIES_SUCCESS';
 export const FETCH_CATEGORIES_FAILURE = 'FETCH_CATEGORIES_FAILURE';
+
+export const FETCH_PRODUCTS_BY_CATEGORY_REQUEST =
+  'FETCH_PRODUCTS_BY_CATEGORY_REQUEST';
+export const FETCH_PRODUCTS_BY_CATEGORY_SUCCESS =
+  'FETCH_PRODUCTS_BY_CATEGORY_SUCCESS';
+export const FETCH_PRODUCTS_BY_CATEGORY_FAILURE =
+  'FETCH_PRODUCTS_BY_CATEGORY_FAILURE';
+
+// Category Products Actions
+export const getProductByCategory = categoryId => async dispatch => {
+  try {
+    dispatch({type: FETCH_PRODUCTS_BY_CATEGORY_REQUEST});
+
+    const response = await getProductByCategoryAPI(categoryId); // Fetch category-wise products using the API function
+
+    dispatch({
+      type: FETCH_PRODUCTS_BY_CATEGORY_SUCCESS,
+      payload: response.data.products,
+    });
+  } catch (error) {
+    dispatch({
+      type: FETCH_PRODUCTS_BY_CATEGORY_FAILURE,
+      payload: error.message,
+    });
+  }
+};
 
 // Action creators
 export const fetchCategoriesRequest = () => ({

@@ -1,6 +1,8 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import 'react-native-gesture-handler';
-import {Text} from 'react-native';
+import {Text, Image} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
@@ -35,19 +37,102 @@ import {stores, persistor} from './src/redux/stores';
 import {PersistGate} from 'redux-persist/integration/react';
 import InstamojoPayment from './src/screen/InstamojoPayment';
 import OurProductScreen from './src/screen/OurProductScreen';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import search from './src/assets/images/search.png';
+import account from './src/assets/images/account.png';
+import store from './src/assets/images/store.png';
+import cart from './src/assets/images/cart.png';
+import {COLORS} from './src/theme';
+import Icon from 'react-native-vector-icons/Feather';
+import CategoryWiseProducts from './src/screen/CategoryWiseProducts';
 
 const MainStack = createNativeStackNavigator();
 const RootStack = createNativeStackNavigator();
 const ProductStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
 
 global.currentScreenIndex = 0;
+
+const screenOptions = {
+  headerShown: false,
+  animationEnabled: false,
+  tabBarStyle: {
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    backgroundColor: '#FFF',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -12,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 37,
+    elevation: 5,
+    height: 62,
+  },
+  tabBarItemStyle: {
+    height: 57,
+    margin: 5,
+    borderRadius: 10,
+  },
+};
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
+
+  TabNavigator = () => (
+    <Tab.Navigator
+      tabBarOptions={{
+        activeTintColor: COLORS.green, // Color for the active tab
+        inactiveTintColor: COLORS.darkGray, // Color for inactive tabs
+      }}
+      {...{screenOptions}}>
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarLabel: 'Store',
+          tabBarIcon: ({color, focused}) => (
+            <Icon name={'home'} size={26} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="OurProductScreen"
+        component={OurProductScreen}
+        options={{
+          tabBarLabel: 'Search',
+          tabBarIcon: ({color, focused}) => (
+            <Icon name={'search'} size={26} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="MyCart"
+        component={MyCartScreen}
+        options={{
+          tabBarLabel: 'Cart',
+          tabBarIcon: ({color, focused}) => (
+            <Icon name={'shopping-cart'} size={26} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Offers"
+        component={OffersScreen}
+        options={{
+          tabBarLabel: 'Offers',
+          tabBarIcon: ({color, focused}) => (
+            <Icon name={'activity'} size={26} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
 
   createDrawer = () => (
     <Drawer.Navigator
@@ -58,7 +143,7 @@ class App extends Component {
         animationEnabled: false,
       }}
       drawerContent={props => <CustomSidebarMenu {...props} />}>
-      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="TabNavigator" component={this.TabNavigator} />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
       <Drawer.Screen name="Category" component={CategoryScreen} />
       <Drawer.Screen name="Offers" component={OffersScreen} />
@@ -67,6 +152,10 @@ class App extends Component {
       <Drawer.Screen name="MyCart" component={MyCartScreen} />
       <Drawer.Screen name="MyOrder" component={MyOrder} />
       <Drawer.Screen name="OurProductScreen" component={OurProductScreen} />
+      <Drawer.Screen
+        name="CategoryWiseProducts"
+        component={CategoryWiseProducts}
+      />
     </Drawer.Navigator>
   );
 
@@ -92,7 +181,7 @@ class App extends Component {
       <ProductStack.Screen name="Products" component={ProductsScreen} />
       <ProductStack.Screen name="AllAddress" component={AllAddress} />
       <ProductStack.Screen name="UpdateAddress" component={UpdateAddress} />
-      
+
       <ProductStack.Screen
         name="AddressDetailsScreen"
         component={AddressDetailsScreen}

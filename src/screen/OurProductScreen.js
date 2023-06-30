@@ -27,6 +27,7 @@ import {
   fetchNewProducts,
   fetchOffers,
   fetchBanners,
+  getProductByCategory,
 } from '../redux/products/productsActions';
 import drawerMenu from '../assets/images/menu.png';
 import AppStatusBar from '../components/AppStatusBar';
@@ -42,6 +43,61 @@ import {connect} from 'react-redux';
 // Define your product categories
 
 class OurProductScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
+      categoryData: [],
+      popularProduct: [],
+      newProduct: [],
+      banners: [],
+      offers: [],
+      selected: false,
+      cartCount: 0,
+      cartList: [],
+      showSearch: false,
+      searchData: [],
+      searchText: '',
+    };
+  }
+
+  componentDidMount(){
+    this.props.fetchCategories()
+  }
+
+  // Function to handle search input change
+  onSearchInputChange = text => {
+    const {categoryData} = this.props.productsReducer;
+    // Update the search input value
+    this.setState({searchText: text});
+
+    // Check if search input is empty
+    if (text.trim() === '') {
+      // Perform logic when search input is empty
+      // For example, reset the displayed products to the original list
+      this.setState({searchData: this.props.productsReducer.data});
+    } else {
+      // Perform logic when search input is not empty
+
+      // Check if there is category data available
+      if (categoryData) {
+        // Perform logic based on the category data
+
+        // Filter the products based on the search input and category
+        const filteredProducts = categoryData.filter(category =>
+          category.category.toLowerCase().includes(text.toLowerCase()),
+        );
+
+        // Update the displayed products based on the filtered results
+        this.setState({searchData: filteredProducts});
+      } else {
+        // Perform logic when category data is not available
+        // For example, you can show a message or display all products
+        this.setState({searchData: this.props.productsReducer.data});
+      }
+    }
+  };
+
   renderHeader = () => {
     const {navigation, cartCount} = this.props;
     return (
@@ -67,8 +123,8 @@ class OurProductScreen extends Component {
           <TextInput
             style={styles.textInputSearch}
             placeholder="search ..."
-            // value={this.state.searchText}
-            // onChangeText={text => this.onchangeSearchText(text)}
+            value={this.state.searchText}
+            onChangeText={this.onSearchInputChange}
           />
         </View>
       </View>
@@ -94,6 +150,11 @@ class OurProductScreen extends Component {
 
     return (
       <TouchableOpacity
+        onPress={() => {
+          console.log(item, 'ajcsk');
+          this.props.getProductByCategory(item.id);
+          this.props.navigation.navigate('CategoryWiseProducts');
+        }}
         style={[
           styles.categoryCard,
           {backgroundColor: cardColor, borderColor: cardBorderColor},
@@ -116,15 +177,7 @@ class OurProductScreen extends Component {
   };
 
   render() {
-    const {
-      categoryData,
-      bestSellingProducts,
-      newProducts,
-      offers,
-      banners,
-      loading,
-      error,
-    } = this.props.productsReducer;
+    const {categoryData} = this.props.productsReducer;
     return (
       <View style={styles.container}>
         <AppStatusBar backgroundColor="#44C062" barStyle="light-content" />
@@ -134,12 +187,12 @@ class OurProductScreen extends Component {
             justifyContent: 'space-between',
             alignItems: 'center',
             flexDirection: 'row',
-            marginHorizontal:5,
-            marginVertical:5
+            marginHorizontal: 5,
+            marginVertical: 5,
           }}>
           <Icon
-            name="chevron-left"
-            style={styles.iconSearch}
+            name="arrow-left"
+            style={{paddingLeft: 7}}
             size={25}
             color={COLORS.black}
             onPress={() => this.props.navigation.goBack()}
@@ -148,18 +201,39 @@ class OurProductScreen extends Component {
             style={{fontSize: 20, paddingVertical: 10, color: COLORS.black}}>
             Our Products
           </Text>
-          <View />
+          <View
+            style={{
+              width: 37,
+              height: 27,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginRight: 7,
+              marginTop: 5,
+            }}>
+            <BadgeIcon
+              icon="shopping-cart"
+              count={this.props.cartCount}
+              onPress={() => {
+                this.props.navigation.navigate('MyCart');
+              }}
+            />
+          </View>
         </View>
 
         {this.renderHeader()}
 
         <FlatList
-          data={categoryData}
+          data={
+            Array.isArray(this.state.searchData) &&
+            this.state.searchData.length > 0
+              ? this.state.searchData
+              : categoryData
+          }
           renderItem={this.renderCategoryItem}
           keyExtractor={item => item.id.toString()}
           numColumns={2}
         />
-        
       </View>
     );
   }
@@ -288,6 +362,7 @@ function mapDispatchToProps(dispatch) {
     fetchNewProducts: () => dispatch(fetchNewProducts()),
     fetchOffers: () => dispatch(fetchOffers()),
     fetchBanners: () => dispatch(fetchBanners()),
+    getProductByCategory: id => dispatch(getProductByCategory(id)),
   };
 }
 
