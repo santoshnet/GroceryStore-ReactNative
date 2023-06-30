@@ -153,7 +153,7 @@ export default {
   wheat: '#f5deb3',
   whitesmoke: '#f5f5f5',
   yellowgreen: '#9acd32',
-  colorPrimary: '#27AE60',
+  colorPrimary: '#63AC36',
   colorPrimaryDark: '#27AE60',
   colorAccents: '#D81B60',
   colorAccent: '#00539b',

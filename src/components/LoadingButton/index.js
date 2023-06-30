@@ -5,19 +5,9 @@ import Font from '../../theme/Fonts';
 import {TouchableOpacity} from 'react-native';
 function LoadingButton(props) {
   return (
-    <View>
+    <View style={{ marginBottom:10 }}>
       {props.loading ? (
-        <View
-          style={[
-            styles.buttonStyle,
-            {
-              paddingLeft: 30,
-              paddingRight: 30,
-              paddingTop: 10,
-              paddingBottom: 10,
-            },
-            props.style,
-          ]}>
+        <View style={[styles.buttonStyle, props.style]}>
           <ActivityIndicator size="small" color="#ffffff" />
         </View>
       ) : (
@@ -34,16 +24,15 @@ function LoadingButton(props) {
 const styles = StyleSheet.create({
   buttonStyle: {
     color: Color.white,
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
     borderRadius: 5,
     backgroundColor: Color.colorPrimary,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonText: {
     color: Color.white,
-    fontFamily: Font.primaryRegular,
+    fontFamily: Font.primarySemiBold,
     fontSize: 14,
     textAlign: 'center',
   },

@@ -37,7 +37,8 @@ import {
   checkItemDeliveryAddress,
 } from '../redux/userAddress/actions';
 import {connect} from 'react-redux';
-
+import Icon from 'react-native-vector-icons/Feather';
+import FLAGIMAGE from '../assets/images/flag.png';
 class LoginScreen extends Component {
   constructor(props) {
     super(props);
@@ -137,7 +138,7 @@ class LoginScreen extends Component {
               zip: data?.data?.zip,
               token: data?.data?.token,
             };
-            console.log(userdatas,"userdata in login")
+            console.log(userdatas, 'userdata in login');
             this.props.addSelectedAddress(userdatas);
             this.props.setSelectedAddress(userdatas);
             this.props.navigation.replace('HomeScreen');
@@ -169,137 +170,170 @@ class LoginScreen extends Component {
     return (
       <View style={styles.mainContainer}>
         <AppStatusBar
-          barStyle="light-content"
-          backgroundColor={Color.colorPrimary}
+          barStyle="dark-content"
+          translucent={true}
+          backgroundColor={Color.transparent}
         />
 
         <KeyboardAvoidingView
           behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
           style={styles.container}>
-          <View style={styles.innerContainer}>
+          <View>
             <ScrollView
-              style={{flex: 1}}
+              style={styles.scrollView}
               contentContainerStyle={styles.scrollview}
               onContentSizeChange={this.onContentSizeChange}
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps={'always'}>
-              <View>
-                <View style={styles.loginLinkContainer}>
-                  <Text style={styles.activeLinkText}>SignIn</Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.props.navigation.navigate('Register');
-                    }}>
-                    <Text style={styles.linkText}>{Strings.signup_text}</Text>
+              {!this.state.showOTP ? (
+                <View>
+                  <TouchableOpacity>
+                    <Icon name="chevron-left" size={24} />
                   </TouchableOpacity>
-                </View>
-                <View style={styles.headingContainer}>
-                  <Text style={styles.heading}>{Strings.login_text1}</Text>
-
-                  <Text style={styles.tagline}>{Strings.login_text2}</Text>
-                </View>
-                <Logo />
-                <Card style={{margin: 30, padding: 20}}>
-                  <UserInput
-                    keyboardType="numeric"
-                    placeholder={Strings.mobileHint}
-                    error={this.state.mobileError}
-                    value={this.state.mobile}
-                    errorMessage={this.state.mobileErrorMessage}
-                    maxLength={10}
-                    onChangeText={mobile => this.onChangeMobile(mobile)}
-                  />
-
-                  {this.state.showOTP ? (
+                  <Text style={[styles.heading, {fontSize: 18, marginTop: 20}]}>
+                    Enter your mobile number
+                  </Text>
+                  <Text
+                    style={{fontSize: 14, marginTop: 20, textAlign: 'left'}}>
+                    Mobile Number
+                  </Text>
+                  <View style={{position: 'relative'}}>
+                    <UserInput
+                      textStyle={{
+                        fontWeight: '900',
+                        fontSize: 20,
+                        marginLeft: 70,
+                        color:'black'
+                      }}
+                      keyboardType="numeric"
+                      placeholder={'0000000000'}
+                      error={this.state.mobileError}
+                      value={this.state.mobile}
+                      errorMessage={this.state.mobileErrorMessage}
+                      maxLength={10}
+                      onChangeText={mobile => this.onChangeMobile(mobile)}
+                    />
                     <View
                       style={{
+                        position: 'absolute',
+                        top: 10,
                         display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
+                        flexDirection: 'row',
+                        alignItems:'center',
+                        borderRightWidth:1,
+                        borderRightColor:'#7C7C7C'
                       }}>
-                      <SmoothPinCodeInput
-                        ref={this.pinInput}
-                        cellSpacing={20}
-                        cellStyle={{
-                          borderWidth: 2,
-                          borderRadius: 5,
-                          borderColor: Color.lightgray,
-                          backgroundColor: Color.white,
-                        }}
-                        cellStyleFocused={{
-                          borderColor: Color.colorPrimary,
-                        }}
-                        value={this.state.otp}
-                        onTextChange={otp => this.setState({otp})}
-                        onBackspace={() => console.log('No more back.')}
+                      <Image
+                        style={{ width:20,height:20, resizeMode:'contain', marginTop:5 }}
+                        source={FLAGIMAGE}
                       />
-                    </View>
-                  ) : null}
-                  <View
-                    style={[
-                      styles.loginLinkContainer,
-                      {marginTop: 20, justifyContent: 'space-between'},
-                    ]}>
-                    {this.state.showOTP ? (
-                      <TouchableOpacity
-                        onPress={() => {
-                          this.resendUserOtp();
-                        }}>
-                        <Text
-                          style={[
-                            styles.subTitle,
-                            {color: Color.colorPrimary, marginBottom: 10},
-                          ]}>
-                          {Strings.resendOTP}
-                        </Text>
-                      </TouchableOpacity>
-                    ) : (
-                      <View />
-                    )}
-
-                    <View style={styles.buttonContainer}>
-                      {this.state.showOTP ? (
-                        <LoadingButton
-                          title={Strings.signin}
-                          loading={this.state.loading}
-                          onPress={() => {
-                            this.verifyOTP();
-                          }}
-                        />
-                      ) : (
-                        <LoadingButton
-                          title={Strings.sendOTP}
-                          loading={this.state.loading}
-                          onPress={() => {
-                            this.login();
-                          }}
-                        />
-                      )}
+                      <Text style={{fontWeight: '900', fontSize: 20, marginLeft:10, marginEnd:10, color:'#000'}}>91</Text>
                     </View>
                   </View>
-                </Card>
-              </View>
+                  <View style={styles.buttonContainer}>
+                    <LoadingButton
+                      style={{height: 50, width: 50, borderRadius: 30}}
+                      title={
+                        <Icon name="chevron-right" size={24} color={'#fff'} />
+                      }
+                      loading={this.state.loading}
+                      onPress={() => {
+                        this.login();
+                      }}
+                    />
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.container}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({showOTP: false});
+                    }}>
+                    <Icon name="chevron-left" size={24} />
+                  </TouchableOpacity>
+
+                  <Text style={[styles.heading, {fontSize: 18, marginTop: 30}]}>
+                    Enter your 4-digit code
+                  </Text>
+                  <Text style={[styles.subTitle, {fontSize: 12}]}>Code</Text>
+
+                  <SmoothPinCodeInput
+                    ref={this.pinInput}
+                    cellSpacing={5}
+                    cellSize={20}
+                    textStyle={{fontSize: 16}}
+                    cellStyle={{
+                      borderBottomWidth: 2,
+                      borderColor: Color.lightgray,
+                      backgroundColor: Color.transparent,
+                    }}
+                    cellStyleFocused={{
+                      borderColor: Color.colorPrimary,
+                    }}
+                    value={this.state.otp}
+                    onTextChange={otp => this.setState({otp})}
+                    onBackspace={() => console.log('No more back.')}
+                  />
+                  <View
+                    style={{
+                      borderBottomWidth: 1,
+                      borderBottomColor: '#C0C0C0',
+                      marginTop: 10,
+                    }}
+                  />
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginTop: 40,
+                    }}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.resendUserOtp();
+                      }}>
+                      <Text
+                        style={[
+                          styles.subTitle,
+                          {color: Color.colorPrimary, marginBottom: 10},
+                        ]}>
+                        {Strings.resendOTP}
+                      </Text>
+                    </TouchableOpacity>
+
+                    <LoadingButton
+                      style={{height: 50, width: 50, borderRadius: 30}}
+                      title={
+                        <Icon name="chevron-right" size={24} color={'#fff'} />
+                      }
+                      loading={this.state.loading}
+                      onPress={() => {
+                        this.verifyOTP();
+                      }}
+                    />
+                  </View>
+                </View>
+              )}
             </ScrollView>
           </View>
         </KeyboardAvoidingView>
-        <View style={styles.bottomImage}>
-          <Image source={require('../assets/images/thumb1.png')} />
-        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    height: Dimension.window.height,
+    paddingBottom: 20,
+  },
   mainContainer: {
     flex: 1,
-    backgroundColor: Color.white,
+    backgroundColor: '#F5F5F5',
     flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   scrollView: {
-    backgroundColor: Color.white,
     flexDirection: 'column',
     padding: 20,
     flexGrow: 1,
@@ -382,7 +416,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
   },
-  buttonContainer: {},
+  buttonContainer: {
+    display: 'flex',
+    marginTop: 100,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
 });
 
 function mapStateToProps(state) {

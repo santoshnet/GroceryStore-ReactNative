@@ -16,7 +16,7 @@ function UserInput(props) {
   return (
     <View style={[styles.textInputContainer, props.containerStyle]}>
       <TextInput
-        style={styles.textInput}
+        style={[styles.textInput,props.textStyle]}
         onChangeText={props.onChangeText}
         value={props.value}
         placeholder={props.placeholder}
