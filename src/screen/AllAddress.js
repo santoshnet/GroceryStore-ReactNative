@@ -17,7 +17,7 @@ import {connect} from 'react-redux';
 import AppStatusBar from '../components/AppStatusBar';
 import {Color, Fonts, Strings, Dimension, COLORS} from '../theme';
 import ToolBar from '../components/ToolBar';
-import Icon from 'react-native-vector-icons/Entypo';
+import Icon from 'react-native-vector-icons/Feather';
 import EditIcon from 'react-native-vector-icons/FontAwesome';
 import LoadingButton from '../components/LoadingButton';
 import {getUserDetails} from '../utils/LocalStorage';
@@ -54,7 +54,7 @@ export class AllAddress extends Component {
 
   async componentDidMount() {
     let user = await getUserDetails();
-    this.props.set_User_Details(user)
+    this.props.set_User_Details(user);
     this.setState({
       token: user.token,
       userId: user.id,
@@ -79,7 +79,7 @@ export class AllAddress extends Component {
       updateUser(checkoutlocation)
         .then(response => {
           let data = response.data;
- 
+
           if (data.status === 200) {
             this.props.navigation.navigate('PlaceOrder');
             setUserDetails(checkoutlocation);
@@ -98,38 +98,68 @@ export class AllAddress extends Component {
   footerPart() {
     return (
       <View style={styles.box2}>
-        <View style={{width: '50%'}}>
-          <TouchableOpacity
-            style={styles.Add_address_container}
-            onPress={() => {
-              this.props.navigation.navigate('AddressDetailsScreen');
+        <TouchableOpacity
+          style={{
+            backgroundColor: '#63AC36',
+            borderRadius: 13,
+            height: 67,
+            width: '100%',
+            paddingHorizontal: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'row',
+          }}
+          onPress={() => {
+            this.handleCheckOut();
+          }}>
+          <Text
+            style={{
+              color: '#FFF9FF',
+              fontSize: 18,
+              fontFamily: 'Poppins',
+              fontWeight: '400',
+              textAlign: 'center',
+              lineHeight: 18,
+
+              //   lineHeight: 29,
             }}>
-            <Text style={styles.checkout}>ADD ADDRESS +</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{width: '50%'}}>
-          <TouchableOpacity
-            style={styles.checkout_container}
-            onPress={() => {
-              this.handleCheckOut();
-            }}>
-            <Text style={styles.checkout}>CHECKOUT</Text>
-          </TouchableOpacity>
-        </View>
+            Proceed to Checkout
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
+
+  generateRandomColor = () => {
+    const colors = ['#B5F98B', 'white', '#B5F98B'];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+  };
+
   chooesAddress = (item, selectedUserAddress, deleteSelectedAddress) => {
+    const cardColor = this.generateRandomColor();
+    const cardBorderColor = this.generateRandomColor();
     return (
-      <View style={styles.item}>
+      <View
+        style={[
+          styles.item,
+          {
+            backgroundColor:
+              item?.id === selectedUserAddress?.id
+                ? '#B5F98B'
+                : COLORS.lightGray2,
+            borderColor: COLORS.lightGray2,
+          },
+        ]}>
         <View style={styles.itemLeft}>
           <View style={{marginRight: 16}}>
-            <View
-              style={
-                item?.id === selectedUserAddress?.id
-                  ? styles.selectcircular
-                  : styles.circular
-              }
+            <Icon
+              name="home"
+              style={{paddingLeft: 7}}
+              size={45}
+              color={'#016839'}
+              onPress={() => this.props.navigation.goBack()}
             />
           </View>
           <View>
@@ -144,7 +174,7 @@ export class AllAddress extends Component {
               onPress={() => {
                 this.props.navigation.push('UpdateAddress');
               }}>
-              <EditIcon name="edit" size={20} color={Color.gray} />
+              <EditIcon name="edit" size={30} color={Color.gray} />
             </TouchableOpacity>
           </View>
           {/* <View style={styles.square}>
@@ -180,11 +210,38 @@ export class AllAddress extends Component {
           backgroundColor={Color.colorPrimary}
           barStyle="light-content"
         />
-        <ToolBar
-          title="Address"
-          icon="arrow-left"
-          onPress={() => this.props.navigation.goBack()}
-        />
+        <View
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexDirection: 'row',
+            marginHorizontal: 5,
+            marginVertical: 5,
+          }}>
+          <Icon
+            name="arrow-left"
+            style={{paddingLeft: 14}}
+            size={25}
+            color={COLORS.black}
+            onPress={() => this.props.navigation.goBack()}
+          />
+          <Text
+            style={{fontSize: 20, paddingVertical: 10, color: COLORS.black}}>
+            Select Address
+          </Text>
+          <View
+            style={{
+              width: 37,
+              height: 27,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginRight: 7,
+              marginTop: 5,
+            }}
+          />
+        </View>
         <ScrollView>
           {/* Today's Tasks */}
 
@@ -248,6 +305,14 @@ export class AllAddress extends Component {
               }}
             />
           </View>
+          <View>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.navigate('AddressDetailsScreen');
+              }}>
+              <Text style={styles.checkout}>Add New Delivery Address +</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
 
         {/* Write a task */}
@@ -297,7 +362,7 @@ function mapDispatchToProps(dispatch) {
     deleteSelectedAddress: selectedAddressId => {
       return dispatch(deleteSelectedAddress(selectedAddressId));
     },
-    set_User_Details
+    set_User_Details,
   };
 }
 
@@ -352,9 +417,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 24,
-    height: 24,
-    backgroundColor: COLORS.green,
+    width: 32,
+    height: 32,
+    // backgroundColor: COLORS.green,
     opacity: 0.4,
     borderRadius: 5,
     marginRight: 15,
@@ -423,11 +488,11 @@ const styles = StyleSheet.create({
   box2: {
     // flex:1,
     position: 'absolute',
-    // top: 2,
+    paddingHorizontal: 25,
     right: 2,
     width: '100%',
     height: 50,
-    bottom: 0,
+    bottom: 40,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
@@ -453,10 +518,9 @@ const styles = StyleSheet.create({
   },
   checkout: {
     width: '100%',
-    paddingTop: 10,
     textAlign: 'center',
     fontSize: 20,
-    fontWeight: '700',
-    color: Color.white,
+    fontWeight: '400',
+    color: Color.black,
   },
 });

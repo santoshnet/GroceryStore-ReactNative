@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
@@ -9,6 +8,7 @@ import {
   Image,
   FlatList,
   Button,
+  ActivityIndicator,
 } from 'react-native';
 import AppStatusBar from '../components/AppStatusBar';
 import {Color, Fonts, Strings, Dimension, COLORS} from '../theme';
@@ -42,7 +42,7 @@ import {
 } from '../redux/cart/cartActions';
 import {BASE_URL} from '../axios/API';
 
-class ProductsScreen extends Component {
+class CategoryWiseProducts extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -53,204 +53,18 @@ class ProductsScreen extends Component {
       cartCount: 0,
       cartList: [],
       category: '',
+      loading: true,
     };
   }
 
-  async componentDidMount() {
-    this.reRenderSomething = this.props.navigation.addListener('focus', () => {
-      this.init();
-    });
-  }
-
-  init = async () => {
-    this.fetchProductsList(this.props.route.params.item.category);
-    let cart = await getCart();
-
-    console.log('Category===================>', this.props.route.params.item);
-    this.fetchCategory();
-    this.setState({
-      cartList: cart,
-      cartCount: Cart.getTotalCartCount(cart),
-      category: this.props.route.params.item.category,
-      subcategoryData: this.props.route.params.item.subCategory,
-    });
-
-    if (
-      this.props.route.params.item.subCategory &&
-      this.props.route.params.item.subCategory.length > 0
-    ) {
-      this.fetchProductBySubCategory(
-        this.props.route.params.item.subCategory[0].id,
-      );
-    } else {
-      this.fetchProductByCategory(this.props.route.params.item.id);
-    }
-  };
-
-  fetchCategory = () => {
-    this.refs.loading.show();
-    getAllCategory()
-      .then(response => {
-        // console.log('category====>', response.data);
-        this.setState({categoryData: response.data.categories});
-        this.refs.loading.close();
-      })
-      .catch(error => {
-        console.log(error);
-        this.refs.loading.close();
-      });
-  };
-
-  fetchProductBySubCategory = async id => {
-    this.refs.loading.show();
-    await getProductBySubCategory(id)
-      .then(res => {
-        console.log(res.data);
-        this.setState({products: res.data.products});
-        this.refs.loading.close();
-      })
-      .catch(err => {
-        console.log(err);
-        this.refs.loading.close();
-      });
-  };
-  fetchProductByCategory = async id => {
-    this.refs.loading.show();
-    await getProductByCategory(id)
-      .then(res => {
-        console.log(res.data);
-        this.setState({products: res.data.products});
-        this.refs.loading.close();
-      })
-      .catch(err => {
-        console.log(err);
-        this.refs.loading.close();
-      });
-  };
-
-  fetchProductsList = category => {
-    this.refs.loading.show();
-
-    getProductList(category)
-      .then(response => {
-        console.log(response.data.products, 'all');
-        this.setState({products: response.data.products});
-        this.refs.loading.close();
-      })
-      .catch(error => {
-        console.log(error);
-        this.refs.loading.close();
-      });
-  };
-
-  resetData = () => {
-    this.setState({popularProduct: this.state.popularProduct});
-  };
+  //   async componentDidMount() {
+  //     if (!this.props.loading) {
+  //       this.refs.loading.close();
+  //     }
+  //   }
 
   navigateToScreen = item => {
     this.props.navigation.navigate('ProductView', {item: item});
-  };
-
-  renderProductItem(item) {
-    let cart = Cart.getItemCount(this.state.cartList, item);
-    return (
-      <ProductRow
-        item={item}
-        // addToCart={this.addToCart}
-        count={cart}
-        onPress={() => {
-          this.navigateToScreen(item);
-        }}
-      />
-    );
-  }
-
-  renderSubcategoryItem(item) {
-    return (
-      <TouchableOpacity
-        style={{marginTop: 10}}
-        onPress={() => {
-          this.fetchProductBySubCategory(item.id);
-        }}>
-        <View style={styles.card}>
-          <Image style={{height: 40, width: 40}} source={DummyImage} />
-          <Text style={{fontSize: 10}} numberOfLines={2} ellipsizeMode="tail">
-            {item.sub_category_title}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
-  renderCategoryList = () => {
-    const {
-      categoryData,
-      bestSellingProducts,
-      newProducts,
-      offers,
-      banners,
-      loading,
-      error,
-    } = this.props.productsReducer;
-    return (
-      <View style={{marginTop: 10, marginBottom: 20, paddingBottom: 10}}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{paddingHorizontal: 10}}>
-          {categoryData &&
-            categoryData.map((item, index) => {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => {
-                    this.fetchProductByCategory(item.id);
-
-                    this.setState({category: item?.category});
-                  }}
-                  style={{
-                    width: 100,
-                    height: 100,
-                    borderRadius: 10,
-                    marginRight: 10,
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 2,
-                    elevation: 2,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: '#F2F2F2', // Light silver color
-                  }}>
-                  <Image
-                    source={{
-                      uri: `${BASE_URL + item?.cateimg}`,
-                    }}
-                    style={{
-                      width: 50,
-                      height: 50,
-                      resizeMode: 'cover',
-                    }}
-                  />
-                  <Text
-                    style={{
-                      fontFamily: Fonts.primaryRegular,
-                      color: Color.black,
-                      fontSize: 12,
-                      textAlign: 'center',
-                      marginTop: 5,
-                    }}>
-                    {item.category}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-        </ScrollView>
-      </View>
-    );
   };
 
   getProductQuantity(productId) {
@@ -284,7 +98,6 @@ class ProductsScreen extends Component {
       addToCart,
     } = this.props;
 
-    
     return (
       <FlatList
         data={products}
@@ -393,6 +206,7 @@ class ProductsScreen extends Component {
 
   render() {
     const {navigation} = this.props;
+    const {products, loading} = this.props.productsReducer;
 
     return (
       <View style={styles.mainContainer}>
@@ -415,7 +229,7 @@ class ProductsScreen extends Component {
           />
           <Text
             style={{fontSize: 20, paddingVertical: 10, color: COLORS.black}}>
-            {this.state.category}
+            {products[0].category}
           </Text>
           <View
             style={{
@@ -424,8 +238,8 @@ class ProductsScreen extends Component {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              marginRight:7,
-              marginTop:5
+              marginRight: 7,
+              marginTop: 5,
             }}>
             <BadgeIcon
               icon="shopping-cart"
@@ -436,12 +250,24 @@ class ProductsScreen extends Component {
             />
           </View>
         </View>
-
-        <ScrollView
-          contentContainerStyle={{paddingVertical: 20, marginBottom: 100}}>
-          {this.renderCategoryList()}
-          {this.renderProductCards(this.state.products)}
-        </ScrollView>
+        {!loading ? (
+          <ScrollView
+            contentContainerStyle={{paddingVertical: 20, marginBottom: 100}}>
+            {this.renderProductCards(products)}
+          </ScrollView>
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: COLORS.white,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              borderRadius: 16,
+            }}>
+            <ActivityIndicator size="large" color={COLORS.green} />
+          </View>
+        )}
 
         <Loading ref="loading" indicatorColor={Color.colorPrimary} />
       </View>
@@ -585,6 +411,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
+  console.log(state, 'catwise');
   return {
     cartItems: state.cart?.cartItems, // Updated
     cartCount: state.cart?.cartCount,
@@ -599,4 +426,7 @@ const mapDispatchToProps = {
   addToCart,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductsScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CategoryWiseProducts);

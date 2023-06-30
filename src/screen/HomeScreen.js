@@ -38,10 +38,9 @@ import {getCart, getUserDetails, setCart} from '../utils/LocalStorage';
 import ProductItem from '../components/ProductItem';
 import Cart from '../utils/Cart';
 import SearchBar from '../components/SearchBar';
-import Offer1 from '../assets/images/offer1.jpg';
-import Offer2 from '../assets/images/offer2.jpg';
 import {BASE_URL} from '../axios/API';
 import FastImage from 'react-native-fast-image';
+
 import {
   removeFromCart,
   increaseQuantity,
@@ -140,72 +139,8 @@ class HomeScreen extends Component {
       });
   };
 
-  fetchCategory = () => {
-    this.refs.loading.show();
-    getAllCategory()
-      .then(response => {
-        // console.log('category====>', response.data);
-        this.setState({categoryData: response.data.categories});
-        this.refs.loading.close();
-      })
-      .catch(error => {
-        console.log(error);
-        this.refs.loading.close();
-      });
-  };
-  fetchBanners = () => {
-    this.refs.loading.show();
-    getBanners()
-      .then(response => {
-        // console.log('banners====>', response.data);
-        this.setState({banners: response.data.banners});
-        this.refs.loading.close();
-      })
-      .catch(error => {
-        console.log(error);
-        this.refs.loading.close();
-      });
-  };
-  fetchOffers = () => {
-    this.refs.loading.show();
-    getOffers()
-      .then(response => {
-        // console.log('offers====>', response.data);
-        this.setState({offers: response.data.offers});
-        this.refs.loading.close();
-      })
-      .catch(error => {
-        console.log(error);
-        this.refs.loading.close();
-      });
-  };
 
-  fetchNewProducts = () => {
-    this.refs.loading.show();
-    getNewProducts()
-      .then(response => {
-        // console.log(response.data.products);
-        this.setState({newProduct: response.data.products});
-        this.refs.loading.close();
-      })
-      .catch(error => {
-        console.log(error);
-        this.refs.loading.close();
-      });
-  };
-  fetchPopularProducts = () => {
-    this.refs.loading.show();
-    getPopularProducts()
-      .then(response => {
-        // console.log(response.data.products);
-        this.setState({popularProduct: response.data.products});
-        this.refs.loading.close();
-      })
-      .catch(error => {
-        console.log(error);
-        this.refs.loading.close();
-      });
-  };
+
 
   resetData = () => {
     this.setState({newProduct: this.state.newProduct});
@@ -246,24 +181,26 @@ class HomeScreen extends Component {
 
   renderSearchProductItem(item) {
     return (
-      <View style={styles.itemContainer}>
-        <TouchableOpacity
-          style={{display: 'flex', flexDirection: 'row'}}
-          activeOpacity={1}
-          onPress={() => {
-            this.setState({searchProduct: [], showSearch: false});
-            this.navigateToScreen(item);
-          }}>
-          <View style={{width: 50, height: 50}}>
-            <Image
-              source={{
-                uri: `${BASE_URL + item?.images[0]?.image}`,
-              }}
-              style={{height: 35, width: 35}}
-            />
-          </View>
-          <Text style={{fontSize: 16}}>{item?.name}</Text>
-        </TouchableOpacity>
+      <View style={{flex: 1, backgroundColor: '#ffffff'}}>
+        <View style={styles.itemContainer}>
+          <TouchableOpacity
+            style={{display: 'flex', flexDirection: 'row'}}
+            activeOpacity={1}
+            onPress={() => {
+              this.setState({searchProduct: [], showSearch: false});
+              this.navigateToScreen(item);
+            }}>
+            <View style={{width: 50, height: 50}}>
+              <Image
+                source={{
+                  uri: `${BASE_URL + item?.images[0]?.image}`,
+                }}
+                style={{height: 35, width: 35}}
+              />
+            </View>
+            <Text style={{fontSize: 16}}>{item?.name}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -278,7 +215,7 @@ class HomeScreen extends Component {
           alignItems: 'center',
           justifyContent: 'space-between',
           paddingHorizontal: 20,
-          paddingVertical: 20,
+          paddingVertical: 12,
         }}>
         <View style={{width: 27, height: 27}}>
           <TouchableOpacity
@@ -288,7 +225,6 @@ class HomeScreen extends Component {
             <Image source={drawerMenu} style={styles.iconFilter} />
           </TouchableOpacity>
         </View>
-
         <View style={styles.containerSearch}>
           {/* Icon */}
           <Icon
@@ -301,10 +237,25 @@ class HomeScreen extends Component {
           {/* Text Input */}
           <TextInput
             style={styles.textInputSearch}
-            placeholder="search ..."
+            placeholder="Search ..."
             value={this.state.searchText}
             onChangeText={text => this.onchangeSearchText(text)}
           />
+
+          {/* Clear Search Icon */}
+          {this.state.searchText !== '' && (
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({searchText: '', showSearch: false});
+              }}>
+              <Icon
+                name="x"
+                style={styles.iconClearSearch}
+                size={20}
+                color={COLORS.black}
+              />
+            </TouchableOpacity>
+          )}
         </View>
 
         <View
@@ -342,7 +293,10 @@ class HomeScreen extends Component {
         <View style={{marginRight: 20, marginTop: 20}}>
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.navigate('OurProductScreen');
+              this.props.navigation.navigate('ProductView', {
+                screen: 'Products',
+                params: {item: item},
+              });
             }}>
             <Text style={{color: COLORS.green}}>See all</Text>
           </TouchableOpacity>
@@ -368,35 +322,23 @@ class HomeScreen extends Component {
 
           {this.renderHeader()}
 
-          {this.state.showSearch ? (
-            <View style={{paddingHorizontal: 20}}>
-              <View
-                style={{
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  alignItems: 'flex-end',
-                  flexDirection: 'row',
-                }}>
-                <Icon
-                  name="x-circle"
-                  style={styles.iconSearch}
-                  size={20}
-                  color={COLORS.black}
-                  onPress={() =>
-                    this.setState({showSearch: false, searchText: ''})
+          {this.state.showSearch && this.state.searchData.length >= 1 ? (
+            <ScrollView>
+              <View style={{paddingHorizontal: 20}}>
+                <FlatList
+                  key={'flatlist3'}
+                  data={this.state.searchData}
+                  renderItem={({item, index}) =>
+                    this.renderSearchProductItem(item, index)
                   }
+                  keyExtractor={item => item.id}
+                  extraData={this.props}
+                  // numColumns={2}
+                  showsVerticalScrollIndicator={false}
+                  nestedScrollEnabled={false}
                 />
               </View>
-              <FlatList
-                key={'flatlist3'}
-                data={this.state.searchData}
-                renderItem={({item, index}) =>
-                  this.renderSearchProductItem(item, index)
-                }
-                keyExtractor={item => item.id}
-                extraData={this.props}
-              />
-            </View>
+            </ScrollView>
           ) : (
             <ScrollView style={styles.scrollView}>
               <View style={styles.categoryMainContainer}>
@@ -465,17 +407,22 @@ class HomeScreen extends Component {
                     }}>
                     {offers.map((item, index) => {
                       return (
-                        <Image
-                          key={index}
-                          source={{uri: BASE_URL + item.image}}
-                          style={{
-                            width: Dimension.window.width - 70,
-                            resizeMode: 'contain',
-                            borderRadius: 10,
-                            height: 150,
-                            marginRight: 20,
-                          }}
-                        />
+                        <TouchableOpacity
+                          onPress={() => {
+                            this.props.navigation.navigate('OurProductScreen');
+                          }}>
+                          <Image
+                            key={index}
+                            source={{uri: BASE_URL + item.image}}
+                            style={{
+                              width: Dimension.window.width - 70,
+                              resizeMode: 'contain',
+                              borderRadius: 10,
+                              height: 150,
+                              marginRight: 20,
+                            }}
+                          />
+                        </TouchableOpacity>
                       );
                     })}
                   </View>
@@ -503,28 +450,6 @@ class HomeScreen extends Component {
           )}
         </View>
 
-        {/* {this.state.showSearch ? (
-          <View style={styles.searchContainer}>
-            <SearchBar
-              onChangeText={text => this.onchangeSearchText(text)}
-              onClose={() => {
-                this.setState({showSearch: false, searchData: []});
-              }}
-              data={this.state.searchData}
-            />
-
-            <FlatList
-              key={'flatlist3'}
-              data={this.state.searchData}
-              renderItem={({item, index}) =>
-                this.renderSearchProductItem(item, index)
-              }
-              keyExtractor={item => item.id}
-              extraData={this.props}
-            />
-          </View>
-        ) : null} */}
-
         <Loading ref="loading" indicatorColor={Color.colorPrimary} />
       </View>
     );
@@ -548,7 +473,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 10,
     paddingRight: 20,
-    paddingTop: 20,
+    paddingTop: 4,
     flexDirection: 'column',
   },
   categoryHeaderContainer: {
