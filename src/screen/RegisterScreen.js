@@ -386,18 +386,21 @@ class RegisterScreen extends Component {
                           paddingLeft: 5,
                           marginTop: 5,
                         }}>
-                        Singup
+                        Login
                       </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
               ) : (
                 <View style={styles.container}>
-                  <TouchableOpacity onPress={()=>{this.setState({showOTP:false})}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({showOTP: false});
+                    }}>
                     <Icon name="chevron-left" size={24} />
                   </TouchableOpacity>
 
-                  <Text style={[styles.heading, {fontSize: 18, marginTop:30}]}>
+                  <Text style={[styles.heading, {fontSize: 18, marginTop: 30}]}>
                     Enter your 4-digit code
                   </Text>
                   <Text style={[styles.subTitle, {fontSize: 12}]}>Code</Text>

@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   View,
@@ -12,7 +13,7 @@ import {
   StatusBar,
 } from 'react-native';
 import AppStatusBar from '../components/AppStatusBar';
-import {Color, Fonts, Strings, Dimension} from '../theme';
+import {Color, Fonts, Strings, Dimension, COLORS} from '../theme';
 
 import Logo from '../components/Logo';
 import Card from '../components/Card';
@@ -39,6 +40,7 @@ import {
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Feather';
 import FLAGIMAGE from '../assets/images/flag.png';
+import logbackground from '../assets/images/log.png';
 class LoginScreen extends Component {
   constructor(props) {
     super(props);
@@ -178,145 +180,228 @@ class LoginScreen extends Component {
         <KeyboardAvoidingView
           behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
           style={styles.container}>
+          <View
+            style={{
+              flex: 4,
+              display: 'flex',
+              // justifyContent: 'flex-end',
+              // alignItems: 'flex-end',
+            }}>
+            <Image
+              style={{
+                width: '100%',
+                height: '100%',
+                transform: 'rotate(0.29deg)',
+                transformOrigin: '0 0',
+                maxHeight: 300,
+              }}
+              source={logbackground}
+            />
+          </View>
           <View>
-            <ScrollView
-              style={styles.scrollView}
-              contentContainerStyle={styles.scrollview}
-              onContentSizeChange={this.onContentSizeChange}
-              showsVerticalScrollIndicator={false}
-              keyboardShouldPersistTaps={'always'}>
-              {!this.state.showOTP ? (
-                <View>
-                  <TouchableOpacity>
+            <Text
+              style={{
+                color: '#030303',
+                fontSize: 26,
+                fontFamily: 'Gilroy',
+                fontWeight: '800',
+                // lineHeight: 29,
+                wordWrap: 'break-word',
+                paddingHorizontal: 20,
+                width: 300,
+              }}>
+              Get your vegetables with nectar
+            </Text>
+          </View>
+
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollview}
+            onContentSizeChange={this.onContentSizeChange}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps={'always'}>
+            {!this.state.showOTP ? (
+              <View>
+                {/* <TouchableOpacity>
                     <Icon name="chevron-left" size={24} />
-                  </TouchableOpacity>
-                  <Text style={[styles.heading, {fontSize: 18, marginTop: 20}]}>
+                  </TouchableOpacity> */}
+                {/* <Text style={[styles.heading, {fontSize: 18, marginTop: 20}]}>
                     Enter your mobile number
-                  </Text>
-                  <Text
+                  </Text> */}
+                {/* <Text
                     style={{fontSize: 14, marginTop: 20, textAlign: 'left'}}>
                     Mobile Number
-                  </Text>
-                  <View style={{position: 'relative'}}>
-                    <UserInput
-                      textStyle={{
-                        fontWeight: '900',
-                        fontSize: 20,
-                        marginLeft: 70,
-                        color:'black'
-                      }}
-                      keyboardType="numeric"
-                      placeholder={'0000000000'}
-                      error={this.state.mobileError}
-                      value={this.state.mobile}
-                      errorMessage={this.state.mobileErrorMessage}
-                      maxLength={10}
-                      onChangeText={mobile => this.onChangeMobile(mobile)}
-                    />
-                    <View
-                      style={{
-                        position: 'absolute',
-                        top: 10,
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems:'center',
-                        borderRightWidth:1,
-                        borderRightColor:'#7C7C7C'
-                      }}>
-                      <Image
-                        style={{ width:20,height:20, resizeMode:'contain', marginTop:5 }}
-                        source={FLAGIMAGE}
-                      />
-                      <Text style={{fontWeight: '900', fontSize: 20, marginLeft:10, marginEnd:10, color:'#000'}}>91</Text>
-                    </View>
-                  </View>
-                  <View style={styles.buttonContainer}>
-                    <LoadingButton
-                      style={{height: 50, width: 50, borderRadius: 30}}
-                      title={
-                        <Icon name="chevron-right" size={24} color={'#fff'} />
-                      }
-                      loading={this.state.loading}
-                      onPress={() => {
-                        this.login();
-                      }}
-                    />
-                  </View>
-                </View>
-              ) : (
-                <View style={styles.container}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.setState({showOTP: false});
-                    }}>
-                    <Icon name="chevron-left" size={24} />
-                  </TouchableOpacity>
-
-                  <Text style={[styles.heading, {fontSize: 18, marginTop: 30}]}>
-                    Enter your 4-digit code
-                  </Text>
-                  <Text style={[styles.subTitle, {fontSize: 12}]}>Code</Text>
-
-                  <SmoothPinCodeInput
-                    ref={this.pinInput}
-                    cellSpacing={5}
-                    cellSize={20}
-                    textStyle={{fontSize: 16}}
-                    cellStyle={{
-                      borderBottomWidth: 2,
-                      borderColor: Color.lightgray,
-                      backgroundColor: Color.transparent,
+                  </Text> */}
+                <View style={{position: 'relative', flex: 1}}>
+                  <UserInput
+                    textStyle={{
+                      fontWeight: '900',
+                      fontSize: 20,
+                      marginLeft: 70,
+                      color: 'black',
                     }}
-                    cellStyleFocused={{
-                      borderColor: Color.colorPrimary,
-                    }}
-                    value={this.state.otp}
-                    onTextChange={otp => this.setState({otp})}
-                    onBackspace={() => console.log('No more back.')}
+                    keyboardType="numeric"
+                    placeholder={'0000000000'}
+                    error={this.state.mobileError}
+                    value={this.state.mobile}
+                    errorMessage={this.state.mobileErrorMessage}
+                    maxLength={10}
+                    onChangeText={mobile => this.onChangeMobile(mobile)}
                   />
                   <View
                     style={{
-                      borderBottomWidth: 1,
-                      borderBottomColor: '#C0C0C0',
-                      marginTop: 10,
-                    }}
-                  />
-                  <View
-                    style={{
+                      position: 'absolute',
+                      top: 10,
                       display: 'flex',
                       flexDirection: 'row',
-                      justifyContent: 'space-between',
                       alignItems: 'center',
-                      marginTop: 40,
+                      borderRightWidth: 1,
+                      borderRightColor: '#7C7C7C',
                     }}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.resendUserOtp();
-                      }}>
-                      <Text
-                        style={[
-                          styles.subTitle,
-                          {color: Color.colorPrimary, marginBottom: 10},
-                        ]}>
-                        {Strings.resendOTP}
-                      </Text>
-                    </TouchableOpacity>
-
-                    <LoadingButton
-                      style={{height: 50, width: 50, borderRadius: 30}}
-                      title={
-                        <Icon name="chevron-right" size={24} color={'#fff'} />
-                      }
-                      loading={this.state.loading}
-                      onPress={() => {
-                        this.verifyOTP();
+                    <Image
+                      style={{
+                        width: 20,
+                        height: 20,
+                        resizeMode: 'contain',
+                        marginTop: 5,
                       }}
+                      source={FLAGIMAGE}
                     />
+                    <Text
+                      style={{
+                        fontWeight: '900',
+                        fontSize: 20,
+                        marginLeft: 10,
+                        marginEnd: 10,
+                        color: '#000',
+                      }}>
+                      91
+                    </Text>
                   </View>
                 </View>
-              )}
-            </ScrollView>
-          </View>
+                <View style={styles.buttonContainer}>
+                  <LoadingButton
+                    style={{height: 50, width: 50, borderRadius: 30}}
+                    title={
+                      <Icon name="chevron-right" size={24} color={'#fff'} />
+                    }
+                    loading={this.state.loading}
+                    onPress={() => {
+                      this.login();
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text>Or Register</Text>
+                </View>
+                <View>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: '#5383EC',
+                      borderRadius: 13,
+                      height: 67,
+                      width: 356,
+                      marginTop: 60,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      display: 'flex',
+                    }}
+                    onPress={() => this.props.navigation.navigate('Register')}>
+                    <Text
+                      style={{
+                        color: '#FFF9FF',
+                        fontSize: 18,
+                        fontFamily: 'Poppins',
+                        fontWeight: '400',
+                        textAlign: 'center',
+                        lineHeight: 18,
+
+                        //   lineHeight: 29,
+                      }}>
+                      Signup
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <View style={styles.container}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setState({showOTP: false});
+                  }}>
+                  <Icon name="chevron-left" size={24} />
+                </TouchableOpacity>
+
+                <Text style={[styles.heading, {fontSize: 18, marginTop: 30}]}>
+                  Enter your 4-digit code
+                </Text>
+                <Text style={[styles.subTitle, {fontSize: 12}]}>Code</Text>
+
+                <SmoothPinCodeInput
+                  ref={this.pinInput}
+                  cellSpacing={5}
+                  cellSize={20}
+                  textStyle={{fontSize: 16}}
+                  cellStyle={{
+                    borderBottomWidth: 2,
+                    borderColor: Color.lightgray,
+                    backgroundColor: Color.transparent,
+                  }}
+                  cellStyleFocused={{
+                    borderColor: Color.colorPrimary,
+                  }}
+                  value={this.state.otp}
+                  onTextChange={otp => this.setState({otp})}
+                  onBackspace={() => console.log('No more back.')}
+                />
+                <View
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: '#C0C0C0',
+                    marginTop: 10,
+                  }}
+                />
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginTop: 40,
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.resendUserOtp();
+                    }}>
+                    <Text
+                      style={[
+                        styles.subTitle,
+                        {color: Color.colorPrimary, marginBottom: 10},
+                      ]}>
+                      {Strings.resendOTP}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <LoadingButton
+                    style={{height: 50, width: 50, borderRadius: 30}}
+                    title={
+                      <Icon name="chevron-right" size={24} color={'#fff'} />
+                    }
+                    loading={this.state.loading}
+                    onPress={() => {
+                      this.verifyOTP();
+                    }}
+                  />
+                </View>
+              </View>
+            )}
+          </ScrollView>
+          <View />
         </KeyboardAvoidingView>
       </View>
     );
@@ -324,13 +409,13 @@ class LoginScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
-    height: Dimension.window.height,
+  scrollview: {
+    // height: Dimension.window.height,
     paddingBottom: 20,
   },
   mainContainer: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: COLORS.white,
     flexDirection: 'column',
   },
   scrollView: {
@@ -418,7 +503,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     display: 'flex',
-    marginTop: 100,
+    marginTop: 30,
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
   },

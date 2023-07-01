@@ -100,7 +100,6 @@ class AddressDetailsScreen extends Component {
     //   return;
     // }
 
-
     this.setState({loading: true});
 
     const newAddress = {
@@ -205,13 +204,17 @@ class AddressDetailsScreen extends Component {
               loading={this.state.loading}
               onPress={() => {
                 this.updateAddress(addSelectedAddress);
-              
               }}
+              style={{height: 56, borderRadius: 12}}
             />
           </View>
           <View style={{marginTop: 20}}>
             <LoadingButton
-              style={{backgroundColor: COLORS.primary}}
+              style={{
+                backgroundColor: COLORS.primary,
+                height: 56,
+                borderRadius: 12,
+              }}
               title={'Select Address'}
               loading={this.state.loading}
               onPress={() => {

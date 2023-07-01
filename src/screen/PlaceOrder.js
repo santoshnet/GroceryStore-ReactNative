@@ -1,3 +1,4 @@
+/* eslint-disable no-array-constructor */
 /* eslint-disable no-dupe-keys */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
@@ -10,7 +11,7 @@ import {
   FlatList,
 } from 'react-native';
 import AppStatusBar from '../components/AppStatusBar';
-import {Color, Fonts, Strings, Dimension} from '../theme';
+import {Color, Fonts, Strings, Dimension, COLORS} from '../theme';
 import ToolBar from '../components/ToolBar';
 import {TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
@@ -46,6 +47,22 @@ import {
   set_User_Details,
   clearUserDetails,
 } from './../redux/userDetails/userActions';
+import upi from '../assets/images/upi.png';
+import cash from '../assets/images/cash.png';
+
+export const paymentObj = new Array(
+  {
+    id: 1,
+    payment_method: 'upi',
+    value: 'ONLINE',
+  },
+  {
+    id: 2,
+    payment_method: 'cash_on_delivery',
+    value: 'COD',
+  },
+);
+
 class PlaceOrder extends Component {
   constructor(props) {
     super(props);
@@ -54,6 +71,7 @@ class PlaceOrder extends Component {
       cartList: [],
       totalPrice: '',
       paymentMethod: 'ONLINE',
+      selectedPayment: 1,
     };
   }
 
@@ -199,6 +217,90 @@ class PlaceOrder extends Component {
       });
   };
 
+  renderPaymentsMethod() {
+    return paymentObj.map(payment => {
+      const {id, payment_method} = payment;
+      let paymentImage;
+      let paymentText;
+      let paymentImgstyle;
+
+      if (payment_method === 'upi') {
+        paymentImage = upi;
+        paymentText = 'UPI Payment';
+        paymentImgstyle = {width: 60, height: 21};
+      } else if (payment_method === 'cash_on_delivery') {
+        paymentImage = cash;
+        paymentText = 'Cash on Delivery';
+        paymentImgstyle = {width: 40, height: 40};
+      } else {
+        return null; // Handle any other payment method (optional)
+      }
+
+      const isSelected = this.state.selectedPayment === id;
+
+      return (
+        <TouchableOpacity
+          key={id}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexDirection: 'row',
+            width: '100%',
+            height: 90,
+            backgroundColor: 'white',
+            borderRadius: 16,
+            paddingHorizontal: 30,
+            marginVertical: 10,
+          }}
+          onPress={() => {
+            this.setState({selectedPayment: id, paymentMethod: payment.value});
+          }}>
+          <View>
+            <Image
+              source={paymentImage}
+              style={{paddingLeft: 7, paymentImgstyle}}
+            />
+          </View>
+          <View>
+            <Text>{paymentText}</Text>
+          </View>
+          <View
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({selectedPayment: id});
+              }}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 999,
+                borderWidth: 0.5,
+                borderColor: COLORS.black,
+                padding: 1,
+              }}>
+              {isSelected && (
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: isSelected ? '#63AC36' : 'white',
+                    borderRadius: 999,
+                    borderColor: COLORS.white,
+                    borderWidth: 2,
+                  }}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      );
+    });
+  }
+
   render() {
     const {navigation, cartItems, cartCount, cartTotal} = this.props;
 
@@ -209,19 +311,48 @@ class PlaceOrder extends Component {
             backgroundColor={Color.colorPrimary}
             barStyle="light-content"
           />
-          <ToolBar
-            title="Place Order"
-            icon="arrow-left"
-            onPress={() => navigation.goBack()}
-          />
+          <View
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexDirection: 'row',
+              marginHorizontal: 5,
+              marginVertical: 5,
+            }}>
+            <Icon
+              name="arrow-left"
+              style={{paddingLeft: 7}}
+              size={25}
+              color={COLORS.black}
+              onPress={() => this.props.navigation.goBack()}
+            />
+            <Text
+              style={{fontSize: 20, paddingVertical: 10, color: COLORS.black}}>
+              Payment Method
+            </Text>
+            <View
+              style={{
+                width: 37,
+                height: 27,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginRight: 7,
+                marginTop: 5,
+              }}
+            />
+          </View>
+
           <ScrollView style={{paddingBottom: 200}}>
-            <FlatList
+          
+            {/* <FlatList
               key={'flatlist'}
               data={cartItems}
               renderItem={({item, index}) => this.renderCartItem(item, index)}
               keyExtractor={item => item.id}
               extraData={this.state}
-            />
+            /> */}
             <View style={styles.amountContainer}>
               <View
                 style={{
@@ -280,10 +411,77 @@ class PlaceOrder extends Component {
                 </Text>
               </View>
             </View>
+
+            <View style={{paddingHorizontal: 20}}>
+              {this.renderPaymentsMethod()}
+            </View>
           </ScrollView>
         </View>
         <View style={styles.box2}>
-          <View style={styles.paymentContainer}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: '#63AC36',
+              borderRadius: 13,
+              height: 67,
+              width: 356,
+              paddingHorizontal: 10,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              display: 'flex',
+              flexDirection: 'row',
+            }}
+            onPress={() => this.onPlaceOrder()}>
+            <View />
+            <Text
+              style={{
+                color: '#FFF9FF',
+                fontSize: 18,
+                fontFamily: 'Poppins',
+                fontWeight: '400',
+                textAlign: 'center',
+                lineHeight: 18,
+
+                //   lineHeight: 29,
+              }}>
+             Make Payment
+            </Text>
+            <View
+              style={{
+                // width: '100%',
+                // height: '100%',
+                paddingLeft: 5,
+                paddingRight: 5,
+                paddingTop: 2,
+                paddingBottom: 2,
+                backgroundColor: '#489E67',
+                borderRadius: 4,
+                overflow: 'hidden',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: 10,
+                display: 'flex',
+              }}>
+              <Text
+                style={{
+                  color: '#FCFCFC',
+                  fontSize: 12,
+                  fontFamily: 'Gilroy',
+                  fontWeight: '800',
+                  lineHeight: 18,
+                  wordWrap: 'break-word',
+                }}>
+                RS.{' '}
+                {this.props.cartTotal > 300
+                  ? this.props.cartTotal
+                  : parseFloat(
+                      (Math.round(this.props.cartTotal * 100) / 100).toFixed(2),
+                    ) + 50}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* <View style={styles.paymentContainer}>
             <View style={{width: '50%'}}>
               <View
                 style={{backgroundColor: Color.white, color: Color.primary}}>
@@ -314,7 +512,7 @@ class PlaceOrder extends Component {
                 </Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </View> */}
         </View>
         <Loading ref="loading" indicatorColor={Color.colorPrimary} />
       </View>
@@ -323,6 +521,14 @@ class PlaceOrder extends Component {
 }
 
 const styles = StyleSheet.create({
+  radioButton: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   mainContainer: {
     flex: 1,
     backgroundColor: Color.backgroundColor,
@@ -357,14 +563,6 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   amountContainer: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 5,
     display: 'flex',
     flexDirection: 'column',
     borderRadius: 20,
@@ -381,19 +579,13 @@ const styles = StyleSheet.create({
     width: Dimension.window.width,
     height: 50,
     position: 'absolute',
-    bottom: 0,
+    bottom: 30,
     flexDirection: 'row',
-    backgroundColor: Color.colorPrimary,
+    // backgroundColor: Color.colorPrimary,
     display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-    elevation: 7,
   },
   paymentContainer: {
     flexDirection: 'row',
