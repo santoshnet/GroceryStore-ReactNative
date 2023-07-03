@@ -273,7 +273,10 @@ class PlaceOrder extends Component {
             }}>
             <TouchableOpacity
               onPress={() => {
-                this.setState({selectedPayment: id});
+                this.setState({
+                  selectedPayment: id,
+                  paymentMethod: payment.value,
+                });
               }}
               style={{
                 width: 28,
@@ -345,7 +348,6 @@ class PlaceOrder extends Component {
           </View>
 
           <ScrollView style={{paddingBottom: 200}}>
-          
             {/* <FlatList
               key={'flatlist'}
               data={cartItems}
@@ -443,7 +445,7 @@ class PlaceOrder extends Component {
 
                 //   lineHeight: 29,
               }}>
-             Make Payment
+              Make Payment
             </Text>
             <View
               style={{

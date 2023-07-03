@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   View,
@@ -8,7 +9,7 @@ import {
   FlatList,
 } from 'react-native';
 import AppStatusBar from '../components/AppStatusBar';
-import {Color, Fonts, Strings, Dimension} from '../theme';
+import {Color, Fonts, Strings, Dimension, COLORS} from '../theme';
 import ToolBar from '../components/ToolBar';
 import {TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
@@ -57,20 +58,60 @@ class ProfileScreen extends Component {
           backgroundColor={Color.colorPrimary}
           barStyle="light-content"
         />
-        <ToolBar
-          title="Profile"
-          icon="menu"
-          onPress={() => navigation.openDrawer()}>
-          <BadgeIcon
-            icon="shopping-cart"
-            count={this.props.cartCount}
-            onPress={() => {
-              navigation.navigate('MyCart');
-            }}
+        <View
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexDirection: 'row',
+            marginHorizontal: 5,
+            marginVertical: 5,
+          }}>
+          <Icon
+            name="arrow-left"
+            style={{paddingLeft: 7}}
+            size={25}
+            color={COLORS.black}
+            onPress={() => this.props.navigation.goBack()}
           />
-        </ToolBar>
+          <Text
+            style={{fontSize: 20, paddingVertical: 10, color: COLORS.black}}>
+            Profile
+          </Text>
+          <View
+            style={{
+              width: 37,
+              height: 27,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginRight: 7,
+              marginTop: 5,
+            }}>
+            <BadgeIcon
+              icon="shopping-cart"
+              count={this.props.cartCount}
+              onPress={() => {
+                this.props.navigation.navigate('MyCart');
+              }}
+            />
+          </View>
+        </View>
         <ScrollView style={{flex: 1}} contentContainerStyle={styles.scrollview}>
-          <View style={{marginTop: '10%', marginBottom: '5%'}}>
+          <View style={styles.container}>
+            <Image
+               source={require('../assets/images/user.png')}
+              style={styles.profileImage}
+            />
+            <Text style={styles.name}>{user ? user.name : ''}</Text>
+            <Text style={styles.mobile}>{user ? user.mobile : ''}</Text>
+            <Text style={styles.address}>
+              {user
+                ? ` ${user.address},  ${user.city},  ${user.state}- ${user.zip}`
+                : ''}
+            </Text>
+          </View>
+          {/* <View style={{marginTop: '10%', marginBottom: '5%'}}>
             <Logo />
           </View>
           <View style={styles.userRow}>
@@ -90,8 +131,8 @@ class ProfileScreen extends Component {
                 ? ` ${user.address},  ${user.city},  ${user.state}- ${user.zip}`
                 : null}
             </Text>
-          </View>
-          <View style={styles.border} />
+          </View> */}
+          {/* <View style={styles.border} /> */}
         </ScrollView>
         <View style={styles.bottomImage}>
           <Image source={require('../assets/images/thumb1.png')} />
@@ -121,7 +162,7 @@ const styles = StyleSheet.create({
     right: 80,
     zIndex: 1,
     flex: 1,
-    opacity: 0.5,
+    // opacity: 0.5,
     justifyContent: 'flex-end',
   },
   userRow: {
@@ -134,6 +175,36 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: Color.graylight,
     margin: 10,
+  },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    marginBottom: 20,
+  },
+  name: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#333',
+  },
+  mobile: {
+    fontSize: 18,
+    marginBottom: 10,
+    color: '#555',
+  },
+  address: {
+    fontSize: 18,
+    marginBottom: 10,
+    textAlign: 'center',
+    color: '#555',
+    paddingHorizontal: 20,
   },
 });
 

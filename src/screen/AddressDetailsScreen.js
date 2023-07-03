@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-  console.log(state, 'state');
+  // console.log(state, 'state');
   return {
     userAddress: state?.userAddressReducer.userAddress,
     selectedUserAddress: state?.userAddressReducer.selectedUserAddress,

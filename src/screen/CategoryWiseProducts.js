@@ -229,7 +229,7 @@ class CategoryWiseProducts extends Component {
           />
           <Text
             style={{fontSize: 20, paddingVertical: 10, color: COLORS.black}}>
-            {products[0].category}
+            {products[0]?.category}
           </Text>
           <View
             style={{

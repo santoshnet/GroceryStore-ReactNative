@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-dupe-keys */
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
@@ -47,7 +48,7 @@ const CheckPinCode = ({
   const [pincodemesg, setPincodemesg] = React.useState([]);
 
   React.useEffect(() => {
-    let checkpinCode = deliveryItemPinCode.some(ele => ele.pin === pinCode);
+    let checkpinCode = deliveryItemPinCode?.some(ele => ele.pin === pinCode);
     if (checkpinCode === true) {
       setPincodemesg(true);
       let newAddress = {
@@ -67,7 +68,7 @@ const CheckPinCode = ({
   const handleCheckPincode = () => {
     console.log(pinCode.length, 'pinCode', isDeliveryToLocation);
     if (pinCode.length === 6) {
-      let checkpinCode = deliveryItemPinCode.some(ele => ele.pin === pinCode);
+      let checkpinCode = deliveryItemPinCode?.some(ele => ele.pin === pinCode);
       if (checkpinCode === true) {
         setPincodemesg(true);
         let newAddress = {
@@ -80,10 +81,10 @@ const CheckPinCode = ({
         console.log(updateuseraddress, 'updateuseraddress in pin');
         setSelectedAddress(updateuseraddress);
         onClose(false);
-       pinsuccess()
+        pinsuccess();
       } else {
         setPincodemesg(false);
-       pinfailure(false);
+        pinfailure(false);
       }
     } else if (pinCode.length !== 6) {
       setPincodemesg('Invalid zipcode');
@@ -286,7 +287,6 @@ const CheckPinCode = ({
         <TouchableNativeFeedback
           onPress={() => {
             onClose(false);
-           
           }}>
           <View style={styles.shadowTransparentBackground} />
         </TouchableNativeFeedback>

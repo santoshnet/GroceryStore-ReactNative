@@ -45,6 +45,7 @@ import cart from './src/assets/images/cart.png';
 import {COLORS} from './src/theme';
 import Icon from 'react-native-vector-icons/Feather';
 import CategoryWiseProducts from './src/screen/CategoryWiseProducts';
+import {Dimensions} from 'react-native';
 
 const MainStack = createNativeStackNavigator();
 const RootStack = createNativeStackNavigator();
@@ -141,6 +142,9 @@ class App extends Component {
       screenOptions={{
         headerShown: false,
         animationEnabled: false,
+        drawerStyle: {
+          width: Dimensions.get('window').width,
+        },
       }}
       drawerContent={props => <CustomSidebarMenu {...props} />}>
       <Drawer.Screen name="TabNavigator" component={this.TabNavigator} />

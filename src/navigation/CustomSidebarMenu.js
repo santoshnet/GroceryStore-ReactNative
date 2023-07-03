@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 //This is an example code for Navigation Drawer with Custom Side bar//
 import React, {Component} from 'react';
 import {CommonActions} from '@react-navigation/native';
@@ -11,6 +12,8 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ImageBackground,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import Color from '../theme/Color';
@@ -24,6 +27,9 @@ import {
   resetAddress,
 } from '../redux/userAddress/actions';
 import {connect} from 'react-redux';
+import {COLORS, Dimension} from '../theme';
+
+const {width} = Dimensions.get('screen');
 class CustomSidebarMenu extends Component {
   constructor() {
     super();
@@ -82,7 +88,7 @@ class CustomSidebarMenu extends Component {
 
   logoutUser = () => {
     logout();
-    this.props.resetAddress()
+    this.props.resetAddress();
     // this.props.navigation.replace('Login');
 
     this.props.navigation.dispatch(
@@ -110,20 +116,37 @@ class CustomSidebarMenu extends Component {
       <View style={styles.sideMenuContainer}>
         <ScrollView style={styles.scrollView}>
           <View style={styles.profileContainer}>
-            <Image
-              source={require('../assets/images/user.png')}
-              style={styles.sideMenuProfileIcon}
-            />
-            {this.state.user !== null ? (
-              <Text style={styles.title}>{this.state.user.name}</Text>
-            ) : null}
+            <View
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+              }}>
+              <Image
+                source={require('../assets/images/user.png')}
+                style={styles.sideMenuProfileIcon}
+              />
+              <View
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                {this.state.user !== null ? (
+                  <Text style={styles.title}>{this.state.user.name}</Text>
+                ) : null}
+              </View>
+            </View>
           </View>
 
           <View
             style={{
               width: '100%',
               height: 1,
-              backgroundColor: '#e2e2e2',
+              flex:1,
+              backgroundColor: COLORS.lightGray1,
             }}
           />
 
@@ -188,7 +211,7 @@ class CustomSidebarMenu extends Component {
                 onPress={() => {
                   this.logoutUser();
                 }}>
-                Logout
+                Signout
               </Text>
             </View>
           </View>
@@ -199,7 +222,7 @@ class CustomSidebarMenu extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state, 'state');
+  // console.log(state, 'state');
   return {
     userAddress: state?.userAddressReducer.userAddress,
     selectedUserAddress: state?.userAddressReducer.selectedUserAddress,
@@ -231,10 +254,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-
-
-
-
 export default connect(mapStateToProps, mapDispatchToProps)(CustomSidebarMenu);
 
 const BAR_HEIGHT = Platform.OS === 'ios' ? 35 : StatusBar.currentHeight;
@@ -244,6 +263,7 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#fff',
     alignItems: 'center',
+    drawerWidth: '100%',
   },
   scrollView: {
     flex: 1,
@@ -251,28 +271,29 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   sideMenuProfileIcon: {
-    resizeMode: 'center',
-    width: 50,
-    height: 50,
-    borderRadius: 50 / 2,
+    width: 110,
+    height: 110,
+    borderColor: COLORS.white,
   },
   title: {
     fontFamily: Font.primarySemiBold,
     color: Color.black,
     fontSize: 16,
-    marginLeft: 10,
+    textAlign: 'center',
   },
 
   profileContainer: {
     width: '100%',
-    height: 80,
+    height: 150,
     marginTop: BAR_HEIGHT,
     display: 'flex',
+    justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Color.iconBG,
+    backgroundColor: COLORS.white,
     paddingLeft: 20,
     paddingRight: 20,
+    marginBottom: 40,
   },
   bottomContainer: {
     flexDirection: 'row',

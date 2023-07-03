@@ -1,3 +1,4 @@
+/* eslint-disable no-dupe-keys */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
@@ -10,6 +11,7 @@ import {
   TextInput,
   Platform,
   StatusBar,
+  ScrollView,
 } from 'react-native';
 import {BASE_URL} from '../axios/API';
 import FastImage from 'react-native-fast-image';
@@ -20,6 +22,7 @@ import {
   updateCartCountAndTotal,
   addToCart,
 } from '../redux/cart/cartActions';
+import {searchProduct} from '../axios/ServerRequest';
 import BadgeIcon from '../components/BadgeIcon';
 import {
   fetchCategories,
@@ -58,45 +61,32 @@ class OurProductScreen extends Component {
       showSearch: false,
       searchData: [],
       searchText: '',
+      showSearch: false,
     };
   }
 
-  componentDidMount(){
-    this.props.fetchCategories()
+  componentDidMount() {
+    this.props.fetchCategories();
   }
 
-  // Function to handle search input change
-  onSearchInputChange = text => {
-    const {categoryData} = this.props.productsReducer;
-    // Update the search input value
-    this.setState({searchText: text});
-
-    // Check if search input is empty
-    if (text.trim() === '') {
-      // Perform logic when search input is empty
-      // For example, reset the displayed products to the original list
-      this.setState({searchData: this.props.productsReducer.data});
-    } else {
-      // Perform logic when search input is not empty
-
-      // Check if there is category data available
-      if (categoryData) {
-        // Perform logic based on the category data
-
-        // Filter the products based on the search input and category
-        const filteredProducts = categoryData.filter(category =>
-          category.category.toLowerCase().includes(text.toLowerCase()),
-        );
-
-        // Update the displayed products based on the filtered results
-        this.setState({searchData: filteredProducts});
-      } else {
-        // Perform logic when category data is not available
-        // For example, you can show a message or display all products
-        this.setState({searchData: this.props.productsReducer.data});
-      }
-    }
+  navigateToScreen = item => {
+    this.props.navigation.navigate('ProductView', {
+      screen: 'ProductView',
+      params: {item: item},
+    });
   };
+
+  onchangeSearchText(text) {
+    this.setState({searchText: text});
+    searchProduct(text)
+      .then(response => {
+        this.setState({searchData: response.data.products, showSearch: true});
+      })
+      .catch(error => {
+        console.log(error);
+        this.setState({showSearch: false});
+      });
+  }
 
   renderHeader = () => {
     const {navigation, cartCount} = this.props;
@@ -108,7 +98,7 @@ class OurProductScreen extends Component {
           alignItems: 'center',
           justifyContent: 'space-between',
           paddingHorizontal: 20,
-          paddingVertical: 20,
+          paddingVertical: 10,
         }}>
         <View style={styles.containerSearch}>
           {/* Icon */}
@@ -122,10 +112,25 @@ class OurProductScreen extends Component {
           {/* Text Input */}
           <TextInput
             style={styles.textInputSearch}
-            placeholder="search ..."
+            placeholder="Search ..."
             value={this.state.searchText}
-            onChangeText={this.onSearchInputChange}
+            onChangeText={text => this.onchangeSearchText(text)}
           />
+
+          {/* Clear Search Icon */}
+          {this.state.searchText !== '' && (
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({searchText: '', showSearch: false});
+              }}>
+              <Icon
+                name="x"
+                style={styles.iconClearSearch}
+                size={20}
+                color={COLORS.black}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     );
@@ -133,10 +138,10 @@ class OurProductScreen extends Component {
 
   generateRandomColor = () => {
     const colors = [
-      'rgba(83, 177, 117, 0.70)',
-      'rgba(248, 164, 76, 0.10)',
-      'rgba(247, 165, 147, 0.25)',
-      'rgba(209, 209, 210, 0.25)',
+      // 'rgba(83, 177, 117, 0.70)',
+      // 'rgba(248, 164, 76, 0.10)',
+      // 'rgba(247, 165, 147, 0.25)',
+      // 'rgba(209, 209, 210, 0.25)',
       '#DFFDCD',
       'rgba(183, 223, 245, 0.25)',
     ];
@@ -175,6 +180,32 @@ class OurProductScreen extends Component {
       </TouchableOpacity>
     );
   };
+
+  renderSearchProductItem(item) {
+    return (
+      <View style={{flex: 1, backgroundColor: '#ffffff'}}>
+        <View style={styles.itemContainer}>
+          <TouchableOpacity
+            style={{display: 'flex', flexDirection: 'row'}}
+            activeOpacity={1}
+            onPress={() => {
+              this.setState({searchProduct: [], showSearch: false});
+              this.navigateToScreen(item);
+            }}>
+            <View style={{width: 50, height: 50}}>
+              <Image
+                source={{
+                  uri: `${BASE_URL + item?.images[0]?.image}`,
+                }}
+                style={{height: 35, width: 35}}
+              />
+            </View>
+            <Text style={{fontSize: 16}}>{item?.name}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
 
   render() {
     const {categoryData} = this.props.productsReducer;
@@ -223,17 +254,31 @@ class OurProductScreen extends Component {
 
         {this.renderHeader()}
 
-        <FlatList
-          data={
-            Array.isArray(this.state.searchData) &&
-            this.state.searchData.length > 0
-              ? this.state.searchData
-              : categoryData
-          }
-          renderItem={this.renderCategoryItem}
-          keyExtractor={item => item.id.toString()}
-          numColumns={2}
-        />
+        {this.state.showSearch && this.state.searchData ? (
+          <ScrollView>
+            <View style={{paddingHorizontal: 20}}>
+              <FlatList
+                key={'flatlist3'}
+                data={this.state.searchData}
+                renderItem={({item, index}) =>
+                  this.renderSearchProductItem(item, index)
+                }
+                keyExtractor={item => item.id}
+                extraData={this.props}
+                // numColumns={2}
+                showsVerticalScrollIndicator={false}
+                nestedScrollEnabled={false}
+              />
+            </View>
+          </ScrollView>
+        ) : (
+          <FlatList
+            data={categoryData}
+            renderItem={this.renderCategoryItem}
+            keyExtractor={item => item.id.toString()}
+            numColumns={2}
+          />
+        )}
       </View>
     );
   }
@@ -288,7 +333,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   itemContainer: {
-    marginTop: 10,
+    marginTop: 7,
   },
   spinnerTextStyle: {
     color: '#FFF',

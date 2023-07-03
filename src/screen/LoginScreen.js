@@ -222,16 +222,6 @@ class LoginScreen extends Component {
             keyboardShouldPersistTaps={'always'}>
             {!this.state.showOTP ? (
               <View>
-                {/* <TouchableOpacity>
-                    <Icon name="chevron-left" size={24} />
-                  </TouchableOpacity> */}
-                {/* <Text style={[styles.heading, {fontSize: 18, marginTop: 20}]}>
-                    Enter your mobile number
-                  </Text> */}
-                {/* <Text
-                    style={{fontSize: 14, marginTop: 20, textAlign: 'left'}}>
-                    Mobile Number
-                  </Text> */}
                 <View style={{position: 'relative', flex: 1}}>
                   <UserInput
                     textStyle={{
@@ -279,12 +269,19 @@ class LoginScreen extends Component {
                     </Text>
                   </View>
                 </View>
-                <View style={styles.buttonContainer}>
+                <View >
                   <LoadingButton
-                    style={{height: 50, width: 50, borderRadius: 30}}
-                    title={
-                      <Icon name="chevron-right" size={24} color={'#fff'} />
-                    }
+                    style={{
+                      backgroundColor: COLORS.green,
+                      borderRadius: 13,
+                      height: 67,
+                      width: '100%',
+                      marginTop: 60,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      display: 'flex',
+                    }}
+                    title={<Text>Signin</Text>}
                     loading={this.state.loading}
                     onPress={() => {
                       this.login();
@@ -305,8 +302,8 @@ class LoginScreen extends Component {
                       backgroundColor: '#5383EC',
                       borderRadius: 13,
                       height: 67,
-                      width: 356,
-                      marginTop: 60,
+                      width: '100%',
+                      marginTop: 20,
                       justifyContent: 'center',
                       alignItems: 'center',
                       display: 'flex',
@@ -504,8 +501,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     display: 'flex',
     marginTop: 30,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
   },
 });
 

@@ -99,7 +99,7 @@ class ProductView extends Component {
 
   checkPin = () => {
     let {deliveryItemPinCode} = this.props;
-    let checkpinCode = deliveryItemPinCode.some(
+    let checkpinCode = deliveryItemPinCode?.some(
       ele => ele.pin === this.props?.selectedUserAddress?.zip,
     );
     return checkpinCode;
@@ -375,38 +375,43 @@ class ProductView extends Component {
                   alignItems: 'center',
                   flexDirection: 'row',
                 }}>
-                <View style={styles.quantity}>
-                  <TouchableOpacity
-                    activeOpacity={1}
-                    style={styles.plusBtn}
-                    onPress={() => {
-                      this.props.decreaseQuantity(productItem.id);
-                    }}>
-                    <Icon name="minus" size={20} color={COLORS.darkGray2} />
-                  </TouchableOpacity>
-                  <View
-                    style={{
-                      borderColor: '#E2E2E2',
-                      borderWidth: 1,
-                      borderRadius: 12,
-                      boxShadow: '0px 6px 12px 0px rgba(0, 0, 0, 0.00)',
-                      height: 40,
-                      width: 40,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Text style={styles.counter}>{productQuantity}</Text>
+                {productQuantity > 0 ? (
+                  <View style={styles.quantity}>
+                    <TouchableOpacity
+                      activeOpacity={1}
+                      style={styles.plusBtn}
+                      onPress={() => {
+                        this.props.decreaseQuantity(productItem.id);
+                      }}>
+                      <Icon name="minus" size={20} color={COLORS.darkGray2} />
+                    </TouchableOpacity>
+                    <View
+                      style={{
+                        borderColor: '#E2E2E2',
+                        borderWidth: 1,
+                        borderRadius: 12,
+                        boxShadow: '0px 6px 12px 0px rgba(0, 0, 0, 0.00)',
+                        height: 40,
+                        width: 40,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text style={styles.counter}>{productQuantity}</Text>
+                    </View>
+                    <TouchableOpacity
+                      activeOpacity={1}
+                      style={styles.plusBtn}
+                      onPress={() => {
+                        this.props.increaseQuantity(productItem.id);
+                      }}>
+                      <Icon name="plus" size={18} color={Color.colorPrimary} />
+                    </TouchableOpacity>
                   </View>
-                  <TouchableOpacity
-                    activeOpacity={1}
-                    style={styles.plusBtn}
-                    onPress={() => {
-                      this.props.increaseQuantity(productItem.id);
-                    }}>
-                    <Icon name="plus" size={18} color={Color.colorPrimary} />
-                  </TouchableOpacity>
-                </View>
+                ) : (
+                  <View />
+                )}
+
                 <View>
                   <Text
                     style={{

@@ -11,6 +11,7 @@ import {
   View,
   TextInput,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 
 import AppStatusBar from '../components/AppStatusBar';
@@ -108,10 +109,10 @@ class HomeScreen extends Component {
 
   init = async () => {
     console.log(await getUserDetails());
-    this.fetchCategory();
-    this.fetchBanners();
-    this.fetchOffers();
-    this.fetchNewProducts();
+    // this.fetchCategory();
+    // this.fetchBanners();
+    // this.fetchOffers();
+    // this.fetchNewProducts();
     this.fetchPincode();
     this.fetchPopularProducts();
     let cart = await getCart();
@@ -126,7 +127,7 @@ class HomeScreen extends Component {
     this.refs.loading.show();
     getAllPincode()
       .then(response => {
-        console.log('pin====>', response.data.delivery_available_location);
+        console.log('pin====>', response);
         this.props.fetchDeliveryPinCodeAddress(
           response.data.delivery_available_location,
         );
@@ -138,9 +139,6 @@ class HomeScreen extends Component {
         this.refs.loading.close();
       });
   };
-
-
-
 
   resetData = () => {
     this.setState({newProduct: this.state.newProduct});
@@ -428,7 +426,7 @@ class HomeScreen extends Component {
                   </View>
                 </ScrollView>
 
-                {bestSellingProducts.length > 0 && (
+                {bestSellingProducts?.length > 0 && (
                   <>
                     {this.renderHeadingSeeAll('Best Selling')}
                     <FlatList
@@ -449,8 +447,21 @@ class HomeScreen extends Component {
             </ScrollView>
           )}
         </View>
-
-        <Loading ref="loading" indicatorColor={Color.colorPrimary} />
+        {loading ? (
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: COLORS.white,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              borderRadius: 16,
+            }}>
+            <ActivityIndicator size="large" color={COLORS.green} />
+          </View>
+        ) : (
+          <View />
+        )}
       </View>
     );
   }

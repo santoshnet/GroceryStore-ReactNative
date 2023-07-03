@@ -42,7 +42,7 @@ export const removeFromCart = productId => ({
 });
 
 export const increaseQuantity = productId => (
-  console.log(productId, 'productId'),
+  // console.log(productId, 'productId'),
   {
     type: INCREASE_QUANTITY,
     payload: {productId},
