@@ -210,7 +210,7 @@ class LoginScreen extends Component {
                 paddingHorizontal: 20,
                 width: 300,
               }}>
-              Get your vegetables with nectar
+              Get your vegetables 
             </Text>
           </View>
 

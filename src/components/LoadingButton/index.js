@@ -5,7 +5,7 @@ import Font from '../../theme/Fonts';
 import {TouchableOpacity} from 'react-native';
 function LoadingButton(props) {
   return (
-    <View style={{ marginBottom:10 }}>
+    <View style={{marginBottom: 10}}>
       {props.loading ? (
         <View style={[styles.buttonStyle, props.style]}>
           <ActivityIndicator size="small" color="#ffffff" />

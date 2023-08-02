@@ -85,6 +85,7 @@ class HomeScreen extends Component {
   }
 
   async componentDidMount() {
+    this.fetchPincode();
     const {
       fetchCategories,
       fetchBestSellingProducts,
@@ -98,33 +99,15 @@ class HomeScreen extends Component {
     fetchCategories().catch(error => {
       console.log('Error fetching fetchCategories:', error);
     });
+
     fetchCategories();
     fetchBanners();
     fetchNewProducts();
     fetchOffers();
-    this.reRenderSomething = this.props.navigation.addListener('focus', () => {
-      this.init();
-    });
+    this.setState({searchProduct: [], showSearch: false});
   }
 
-  init = async () => {
-    console.log(await getUserDetails());
-    // this.fetchCategory();
-    // this.fetchBanners();
-    // this.fetchOffers();
-    // this.fetchNewProducts();
-    this.fetchPincode();
-    this.fetchPopularProducts();
-    let cart = await getCart();
-    this.setState({searchProduct: [], showSearch: false});
-    this.setState({
-      cartList: await getCart(),
-      cartCount: Cart.getTotalCartCount(cart),
-    });
-  };
-
   fetchPincode = () => {
-    this.refs.loading.show();
     getAllPincode()
       .then(response => {
         console.log('pin====>', response);
@@ -136,7 +119,6 @@ class HomeScreen extends Component {
       })
       .catch(error => {
         console.log(error);
-        this.refs.loading.close();
       });
   };
 
